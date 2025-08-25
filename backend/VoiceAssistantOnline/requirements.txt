@@ -1,0 +1,13 @@
+Flask==3.0.0
+flask-cors==4.0.0
+requests==2.31.0
+pydub==0.25.1
+
+# Google Cloud Speech-to-Text
+google-cloud-speech==2.26.0
+
+# Google Cloud Text-to-Speech
+google-cloud-texttospeech==2.15.0
+
+# Optional: For local testing of TTS without internet
+pyttsx3==2.90
