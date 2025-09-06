@@ -1,0 +1,144 @@
+Real-Time Face Recognition with Live Webcam
+Overview
+
+This project implements a real-time face recognition system using Python, OpenCV, and the face_recognition library. The system can:
+
+Detect faces in a live webcam feed.
+
+Identify known faces from a dataset.
+
+Label unknown faces and allow the user to enter a name to add them to the dataset in real-time.
+
+Draw rectangles around faces with names displayed on the video feed.
+
+This allows for self-learning face recognition where new faces can be added dynamically.
+
+Features
+
+Real-time face detection and recognition using a webcam.
+
+Unknown faces are highlighted and users can assign names.
+
+Automatically stores new face images and updates the recognition dataset.
+
+Displays labeled rectangles around all detected faces.
+
+Press 'q' to quit the application.
+
+Libraries and Models Used
+
+Python 3.10+
+
+OpenCV (cv2): Used for accessing the webcam, displaying video, and drawing rectangles.
+
+face_recognition: Provides face detection and encoding.
+
+Internally uses dlib's CNN/HoG-based face detection and ResNet-encoded embeddings.
+
+Supports comparing face encodings to identify known faces.
+
+NumPy: For array operations and handling image data.
+
+OS module: To manage the dataset folder and files.
+
+How the Code Works
+
+Dataset Setup:
+
+A folder named faces stores images of known people.
+
+Each image is named after the person (e.g., John.jpg).
+
+Load Known Faces:
+
+The code loads all images in the faces folder.
+
+Converts each image into a 128-dimensional face encoding using face_recognition.face_encodings.
+
+Maintains a list of known_face_encodings and corresponding known_face_names.
+
+Start Webcam:
+
+The webcam feed is captured frame by frame using OpenCV.
+
+Each frame is converted from BGR (OpenCV format) to RGB (required by face_recognition).
+
+Face Detection and Recognition:
+
+Detects all faces in the current frame (face_recognition.face_locations).
+
+Encodes each detected face (face_recognition.face_encodings).
+
+Compares the encoding with known faces using face_recognition.compare_faces and face_recognition.face_distance.
+
+Assigns the correct name if matched, otherwise marks as "Unknown".
+
+Handling Unknown Faces:
+
+If a face is unknown, a popup shows the cropped face.
+
+The user is prompted to enter a name.
+
+The new face is saved to the faces folder, encoded, and added to the known faces list dynamically.
+
+Next frames recognize this new face immediately.
+
+Drawing Rectangles and Labels:
+
+Draws a red rectangle around each face.
+
+Displays the person's name (or "Unknown") below the rectangle.
+
+Exit:
+
+Press 'q' to exit the program gracefully.
+
+Releases the webcam and closes all OpenCV windows.
+
+Folder Structure
+Face-Recognition/
+│
+├── faces/                  # Folder storing face images
+│   ├── John.jpg
+│   ├── Alice.jpg
+│   └── ...
+│
+├── facerecognition.py      # Main Python script
+├── README.md               # Project documentation
+└── requirements.txt        # Required libraries
+
+Requirements
+
+Install the necessary Python libraries:
+
+pip install opencv-python
+pip install face-recognition
+pip install numpy
+
+
+Note: face-recognition depends on dlib. Ensure you have a compatible version installed:
+
+pip install dlib==19.24.2
+
+How to Run
+
+Open a terminal in the project directory.
+
+Run the script:
+
+python facerecognition.py
+
+
+Allow webcam access if prompted.
+
+If unknown faces appear, enter the name when prompted.
+
+Press 'q' to quit the program.
+
+Notes
+
+Ensure good lighting for accurate face detection.
+
+Keep the camera steady to avoid blurry frames.
+
+The system works best when faces are frontal and clearly visible.
