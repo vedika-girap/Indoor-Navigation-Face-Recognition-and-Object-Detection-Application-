@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "my-app",
+    "name": "eyra",
     "slug": "my-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,7 +16,14 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.anonymous.myapp"
     },
     "web": {
       "bundler": "metro",

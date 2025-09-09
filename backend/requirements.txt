@@ -1,0 +1,12 @@
+opencv-python
+face-recognition
+numpy
+dlib
+vosk== 0.3.45
+sounddevice== 0.5.2
+pyttsx3 ==2.99
+ultralytics== 8.3.194
+gTTS ==2.5.4
+playsound== 1.2.2
+fastapi
+uvicorn
