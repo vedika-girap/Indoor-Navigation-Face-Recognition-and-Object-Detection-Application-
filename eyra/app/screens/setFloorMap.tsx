@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, Image } from 'react-na
 import * as DocumentPicker from 'expo-document-picker';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigator/appNavigator';
+import Constants from 'expo-constants';
+const BACKEND_URL = Constants.backendUrl ;
 
 type SetFloorMapNavigationProp = NativeStackNavigationProp<RootStackParamList, 'SetFloorMap'>;
 
@@ -13,6 +15,7 @@ interface SetFloorMapProps {
 export default function SetFloorMap({ navigation }: SetFloorMapProps) {
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileUri, setFileUri] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const pickDocument = async () => {
     try {
@@ -26,9 +29,6 @@ export default function SetFloorMap({ navigation }: SetFloorMapProps) {
         setFileName(file.name);
         setFileUri(file.uri);
         Alert.alert('File selected:', file.name);
-
-        // Uncomment to upload after pick
-        // await uploadFile(file.uri, file.name);
       } else {
         console.log('User cancelled document picking');
       }
@@ -38,8 +38,17 @@ export default function SetFloorMap({ navigation }: SetFloorMapProps) {
     }
   };
 
-  const uploadFile = async (fileUri: string, fileName: string) => {
+  // Upload selected image to backend for processing
+  const uploadFile = async () => {
+    if (!fileUri || !fileName) {
+      Alert.alert('No file selected', 'Please select a map image before uploading.');
+      return;
+    }
+
+    setUploading(true);
+
     try {
+      // Fetch local file as blob
       const response = await fetch(fileUri);
       const blob = await response.blob();
 
@@ -47,15 +56,14 @@ export default function SetFloorMap({ navigation }: SetFloorMapProps) {
       formData.append('file', {
         uri: fileUri,
         name: fileName,
-        type: blob.type || 'application/octet-stream',
+        type: blob.type || 'image/jpeg',
       } as any);
 
-      const uploadResponse = await fetch('https://your-backend-endpoint/upload', {
+      // Replace with your actual backend URL
+      const uploadResponse = await fetch(`${BACKEND_URL}/upload_floor_map`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
         body: formData,
+        // Do NOT set Content-Type header; fetch sets it automatically for multipart/form-data
       });
 
       const result = await uploadResponse.json();
@@ -63,6 +71,8 @@ export default function SetFloorMap({ navigation }: SetFloorMapProps) {
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       Alert.alert('Upload Error', message);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -70,66 +80,135 @@ export default function SetFloorMap({ navigation }: SetFloorMapProps) {
     <View style={styles.container}>
       <Text style={styles.header}>Set Floor Map</Text>
 
-      <TouchableOpacity style={styles.mapPlaceholder} onPress={pickDocument}>
+      <TouchableOpacity
+        style={styles.mapPlaceholder}
+        onPress={pickDocument}
+        accessibilityLabel="Select map image"
+        accessibilityHint="Opens file picker to select a map image"
+      >
         {fileUri ? (
-          <Image source={{ uri: fileUri }} style={styles.imagePreview} resizeMode="contain" />
+          <Image
+            source={{ uri: fileUri }}
+            style={styles.imagePreview}
+            resizeMode="contain"
+            accessible
+            accessibilityLabel="Selected map image preview"
+          />
         ) : (
-          <Text>Tap to select map file</Text>
+          <Text style={styles.tapText}>Tap to select map file</Text>
         )}
       </TouchableOpacity>
 
-      {fileName ? <Text style={styles.fileName}>{fileName}</Text> : null}
+      {fileName && <Text style={styles.fileName}>Selected File: {fileName}</Text>}
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('NormalMode')}>
-        <Text style={styles.buttonText}>navigate</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonRow}>
+        <TouchableOpacity
+          style={[styles.button, uploading && styles.buttonDisabled]}
+          onPress={uploadFile}
+          accessibilityRole="button"
+          accessibilityLabel="Upload selected map"
+          accessibilityHint="Uploads the selected map image to the backend"
+          disabled={uploading}
+        >
+          <Text style={styles.buttonText}>{uploading ? 'Uploading...' : 'Upload Map'}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('NormalMode')}
+          accessibilityRole="button"
+          accessibilityLabel="Navigate to Normal mode"
+          accessibilityHint="Navigates to the main screen"
+        >
+          <Text style={styles.buttonText}>Navigate</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
+const pastelColors = {
+  background: '#E8F0F2',
+  cardBackground: '#F8F2F7',
+  buttonBackground: '#A3D2CA',
+  buttonDisabledBackground: '#c5dacf',
+  textPrimary: '#20639B',
+  textSecondary: '#395B64',
+  placeholderBackground: '#D6DBD2',
+  borderColor: '#2F5061',
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EEF6C2',
+    backgroundColor: pastelColors.background,
     alignItems: 'center',
-    padding: 20,
+    padding: 30,
   },
   header: {
-    marginTop: 40,
-    fontSize: 22,
-    fontWeight: '500',
-    marginBottom: 20,
+    marginTop: 50,
+    fontSize: 28,
+    fontWeight: '700',
+    color: pastelColors.textPrimary,
+    marginBottom: 30,
   },
   mapPlaceholder: {
-    width: 250,
-    height: 180,
-    backgroundColor: '#D3D3D3',
-    marginBottom: 10,
+    width: 300,
+    height: 200,
+    backgroundColor: pastelColors.placeholderBackground,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: pastelColors.borderColor,
+    marginBottom: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  tapText: {
+    color: pastelColors.textSecondary,
+    fontSize: 18,
+    fontWeight: '600',
   },
   imagePreview: {
     width: '100%',
     height: '100%',
-    borderRadius: 4,
+    borderRadius: 18,
   },
   fileName: {
-    fontSize: 16,
-    marginBottom: 20,
+    fontSize: 18,
+    color: pastelColors.textSecondary,
+    marginBottom: 40,
     textAlign: 'center',
   },
+  buttonRow: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
   button: {
-    width: 200,
-    paddingVertical: 15,
-    backgroundColor: '#D3D3D3',
+    flex: 0.45,
+    paddingVertical: 18,
+    backgroundColor: pastelColors.buttonBackground,
+    borderRadius: 30,
     alignItems: 'center',
-    borderRadius: 4,
-    position: 'absolute',
-    bottom: 40,
+    justifyContent: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 5 },
+  },
+  buttonDisabled: {
+    backgroundColor: pastelColors.buttonDisabledBackground,
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#fff',
+    letterSpacing: 1,
   },
 });

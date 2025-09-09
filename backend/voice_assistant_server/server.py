@@ -3,7 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from ultralytics import YOLO
 import numpy as np
 import cv2
-import io
+import os
+from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
+from facerecognition import run_face_recognition, save_new_face
+import numpy as np
+
+from facerecognition import run_face_recognition  # import the face detection logic
 
 app = FastAPI()
 
@@ -16,8 +22,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load the YOLO model once at startup
-model = YOLO("best.pt")  # your fine-tuned model
+try:
+    model_path = os.path.join(os.path.dirname(__file__), '..', 'best.pt')
+    model = YOLO(model_path)
+except Exception as e:
+    print(f"Model load failed: {e}")
+    import sys
+    sys.exit(1)
+
+@app.get("/")
+def root():
+    return {"message": "Backend is up."}
 
 @app.post("/object_detection/")
 async def object_detection(file: UploadFile = File(...)):
@@ -40,3 +55,26 @@ async def object_detection(file: UploadFile = File(...)):
             })
 
     return {"detections": detections}
+
+
+@app.post("/face_recognition/")
+async def face_recognition(file: UploadFile = File(...)):
+    image_bytes = await file.read()
+    result = run_face_recognition(image_bytes)
+    return result
+
+@app.post("/face_save/")
+async def face_save(
+    file: UploadFile = File(...),
+    label: str = Form(...)
+):
+    image_bytes = await file.read()
+    # Here you expect label and bounding box in the request, for simplicity assume full image
+    # For bounding box, you can modify to send JSON with bounds or multiple faces
+    
+    # As a basic example save full image with label
+    # For multiple faces or bounding box included, extend accordingly
+
+    # For demo: save full image as face (no cropping)
+    success = save_new_face(image_bytes, [0, 0, 10000, 10000], label)
+    return {"success": success, "message": "Face saved" if success else "Failed to save face"}

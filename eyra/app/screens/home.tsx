@@ -23,11 +23,17 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.Circle} onPress={() => navigation.navigate('MainMenu')}>
-        <Text style={styles.textStyles}>Eyra</Text>
+      <TouchableOpacity
+        style={styles.circle}
+        onPress={() => navigation.navigate('MainMenu')}
+        accessibilityRole="button"
+        accessibilityLabel="Eyra logo, navigate to Main Menu"
+        accessibilityHint="Tap to open Main Menu"
+      >
+        <Text style={styles.circleText}>Eyra</Text>
       </TouchableOpacity>
 
-      {BUTTONS.map((button) => (
+      {BUTTONS.map(button => (
         <TouchableOpacity
           key={button.label}
           style={styles.button}
@@ -37,6 +43,7 @@ export default function HomeScreen() {
           }}
           accessibilityLabel={button.label}
           accessibilityRole="button"
+          accessibilityHint={`Tap to ${button.label.toLowerCase()}`}
         >
           <Text style={styles.buttonText}>{button.label}</Text>
         </TouchableOpacity>
@@ -45,44 +52,59 @@ export default function HomeScreen() {
   );
 }
 
+const pastelColors = {
+  background: '#F0F4EF',
+  circleBackground: '#A0C1B8',
+  circleText: '#2C3E50',
+  buttonBackground: '#6A8E7F',
+  buttonShadow: '#52796F',
+  buttonText: '#ECF0F1',
+};
+
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
     flex: 1,
-    justifyContent:'center',
+    backgroundColor: pastelColors.background,
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 25,
   },
-  Circle: {
+  circle: {
     width: 200,
     height: 200,
     borderRadius: 100,
-    backgroundColor: '#D3ECA7',
+    backgroundColor: pastelColors.circleBackground,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 40,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 8,
   },
-  textStyles: {
-    fontSize: 24,
+  circleText: {
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#6f865cff',
+    color: pastelColors.circleText,
   },
   button: {
-    width: 250,
-    backgroundColor: '#6f865c',
-    paddingVertical: 15,
-    marginVertical: 10,
-    borderRadius: 8,
+    width: 260,
+    backgroundColor: pastelColors.buttonBackground,
+    paddingVertical: 18,
+    marginVertical: 12,
+    borderRadius: 30,
     alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowColor: pastelColors.buttonShadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    elevation: 8,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: '600',
+    color: pastelColors.buttonText,
+    fontSize: 20,
+    fontWeight: '700',
+    letterSpacing: 1,
   },
 });
