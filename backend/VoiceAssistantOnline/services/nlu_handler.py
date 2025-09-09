@@ -1,5 +1,5 @@
-def handle_intent(command: str) -> str:
-    cmd = command.lower()
+def handle_intent(command: str)->str:
+    cmd=command.lower()
     if "library" in cmd:
         return "locate_library"
     elif "washroom" in cmd or "toilet" in cmd or "restroom" in cmd:
@@ -12,4 +12,6 @@ def handle_intent(command: str) -> str:
         return "locate_staffroom"
     elif "help" in cmd or "what can you do" in cmd:
         return "help"
+    elif "exit" in cmd or "quit" in cmd:
+        return "quit"
     return "unknown"
