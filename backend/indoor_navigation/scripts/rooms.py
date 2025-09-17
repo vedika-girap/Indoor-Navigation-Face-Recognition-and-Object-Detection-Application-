@@ -1,0 +1,10 @@
+ROOMS = {
+    "CLASS 1": (150, 700),
+    "CLASS 2": (250, 700),
+    "CLASS 4": (850, 700),
+    "CLASS 5": (950, 700),
+    "SEMINAR ROOM": (200, 200),
+    "RESEARCH LABORATORY": (950, 250),
+    "INNOVATION CENTRE": (1100, 250),
+    "TOILET": (50, 500),
+}
