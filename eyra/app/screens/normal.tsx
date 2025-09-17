@@ -1,20 +1,70 @@
-import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import {
+  CameraCapturedPicture,
   CameraView,
   useCameraPermissions,
-  CameraCapturedPicture,
 } from "expo-camera";
 import Constants from "expo-constants";
+import React, { useEffect, useRef, useState } from "react";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from "../navigator/appNavigator";
+import * as Speech from 'expo-speech';
+import { voiceNavigationService, createNavigationCommands } from '../services/voiceNavigation';
 
-const BACKEND_URL = Constants.manifest?.extra?.backendUrl || "http://localhost:8000";
+type NormalModeNavigationProp = NativeStackNavigationProp<RootStackParamList, 'NormalMode'>;
+
+const BACKEND_URL = Constants.backendUrl || "http://10.244.123.100:8000";
 
 export default function NormalModeScreen() {
+  const navigation = useNavigation<NormalModeNavigationProp>();
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView | null>(null);
   const [detections, setDetections] = useState<any[]>([]);
   const [faces, setFaces] = useState<any[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const voiceCommandsRef = useRef(createNavigationCommands(navigation));
+
+  // Setup voice commands for this screen
+  useFocusEffect(
+    React.useCallback(() => {
+      const screenSpecificCommands = [
+        {
+          commands: ['detect objects', 'scan', 'analyze', 'capture'],
+          action: () => captureAndAnalyzeFrame(),
+          description: 'Detect objects and faces'
+        },
+        {
+          commands: ['clear results', 'clear detections', 'reset'],
+          action: () => {
+            setDetections([]);
+            setFaces([]);
+            Speech.speak('Detection results cleared');
+          },
+          description: 'Clear detection results'
+        },
+        {
+          commands: ['voice navigation', 'activate voice'],
+          action: () => voiceNavigationService.startListening(),
+          description: 'Activate voice navigation'
+        }
+      ];
+
+      const commands = [
+        ...voiceCommandsRef.current.general,
+        ...screenSpecificCommands
+      ];
+      
+      voiceNavigationService.addCommands(commands);
+      
+      // Announce screen capabilities
+  Speech.speak('Camera detection mode. You can detect objects and faces, or use voice commands. Say "Ziya help" for available commands.');
+      
+      return () => {
+        voiceNavigationService.clearCommands();
+      };
+    }, [])
+  );
 
   useEffect(() => {
     if (!permission?.granted) {
