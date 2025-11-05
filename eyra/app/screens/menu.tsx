@@ -12,7 +12,7 @@ interface MainMenuProps {
 
 const MainMenu = ({ navigation }: MainMenuProps) => {
   useEffect(() => {
-    const options = ['set floor map', 'check your surrounding'];
+    const options = ['set floor map', 'manage floor maps', 'check your surrounding'];
     const speechText = `Available options are: ${options.join(', ')}. Please select an option.`;
     Speech.speak(speechText);
   }, []);
@@ -30,6 +30,32 @@ const MainMenu = ({ navigation }: MainMenuProps) => {
         accessibilityHint="Navigates to set floor map screen"
       >
         <Text style={styles.buttonText}>Set Floor Map</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          Speech.speak('Manage floor maps selected');
+          navigation.navigate('FloorMapManagement');
+        }}
+        accessibilityLabel="Manage floor maps"
+        accessibilityRole="button"
+        accessibilityHint="Navigates to floor map management screen"
+      >
+        <Text style={styles.buttonText}>Manage Floor{'\n'}Maps</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          Speech.speak('Process floor map selected');
+          navigation.navigate('ProcessFloorMap' as any);
+        }}
+        accessibilityLabel="Process floor map"
+        accessibilityRole="button"
+        accessibilityHint="Select a floor map to send to server for processing"
+      >
+        <Text style={styles.buttonText}>Process Floor{"\n"}Map</Text>
       </TouchableOpacity>
 
       <TouchableOpacity

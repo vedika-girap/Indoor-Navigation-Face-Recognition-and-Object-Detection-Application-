@@ -1,20 +1,22 @@
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
   CameraCapturedPicture,
   CameraView,
   useCameraPermissions,
 } from "expo-camera";
 import Constants from "expo-constants";
-import React, { useEffect, useRef, useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from "../navigator/appNavigator";
 import * as Speech from 'expo-speech';
-import { voiceNavigationService, createNavigationCommands } from '../services/voiceNavigation';
+import { useEffect, useRef, useState } from "react";
+import { Alert, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import type { RootStackParamList } from "../navigator/appNavigator";
+import { useWakeWordDetection, testWakeWord } from '../components/wakewordDetection';
+import { isNativeSpeechRecognitionAvailable } from '../libs/expoSpeechRecognitionShim';
+import { handleVoiceCommand } from '../utils/voiceCommandHandler';
 
 type NormalModeNavigationProp = NativeStackNavigationProp<RootStackParamList, 'NormalMode'>;
 
-const BACKEND_URL = Constants.backendUrl || "http://10.244.123.100:8000";
+const BACKEND_URL = Constants.backendUrl || "";
 
 export default function NormalModeScreen() {
   const navigation = useNavigation<NormalModeNavigationProp>();
@@ -23,48 +25,44 @@ export default function NormalModeScreen() {
   const [detections, setDetections] = useState<any[]>([]);
   const [faces, setFaces] = useState<any[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const voiceCommandsRef = useRef(createNavigationCommands(navigation));
+  const [faceNames, setFaceNames] = useState<string[]>([]);
+  const [savingFaces, setSavingFaces] = useState<boolean[]>([]);
+  const [lastPhotoUri, setLastPhotoUri] = useState<string | null>(null);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
 
-  // Setup voice commands for this screen
-  useFocusEffect(
-    React.useCallback(() => {
-      const screenSpecificCommands = [
-        {
-          commands: ['detect objects', 'scan', 'analyze', 'capture'],
-          action: () => captureAndAnalyzeFrame(),
-          description: 'Detect objects and faces'
-        },
-        {
-          commands: ['clear results', 'clear detections', 'reset'],
-          action: () => {
-            setDetections([]);
-            setFaces([]);
-            Speech.speak('Detection results cleared');
-          },
-          description: 'Clear detection results'
-        },
-        {
-          commands: ['voice navigation', 'activate voice'],
-          action: () => voiceNavigationService.startListening(),
-          description: 'Activate voice navigation'
+  // Voice command detection
+  const { isListening, isRecording, hasPermission: hasMicPermission } = useWakeWordDetection({
+    onWakeWordDetected: () => {
+      Speech.speak('hii Im ziya, how can I help you?');
+    },
+    onCommandDetected: async (command) => {
+      console.log('Command detected:', command);
+      
+      // Handle save face command
+      if (command.action === 'save_image' && command.params?.name) {
+        if (faces.length === 0) {
+          Speech.speak('No faces detected. Please detect faces first.');
+          return;
         }
-      ];
-
-      const commands = [
-        ...voiceCommandsRef.current.general,
-        ...screenSpecificCommands
-      ];
+        
+        // Save the first detected face with the voice-provided name
+        const faceIndex = 0;
+        setFaceNames(prev => {
+          const newNames = [...prev];
+          newNames[faceIndex] = command.params!.name!;
+          return newNames;
+        });
+        
+        // Wait a moment for state to update, then save
+        setTimeout(() => saveFace(faceIndex), 100);
+        return;
+      }
       
-      voiceNavigationService.addCommands(commands);
-      
-      // Announce screen capabilities
-  Speech.speak('Camera detection mode. You can detect objects and faces, or use voice commands. Say "Ziya help" for available commands.');
-      
-      return () => {
-        voiceNavigationService.clearCommands();
-      };
-    }, [])
-  );
+      // Handle navigation and other commands
+      await handleVoiceCommand(command, navigation as any);
+    },
+    enabled: voiceEnabled,
+  });
 
   useEffect(() => {
     if (!permission?.granted) {
@@ -73,7 +71,12 @@ export default function NormalModeScreen() {
   }, [permission, requestPermission]);
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    // Announce screen capabilities
+    Speech.speak('Camera detection mode. You can detect objects and faces.');
+  }, []);
+
+  useEffect(() => {
+    let intervalId: ReturnType<typeof setInterval> | undefined;
 
     // Start capturing frames every 1 second if permission granted
     if (permission?.granted) {
@@ -85,7 +88,9 @@ export default function NormalModeScreen() {
     }
 
     return () => {
-      clearInterval(intervalId);
+      if (intervalId !== undefined) {
+        clearInterval(intervalId);
+      }
     };
   }, [permission, isProcessing]);
 
@@ -123,12 +128,92 @@ export default function NormalModeScreen() {
         const faceResult = await faceResponse.json();
 
         setDetections(objResult.detections || []);
-        setFaces(faceResult.faces || []);
+        const newFaces = faceResult.faces || [];
+        setFaces(newFaces);
+        setLastPhotoUri(photo.uri); // Store the photo URI for later use when saving faces
+        // Initialize name and saving arrays for each face
+        setFaceNames(new Array(newFaces.length).fill(''));
+        setSavingFaces(new Array(newFaces.length).fill(false));
       } catch (error) {
         console.error("Error during capture and analysis:", error);
+        // More detailed error logging
+        if (error instanceof TypeError && error.message === 'Network request failed') {
+          console.error("Network request failed - check if backend server is running on:", BACKEND_URL);
+          Speech.speak("Unable to connect to detection server. Please check the connection.");
+        }
       } finally {
         setIsProcessing(false);
       }
+    }
+  };
+
+  const saveFace = async (faceIndex: number) => {
+    const faceName = faceNames[faceIndex];
+    if (!faceName.trim()) {
+      Alert.alert('Error', 'Please enter a name for the face');
+      Speech.speak('please enter a name for the face')
+      return;
+    }
+
+    if (!lastPhotoUri) {
+      Alert.alert('Error', 'No photo available. Please detect faces first.');
+      return;
+    }
+
+    // Set saving state for this face
+    setSavingFaces(prev => {
+      const newState = [...prev];
+      newState[faceIndex] = true;
+      return newState;
+    });
+
+    try {
+      const face = faces[faceIndex];
+      const formData = new FormData();
+      
+      // Use the stored photo URI from the last detection
+      formData.append('file', {
+        uri: lastPhotoUri,
+        type: 'image/jpeg',
+        name: 'face.jpg',
+      } as any);
+      
+      formData.append('label', faceName.trim());
+      formData.append('bounding_box', JSON.stringify(face.bounding_box));
+
+      const response = await fetch(`${BACKEND_URL}/face_save/`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Success', `Face for '${faceName}' saved successfully!`);
+        Speech.speak(`Face for ${faceName} saved successfully`);
+        
+        // Clear the name input for this face
+        setFaceNames(prev => {
+          const newNames = [...prev];
+          newNames[faceIndex] = '';
+          return newNames;
+        });
+      } else {
+        Alert.alert('Error', result.detail || 'Failed to save face');
+      }
+    } catch (error) {
+      console.error('Error saving face:', error);
+      Alert.alert('Error', 'Failed to save face. Please try again.');
+    } finally {
+      // Clear saving state for this face
+      setSavingFaces(prev => {
+        const newState = [...prev];
+        newState[faceIndex] = false;
+        return newState;
+      });
     }
   };
 
@@ -160,6 +245,90 @@ export default function NormalModeScreen() {
 
   return (
     <View style={styles.container}>
+      {/* Voice Status Indicator */}
+      <View style={styles.voiceStatusContainer}>
+        <View style={[styles.voiceIndicator, isListening && styles.voiceIndicatorActive]}>
+          <Text style={styles.voiceStatusText}>
+            {isListening ? (isRecording ? '🎤 Recording...' : '👂 Listening for "Ziya"...') : '🔇 Voice Off'}
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={styles.voiceToggleButton}
+          onPress={() => setVoiceEnabled(!voiceEnabled)}
+        >
+          <Text style={styles.voiceToggleText}>{voiceEnabled ? 'Disable' : 'Enable'} Voice</Text>
+        </TouchableOpacity>
+        <View style={{marginLeft:12, justifyContent:'center'}}>
+          <Text style={{fontSize:12, color:'#999'}}>{isNativeSpeechRecognitionAvailable ? 'Native speech available' : 'Using shim (no native recognition)'}</Text>
+        </View>
+      </View>
+
+      {/* Test Voice Command Button (Native only) */}
+      {Platform.OS !== 'web' && (
+        <View style={styles.testButtonContainer}>
+          <TouchableOpacity
+            style={styles.testButton}
+            onPress={() => {
+              Alert.alert(
+                'Test Voice Command',
+                'Choose a command to test:',
+                [
+                  {
+                    text: 'Save face as John',
+                    onPress: () => testWakeWord(
+                      () => Speech.speak('Yes?'),
+                      async (cmd) => {
+                        if (cmd.action === 'save_image' && cmd.params?.name) {
+                          if (faces.length === 0) {
+                            Speech.speak('No faces detected. Please detect faces first.');
+                            return;
+                          }
+                          const faceIndex = 0;
+                          setFaceNames(prev => {
+                            const newNames = [...prev];
+                            newNames[faceIndex] = cmd.params!.name!;
+                            return newNames;
+                          });
+                          setTimeout(() => saveFace(faceIndex), 100);
+                        } else {
+                          await handleVoiceCommand(cmd, navigation as any);
+                        }
+                      },
+                      'save face as John'
+                    )
+                  },
+                  {
+                    text: 'Navigate to menu',
+                    onPress: () => testWakeWord(
+                      () => Speech.speak('Yes?'),
+                      async (cmd) => await handleVoiceCommand(cmd, navigation as any),
+                      'navigate to menu'
+                    )
+                  },
+                  {
+                    text: 'Detect',
+                    onPress: () => testWakeWord(
+                      () => Speech.speak('Yes?'),
+                      async (cmd) => {
+                        if (cmd.action === 'detect') {
+                          await captureAndAnalyzeFrame();
+                        } else {
+                          await handleVoiceCommand(cmd, navigation as any);
+                        }
+                      },
+                      'detect'
+                    )
+                  },
+                  { text: 'Cancel', style: 'cancel' }
+                ]
+              );
+            }}
+          >
+            <Text style={styles.testButtonText}>🎤 Test Voice Command</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       <CameraView style={styles.cameraContainer} facing="back" ref={cameraRef} />
 
       <TouchableOpacity
@@ -197,10 +366,34 @@ export default function NormalModeScreen() {
               <Text style={styles.detectionsTitle}>Face Detections</Text>
               <ScrollView style={styles.scrollView}>
                 {faces.map((face, index) => (
-                  <View key={"face-" + index} style={styles.detectionBox}>
-                    <Text style={styles.detectionLabel}>{face.name}</Text>
-                    {/* Optionally show bounding box position */}
-                    <Text>{face.bounding_box.join(", ")}</Text>
+                  <View key={"face-" + index} style={styles.faceDetectionBox}>
+                    <View style={styles.faceInfo}>
+                      <Text style={styles.detectionLabel}>{face.name || `Unknown Face ${index + 1}`}</Text>
+                      <Text style={styles.boundingBoxText}>{face.bounding_box.join(", ")}</Text>
+                    </View>
+                    <View style={styles.faceSaveSection}>
+                      <TextInput
+                        style={styles.nameInput}
+                        placeholder="Enter name"
+                        placeholderTextColor="#7BA7A5"
+                        value={faceNames[index] || ''}
+                        onChangeText={(text) => setFaceNames(prev => {
+                          const arr = [...prev];
+                          arr[index] = text;
+                          return arr;
+                        })}
+                        editable={!savingFaces[index]}
+                      />
+                      <TouchableOpacity
+                        onPress={() => saveFace(index)}
+                        disabled={savingFaces[index] || !faceNames[index]?.trim()}
+                        style={[styles.saveFaceButton, (savingFaces[index] || !faceNames[index]?.trim()) && styles.saveFaceButtonDisabled]}
+                      >
+                        <Text style={styles.saveFaceButtonText}>
+                          {savingFaces[index] ? 'Saving...' : 'Save'}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 ))}
               </ScrollView>
@@ -254,6 +447,62 @@ const styles = StyleSheet.create({
     color: pastelColors.buttonText,
     fontSize: 20,
     fontWeight: "700",
+  },
+  voiceStatusContainer: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    right: 10,
+    zIndex: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  voiceIndicator: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    flex: 1,
+    marginRight: 8,
+  },
+  voiceIndicatorActive: {
+    backgroundColor: 'rgba(75, 230, 218, 0.9)',
+  },
+  voiceStatusText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: pastelColors.detectionLabelText,
+  },
+  voiceToggleButton: {
+    backgroundColor: pastelColors.buttonBackground,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  voiceToggleText: {
+    color: pastelColors.buttonText,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  testButtonContainer: {
+    position: 'absolute',
+    top: 60,
+    left: 10,
+    right: 10,
+    zIndex: 10,
+  },
+  testButton: {
+    backgroundColor: 'rgba(58, 175, 169, 0.9)',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+  testButtonText: {
+    color: pastelColors.buttonText,
+    fontSize: 14,
+    fontWeight: '700',
   },
   detectionsContainer: {
     position: "absolute",
@@ -322,6 +571,53 @@ const styles = StyleSheet.create({
   permissionButtonText: {
     color: pastelColors.permissionButtonText,
     fontSize: 18,
+    fontWeight: "600",
+  },
+  faceDetectionBox: {
+    backgroundColor: pastelColors.detectionBoxBackground,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: "#C1E3E1",
+  },
+  faceInfo: {
+    marginBottom: 8,
+  },
+  boundingBoxText: {
+    fontSize: 12,
+    color: pastelColors.detectionConfidenceText,
+    opacity: 0.7,
+  },
+  faceSaveSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  nameInput: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: "#C1E3E1",
+    fontSize: 14,
+  },
+  saveFaceButton: {
+    backgroundColor: pastelColors.buttonBackground,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 6,
+    minWidth: 80,
+    alignItems: "center",
+  },
+  saveFaceButtonDisabled: {
+    backgroundColor: pastelColors.buttonDisabledBackground,
+  },
+  saveFaceButtonText: {
+    color: pastelColors.buttonText,
+    fontSize: 12,
     fontWeight: "600",
   },
 });

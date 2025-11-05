@@ -10,3 +10,4 @@ gTTS ==2.5.4
 playsound== 1.2.2
 fastapi
 uvicorn
+python-multipart

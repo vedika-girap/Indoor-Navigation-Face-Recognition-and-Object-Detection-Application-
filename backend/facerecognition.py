@@ -47,7 +47,7 @@ def run_face_recognition(image_bytes: bytes):
             "name": name,
             "bounding_box": [int(top), int(right), int(bottom), int(left)]
         })
-
+        
     return {"faces": faces}
 
 def save_new_face(image_bytes: bytes, bounding_box: list, label: str):

@@ -6,6 +6,9 @@ import numpy as np
 import cv2
 import os
 import json
+import base64
+import uuid
+from typing import List, Dict, Any
 
 def _calculate_face_area(bounding_box):
     """Calculate the area of a face bounding box [top, right, bottom, left]"""
@@ -27,7 +30,7 @@ app.add_middleware(
 
 try:
     model_path = os.path.join(os.path.dirname(__file__), '..', 'best.pt')
-    model = YOLO('best.pt')
+    model = YOLO('yolo11n.pt')
 except Exception as e:
     print(f"Model load failed: {e}")
     import sys
@@ -56,7 +59,6 @@ async def object_detection(file: UploadFile = File(...)):
                 "confidence": confidence,
                 "bbox": [x1, y1, x2, y2]
             })
-
     return {"detections": detections}
 
 
@@ -75,12 +77,10 @@ async def face_save(
 ):
     """
     Save a new face for training the recognition system.
-    
     Args:
         file: Image file containing the face
         label: Name/label for the person
         bounding_box: JSON string with face coordinates [top, right, bottom, left]
-    
     Returns:
         Success status and message
     """
@@ -376,8 +376,540 @@ async def list_faces():
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Error retrieving faces: {str(e)}"
+            detail=f"Error reloading faces: {str(e)}"
         )
+
+
+# ==================== FLOOR MAP MANAGEMENT ====================
+# Store floor maps metadata (WhatsApp-style: files stay on device)
+
+# Directory for floor map metadata
+FLOOR_MAPS_DIR = "floor_maps_metadata"
+os.makedirs(FLOOR_MAPS_DIR, exist_ok=True)
+
+def get_user_maps_file(user_id: str) -> str:
+    """Get the JSON file path for a user's floor maps metadata"""
+    return os.path.join(FLOOR_MAPS_DIR, f"{user_id}_maps.json")
+
+def load_user_maps(user_id: str) -> dict:
+    """Load user's floor maps metadata from JSON file"""
+    maps_file = get_user_maps_file(user_id)
+    if os.path.exists(maps_file):
+        try:
+            with open(maps_file, 'r') as f:
+                return json.load(f)
+        except:
+            return {"maps": []}
+    return {"maps": []}
+
+def save_user_maps(user_id: str, maps_data: dict):
+    """Save user's floor maps metadata to JSON file"""
+    maps_file = get_user_maps_file(user_id)
+    with open(maps_file, 'w') as f:
+        json.dump(maps_data, f, indent=2)
+
+
+@app.post("/floor_maps/add")
+async def add_floor_map(
+    user_id: str = Form(...),
+    map_id: str = Form(...),
+    map_name: str = Form(...),
+    building_name: str = Form(None),
+    floor_number: str = Form(None),
+    local_uri: str = Form(...),
+    metadata: str = Form("{}")
+):
+    """
+    Add a floor map metadata entry for a user.
+    The actual image stays on the user's device (WhatsApp-style).
+    
+    Args:
+        user_id: Unique identifier for the user
+        map_id: Unique identifier for this map
+        map_name: Display name for the map
+        building_name: Optional building name
+        floor_number: Optional floor number/name
+        local_uri: Local file URI on user's device (e.g., file:///data/.../map.png)
+        metadata: Optional JSON string with additional data (dimensions, created_at, etc.)
+    
+    Returns:
+        Success status and map details
+    """
+    try:
+        # Validate required fields
+        if not user_id or not user_id.strip():
+            raise HTTPException(status_code=400, detail="user_id is required")
+        if not map_id or not map_id.strip():
+            raise HTTPException(status_code=400, detail="map_id is required")
+        if not map_name or not map_name.strip():
+            raise HTTPException(status_code=400, detail="map_name is required")
+        if not local_uri or not local_uri.strip():
+            raise HTTPException(status_code=400, detail="local_uri is required")
+        
+        # Parse metadata
+        try:
+            metadata_obj = json.loads(metadata) if metadata else {}
+        except json.JSONDecodeError:
+            raise HTTPException(status_code=400, detail="Invalid metadata JSON format")
+        
+        # Load existing maps
+        user_data = load_user_maps(user_id)
+        
+        # Check if map_id already exists
+        existing_map_index = next(
+            (i for i, m in enumerate(user_data["maps"]) if m["map_id"] == map_id),
+            None
+        )
+        
+        # Create map entry
+        map_entry = {
+            "map_id": map_id.strip(),
+            "map_name": map_name.strip(),
+            "building_name": building_name.strip() if building_name else None,
+            "floor_number": floor_number.strip() if floor_number else None,
+            "local_uri": local_uri.strip(),
+            "metadata": metadata_obj,
+            "added_at": metadata_obj.get("added_at", None),
+            "last_accessed": None,
+            "is_active": True
+        }
+        
+        if existing_map_index is not None:
+            # Update existing map
+            user_data["maps"][existing_map_index] = map_entry
+            action = "updated"
+        else:
+            # Add new map
+            user_data["maps"].append(map_entry)
+            action = "added"
+        
+        # Save updated maps
+        save_user_maps(user_id, user_data)
+        
+        return {
+            "success": True,
+            "message": f"Floor map '{map_name}' {action} successfully",
+            "action": action,
+            "map": map_entry,
+            "total_maps": len(user_data["maps"])
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error adding floor map: {str(e)}"
+        )
+
+
+@app.get("/floor_maps/list/{user_id}")
+async def list_floor_maps(user_id: str):
+    """
+    Get all floor maps for a user.
+    
+    Args:
+        user_id: Unique identifier for the user
+    
+    Returns:
+        List of floor map metadata
+    """
+    try:
+        if not user_id or not user_id.strip():
+            raise HTTPException(status_code=400, detail="user_id is required")
+        
+        user_data = load_user_maps(user_id)
+        
+        # Filter only active maps
+        active_maps = [m for m in user_data["maps"] if m.get("is_active", True)]
+        
+        return {
+            "success": True,
+            "user_id": user_id,
+            "maps": active_maps,
+            "total_maps": len(active_maps)
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error listing floor maps: {str(e)}"
+        )
+
+
+@app.get("/floor_maps/get/{user_id}/{map_id}")
+async def get_floor_map(user_id: str, map_id: str):
+    """
+    Get a specific floor map metadata for a user.
+    
+    Args:
+        user_id: Unique identifier for the user
+        map_id: Unique identifier for the map
+    
+    Returns:
+        Floor map metadata
+    """
+    try:
+        if not user_id or not user_id.strip():
+            raise HTTPException(status_code=400, detail="user_id is required")
+        if not map_id or not map_id.strip():
+            raise HTTPException(status_code=400, detail="map_id is required")
+        
+        user_data = load_user_maps(user_id)
+        
+        # Find the map
+        floor_map = next(
+            (m for m in user_data["maps"] if m["map_id"] == map_id and m.get("is_active", True)),
+            None
+        )
+        
+        if not floor_map:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Floor map with id '{map_id}' not found"
+            )
+        
+        # Update last accessed time
+        from datetime import datetime
+        floor_map["last_accessed"] = datetime.now().isoformat()
+        save_user_maps(user_id, user_data)
+        
+        return {
+            "success": True,
+            "map": floor_map
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error getting floor map: {str(e)}"
+        )
+
+
+@app.delete("/floor_maps/delete/{user_id}/{map_id}")
+async def delete_floor_map(user_id: str, map_id: str):
+    """
+    Delete (soft delete) a floor map for a user.
+    Sets is_active to False instead of removing the entry.
+    
+    Args:
+        user_id: Unique identifier for the user
+        map_id: Unique identifier for the map
+    
+    Returns:
+        Success status
+    """
+    try:
+        if not user_id or not user_id.strip():
+            raise HTTPException(status_code=400, detail="user_id is required")
+        if not map_id or not map_id.strip():
+            raise HTTPException(status_code=400, detail="map_id is required")
+        
+        user_data = load_user_maps(user_id)
+        
+        # Find the map
+        map_index = next(
+            (i for i, m in enumerate(user_data["maps"]) if m["map_id"] == map_id),
+            None
+        )
+        
+        if map_index is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Floor map with id '{map_id}' not found"
+            )
+        
+        # Soft delete - mark as inactive
+        user_data["maps"][map_index]["is_active"] = False
+        user_data["maps"][map_index]["deleted_at"] = __import__('datetime').datetime.now().isoformat()
+        
+        save_user_maps(user_id, user_data)
+        
+        return {
+            "success": True,
+            "message": f"Floor map '{user_data['maps'][map_index]['map_name']}' deleted successfully",
+            "remaining_maps": len([m for m in user_data["maps"] if m.get("is_active", True)])
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error deleting floor map: {str(e)}"
+        )
+
+
+@app.delete("/floor_maps/delete_permanent/{user_id}/{map_id}")
+async def delete_floor_map_permanent(user_id: str, map_id: str):
+    """
+    Permanently delete a floor map metadata entry.
+    Note: This only removes the server metadata. The user should delete
+    the actual file from their device separately.
+    
+    Args:
+        user_id: Unique identifier for the user
+        map_id: Unique identifier for the map
+    
+    Returns:
+        Success status with instructions to delete local file
+    """
+    try:
+        if not user_id or not user_id.strip():
+            raise HTTPException(status_code=400, detail="user_id is required")
+        if not map_id or not map_id.strip():
+            raise HTTPException(status_code=400, detail="map_id is required")
+        
+        user_data = load_user_maps(user_id)
+        
+        # Find and remove the map
+        original_count = len(user_data["maps"])
+        map_to_delete = next(
+            (m for m in user_data["maps"] if m["map_id"] == map_id),
+            None
+        )
+        
+        if not map_to_delete:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Floor map with id '{map_id}' not found"
+            )
+        
+        # Remove from list
+        user_data["maps"] = [m for m in user_data["maps"] if m["map_id"] != map_id]
+        
+        save_user_maps(user_id, user_data)
+        
+        return {
+            "success": True,
+            "message": f"Floor map '{map_to_delete['map_name']}' permanently deleted from server",
+            "note": "Remember to delete the local file from your device",
+            "local_uri": map_to_delete["local_uri"],
+            "remaining_maps": len(user_data["maps"])
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error permanently deleting floor map: {str(e)}"
+        )
+
+
+@app.post("/floor_maps/update_metadata/{user_id}/{map_id}")
+async def update_floor_map_metadata(
+    user_id: str,
+    map_id: str,
+    map_name: str = Form(None),
+    building_name: str = Form(None),
+    floor_number: str = Form(None),
+    metadata: str = Form(None)
+):
+    """
+    Update floor map metadata without changing the local file reference.
+    
+    Args:
+        user_id: Unique identifier for the user
+        map_id: Unique identifier for the map
+        map_name: Optional new display name
+        building_name: Optional new building name
+        floor_number: Optional new floor number
+        metadata: Optional JSON string with additional data to merge
+    
+    Returns:
+        Success status and updated map
+    """
+    try:
+        if not user_id or not user_id.strip():
+            raise HTTPException(status_code=400, detail="user_id is required")
+        if not map_id or not map_id.strip():
+            raise HTTPException(status_code=400, detail="map_id is required")
+        
+        user_data = load_user_maps(user_id)
+        
+        # Find the map
+        map_index = next(
+            (i for i, m in enumerate(user_data["maps"]) if m["map_id"] == map_id),
+            None
+        )
+        
+        if map_index is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Floor map with id '{map_id}' not found"
+            )
+        
+        floor_map = user_data["maps"][map_index]
+        
+        # Update fields if provided
+        if map_name:
+            floor_map["map_name"] = map_name.strip()
+        if building_name is not None:
+            floor_map["building_name"] = building_name.strip() if building_name else None
+        if floor_number is not None:
+            floor_map["floor_number"] = floor_number.strip() if floor_number else None
+        
+        # Merge metadata if provided
+        if metadata:
+            try:
+                new_metadata = json.loads(metadata)
+                if floor_map.get("metadata"):
+                    floor_map["metadata"].update(new_metadata)
+                else:
+                    floor_map["metadata"] = new_metadata
+            except json.JSONDecodeError:
+                raise HTTPException(status_code=400, detail="Invalid metadata JSON format")
+        
+        # Update timestamp
+        floor_map["updated_at"] = __import__('datetime').datetime.now().isoformat()
+        
+        save_user_maps(user_id, user_data)
+        
+        return {
+            "success": True,
+            "message": "Floor map metadata updated successfully",
+            "map": floor_map
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error updating floor map metadata: {str(e)}"
+        )
+
+
+@app.get("/floor_maps/stats/{user_id}")
+async def get_floor_maps_stats(user_id: str):
+    """
+    Get statistics about a user's floor maps.
+    
+    Args:
+        user_id: Unique identifier for the user
+    
+    Returns:
+        Statistics including total maps, buildings, floors, etc.
+    """
+    try:
+        if not user_id or not user_id.strip():
+            raise HTTPException(status_code=400, detail="user_id is required")
+        
+        user_data = load_user_maps(user_id)
+        active_maps = [m for m in user_data["maps"] if m.get("is_active", True)]
+        
+        # Calculate statistics
+        buildings = set()
+        floors = set()
+        
+        for map_entry in active_maps:
+            if map_entry.get("building_name"):
+                buildings.add(map_entry["building_name"])
+            if map_entry.get("floor_number"):
+                floors.add(map_entry["floor_number"])
+        
+        return {
+            "success": True,
+            "user_id": user_id,
+            "stats": {
+                "total_maps": len(active_maps),
+                "total_deleted": len(user_data["maps"]) - len(active_maps),
+                "unique_buildings": len(buildings),
+                "unique_floors": len(floors),
+                "buildings": sorted(list(buildings)),
+                "floors": sorted(list(floors))
+            }
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error getting floor maps stats: {str(e)}"
+        )
+
+
+@app.post("/floor_maps/process")
+async def process_floor_map(file: UploadFile = File(...), user_id: str = Form(None), map_id: str = Form(None)):
+    """
+    Process an uploaded floor map image to a simplified black-and-white map and detect room-like regions.
+    Returns a base64-encoded PNG of the processed map plus simple labeled regions.
+    """
+    try:
+        image_bytes = await file.read()
+        if not image_bytes:
+            raise HTTPException(status_code=400, detail="Empty file")
+
+        # Decode image
+        nparr = np.frombuffer(image_bytes, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        if img is None:
+            raise HTTPException(status_code=400, detail="Unable to decode image")
+
+        # Resize if very large (speed)
+        h, w = img.shape[:2]
+        max_dim = 1600
+        if max(h, w) > max_dim:
+            scale = max_dim / max(h, w)
+            img = cv2.resize(img, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_AREA)
+
+        # Convert to grayscale and threshold to produce black-and-white map
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        blur = cv2.GaussianBlur(gray, (5, 5), 0)
+        # Use adaptive threshold to handle varying lighting
+        thresh = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                       cv2.THRESH_BINARY_INV, 15, 7)
+
+        # Morphological ops to clean up
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+        closed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel, iterations=2)
+
+        # Find contours (rooms/areas)
+        contours, _ = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        labels: List[Dict[str, Any]] = []
+        processed = cv2.cvtColor(closed, cv2.COLOR_GRAY2BGR)
+
+        min_area = (img.shape[0] * img.shape[1]) * 0.0015  # heuristic
+        region_idx = 1
+        for cnt in contours:
+            area = cv2.contourArea(cnt)
+            if area < min_area:
+                continue
+            x, y, ww, hh = cv2.boundingRect(cnt)
+            label_text = f"room_{region_idx}"
+            # Draw rectangle and label on processed image (white background, black regions remain)
+            cv2.rectangle(processed, (x, y), (x + ww, y + hh), (0, 0, 255), 2)
+            cv2.putText(processed, label_text, (x + 4, y + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+
+            labels.append({
+                "label": label_text,
+                "bbox": [int(y), int(x + ww), int(y + hh), int(x)],  # top, right, bottom, left
+                "area": float(area)
+            })
+            region_idx += 1
+
+        # Encode processed image to PNG and base64
+        _, png = cv2.imencode('.png', processed)
+        b64 = base64.b64encode(png.tobytes()).decode('utf-8')
+
+        return {
+            "success": True,
+            "processed_image_base64": b64,
+            "labels": labels,
+            "original_size": {"width": w, "height": h}
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Processing error: {str(e)}")
 
 
 @app.delete("/faces/{label}")

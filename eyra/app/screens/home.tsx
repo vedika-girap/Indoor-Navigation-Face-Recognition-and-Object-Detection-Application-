@@ -1,17 +1,16 @@
-import React, { useEffect, useRef } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from "../navigator/appNavigator";
 import * as Speech from 'expo-speech';
-import { voiceNavigationService, createNavigationCommands } from '../services/voiceNavigation';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
 const BUTTONS = [
   { 
     label: "Indoor Navigation", 
-    action: (navigation: HomeScreenNavigationProp) => navigation.navigate('IndoorNavigation'),
+    // action: (navigation: HomeScreenNavigationProp) => navigation.navigate('IndoorNavigation'),
     type: 'navigation' as const
   },
   { 
@@ -23,42 +22,14 @@ const BUTTONS = [
     label: "Normal Mode", 
     action: (navigation: HomeScreenNavigationProp) => navigation.navigate('NormalMode'),
     type: 'navigation' as const
-  },
-  { 
-    label: "Voice Navigation", 
-    action: () => voiceNavigationService.startListening(),
-    type: 'voice' as const
-  },
-  { 
-    label: "Voice Test", 
-    action: (navigation: HomeScreenNavigationProp) => navigation.navigate('VoiceTest'),
-    type: 'navigation' as const
   }
 ];
 
 export default function HomeScreen() {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const voiceCommandsRef = useRef(createNavigationCommands(navigation));
-
-  // Setup voice commands when screen is focused
-  useFocusEffect(
-    React.useCallback(() => {
-      const commands = [
-        ...voiceCommandsRef.current.home,
-        ...voiceCommandsRef.current.general
-      ];
-      
-      voiceNavigationService.addCommands(commands);
-      
-      return () => {
-        voiceNavigationService.clearCommands();
-      };
-    }, [])
-  );
-
   useEffect(() => {
     const names = BUTTONS.map(b => b.label).join(", ");
-  Speech.speak(`Welcome to Ziya. Available options are: ${names}. You can also use voice commands by saying "Ziya" followed by your command.`);
+    Speech.speak(`Welcome to Ziya. Available options are: ${names}.`);
   }, []);
 
   return (
@@ -73,55 +44,23 @@ export default function HomeScreen() {
       <Text style={styles.circleText}>Ziya</Text>
        </TouchableOpacity>
 
-       {/* Voice Status Indicator */}
-       <View style={styles.voiceStatus}>
-         <Text style={styles.voiceStatusText}>
-           Voice Navigation: {voiceNavigationService.getListeningStatus() ? 'Active' : 'Ready'}
-         </Text>
-       </View>
-
       {BUTTONS.map(button => (
         <TouchableOpacity
           key={button.label}
-          style={[
-            styles.button, 
-            button.type === "voice" && styles.voiceButton
-          ]}
+          style={styles.button}
           onPress={() => {
             Speech.speak(`${button.label} selected`);
-            if (button.type === 'voice') {
-              (button.action as () => void)();
-            } else {
-              (button.action as (nav: HomeScreenNavigationProp) => void)(navigation);
-            }
+            (button.action as (nav: HomeScreenNavigationProp) => void)(navigation);
           }}
           accessibilityLabel={button.label}
           accessibilityRole="button"
           accessibilityHint={`Tap to ${button.label.toLowerCase()}`}
         >
-          <Text style={[
-            styles.buttonText,
-            button.type === "voice" && styles.voiceButtonText
-          ]}>
+          <Text style={styles.buttonText}>
             {button.label}
           </Text>
         </TouchableOpacity>
       ))}
-
-      {/* Voice Commands Help */}
-      <TouchableOpacity
-        style={styles.helpButton}
-        onPress={() => {
-          Alert.alert(
-            'Voice Commands Help',
-            'Say "Ziya" followed by:\n\n• "Indoor navigation" - Open navigation\n• "Main menu" - Open menu\n• "Normal mode" - Open camera mode\n• "Help" - List all commands\n• "Go back" - Previous screen',
-            [{ text: 'Got it!' }]
-          );
-        }}
-        accessibilityLabel="Voice commands help"
-      >
-        <Text style={styles.helpButtonText}>Voice Commands Help</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -133,12 +72,6 @@ const pastelColors = {
   buttonBackground: '#6A8E7F',
   buttonShadow: '#52796F',
   buttonText: '#ECF0F1',
-  voiceButtonBackground: '#4A90E2',
-  voiceButtonText: '#FFFFFF',
-  helpButtonBackground: '#E8F4FD',
-  helpButtonText: '#2C3E50',
-  voiceStatusBackground: '#FFF3CD',
-  voiceStatusText: '#856404',
 };
 
 const styles = StyleSheet.create({
@@ -186,46 +119,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     letterSpacing: 1,
-  },
-  voiceStatus: {
-    backgroundColor: pastelColors.voiceStatusBackground,
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#D1ECF1',
-  },
-  voiceStatusText: {
-    color: pastelColors.voiceStatusText,
-    fontSize: 14,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  voiceButton: {
-    backgroundColor: pastelColors.voiceButtonBackground,
-    borderColor: '#357ABD',
-  },
-  voiceButtonText: {
-    color: pastelColors.voiceButtonText,
-    fontSize: 20,
-    fontWeight: '700',
-    letterSpacing: 1,
-  },
-  helpButton: {
-    backgroundColor: pastelColors.helpButtonBackground,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 25,
-    marginTop: 20,
-    borderWidth: 1,
-    borderColor: '#B8DAFF',
-    elevation: 2,
-  },
-  helpButtonText: {
-    color: pastelColors.helpButtonText,
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
   },
 });

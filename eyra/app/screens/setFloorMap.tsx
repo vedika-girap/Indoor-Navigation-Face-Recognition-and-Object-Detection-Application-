@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
-import * as DocumentPicker from 'expo-document-picker';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../navigator/appNavigator';
 import Constants from 'expo-constants';
+import * as DocumentPicker from 'expo-document-picker';
+import * as Speech from 'expo-speech';
+import { useState } from 'react';
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import type { RootStackParamList } from '../navigator/appNavigator';
 const BACKEND_URL = Constants.backendUrl ;
 
 type SetFloorMapNavigationProp = NativeStackNavigationProp<RootStackParamList, 'SetFloorMap'>;

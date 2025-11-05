@@ -10,11 +10,10 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from "../navigator/appNavigator";
 import * as Speech from 'expo-speech';
-import { voiceNavigationService, createNavigationCommands } from '../services/voiceNavigation';
 
 type IndoorNavigationProp = NativeStackNavigationProp<RootStackParamList, 'IndoorNavigation'>;
 
@@ -178,44 +177,6 @@ export default function IndoorNavigation() {
   const [modalVisible, setModalVisible] = useState(false);
   const [newMapName, setNewMapName] = useState('');
   const [newMapUri, setNewMapUri] = useState<string | null>(null);
-  const voiceCommandsRef = useRef(createNavigationCommands(navigation));
-
-  // Setup voice commands for this screen
-  useFocusEffect(
-    React.useCallback(() => {
-      const screenSpecificCommands = [
-        {
-          commands: ['add floor map', 'add map', 'new map'],
-          action: () => setModalVisible(true),
-          description: 'Add new floor map'
-        },
-        {
-          commands: ['select map', 'choose map', 'pick map'],
-          action: () => Speech.speak('Please tap on a map to select it'),
-          description: 'Select a floor map'
-        },
-        {
-          commands: ['voice navigation', 'activate voice'],
-          action: () => voiceNavigationService.startListening(),
-          description: 'Activate voice navigation'
-        }
-      ];
-
-      const commands = [
-        ...voiceCommandsRef.current.general,
-        ...screenSpecificCommands
-      ];
-      
-      voiceNavigationService.addCommands(commands);
-      
-      // Announce screen capabilities
-  Speech.speak('Indoor Navigation screen. You can add floor maps, select maps, or use voice commands. Say "Ziya help" for available commands.');
-      
-      return () => {
-        voiceNavigationService.clearCommands();
-      };
-    }, [])
-  );
 
   // Image Picker Handler using expo-image-picker
   const pickImage = async () => {
