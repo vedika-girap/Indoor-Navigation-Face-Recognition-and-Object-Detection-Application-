@@ -1,0 +1,529 @@
+path: R:/mp/od
+train: images/train
+val: images/validation
+test: images/test
+names:
+- Person
+- Tree
+- Window
+- Scoreboard
+- Billboard
+- Man
+- Sports uniform
+- Train
+- Wheel
+- Human face
+- Car
+- Tire
+- Vehicle registration plate
+- Toy
+- Plant
+- Dragonfly
+- Human hand
+- Skirt
+- Building
+- Clothing
+- Mammal
+- Shotgun
+- Trousers
+- Human body
+- Human leg
+- Footwear
+- Human arm
+- Helmet
+- Human beard
+- Sunglasses
+- Goggles
+- Woman
+- Human hair
+- Glasses
+- House
+- Boy
+- Chair
+- Human ear
+- Table
+- Girl
+- Countertop
+- Musical instrument
+- Microphone
+- Sombrero
+- Human head
+- Bronze sculpture
+- Hat
+- Jacket
+- Flower
+- Shirt
+- Tap
+- Human foot
+- Bathtub
+- Furniture
+- Cocktail
+- Handbag
+- Wine glass
+- Poster
+- Football
+- Truck
+- Cattle
+- Human eye
+- Human mouth
+- Human nose
+- Dog
+- Dress
+- Sports equipment
+- Drink
+- Traffic sign
+- Street light
+- Bicycle
+- Laptop
+- Computer monitor
+- Beer
+- Backpack
+- Stairs
+- Door
+- Porch
+- Ball
+- Shorts
+- Jeans
+- Motorcycle
+- Desk
+- Traffic light
+- Box
+- Land vehicle
+- Paddle
+- Boat
+- Glove
+- Baseball bat
+- Rabbit
+- Tower
+- Bookcase
+- Book
+- Shelf
+- French fries
+- Fork
+- Sculpture
+- Lipstick
+- Seat belt
+- Castle
+- Skyscraper
+- Lamp
+- Bicycle wheel
+- Bicycle helmet
+- Rifle
+- Sandal
+- High heels
+- Drum
+- Cat
+- Picture frame
+- Studio couch
+- Pillow
+- Sofa bed
+- Coffee table
+- Television
+- Musical keyboard
+- Piano
+- Suit
+- Bird
+- Tie
+- Suitcase
+- Bus
+- Canoe
+- Plate
+- Platter
+- Candle
+- Kitchen & dining room table
+- Airplane
+- Camera
+- Headphones
+- Home appliance
+- Food
+- Kitchen appliance
+- Balloon
+- Guitar
+- Racket
+- Lion
+- Flag
+- Fruit
+- Bidet
+- Toilet
+- Palm tree
+- Van
+- Rose
+- Cabinetry
+- Ladder
+- Fish
+- Door handle
+- Dessert
+- Wheelchair
+- Coin
+- Cowboy hat
+- Sun hat
+- Butterfly
+- Juice
+- Golf ball
+- Bull
+- Fedora
+- Light switch
+- Vehicle
+- Infant bed
+- Cucumber
+- Zucchini
+- Bowl
+- Spoon
+- Salad
+- Boot
+- Clock
+- Tent
+- Horn
+- Auto part
+- Mule
+- Coat
+- Convenience store
+- Bench
+- Chest of drawers
+- Squirrel
+- Tiara
+- Horse
+- Coffee
+- Tea
+- Coffee cup
+- Saucer
+- Peach
+- Fashion accessory
+- Violin
+- Roller skates
+- Parrot
+- Tableware
+- Sink
+- Oven
+- Gas stove
+- Cupboard
+- Drawer
+- Handgun
+- Vegetable
+- Insect
+- Mug
+- Beehive
+- Bee
+- Honeycomb
+- Animal
+- Fire hydrant
+- Toilet paper
+- Apple
+- Scarf
+- Doll
+- Earrings
+- Baseball glove
+- Bottle
+- Snowman
+- Flute
+- Saxophone
+- Trumpet
+- Swimwear
+- Carrot
+- Mirror
+- Pancake
+- Hot dog
+- Fast food
+- Watercraft
+- Wok
+- Kettle
+- Wall clock
+- Cart
+- Waste container
+- Office supplies
+- Couch
+- Eagle
+- Necklace
+- Fountain
+- Mobile phone
+- Banana
+- Deer
+- Antelope
+- Tomato
+- Lobster
+- Crab
+- Taxi
+- Houseplant
+- Flowerpot
+- Tennis ball
+- Football helmet
+- Luggage and bags
+- Rugby ball
+- Skateboard
+- Mushroom
+- Lifejacket
+- Falcon
+- Waffle
+- Umbrella
+- Swimming pool
+- Jacuzzi
+- Ambulance
+- Pumpkin
+- Wood-burning stove
+- Fireplace
+- Hiking equipment
+- Kite
+- Ant
+- Bow and arrow
+- Microwave oven
+- Wine
+- Gondola
+- Bathroom accessory
+- Belt
+- Weapon
+- Tennis racket
+- Dinosaur
+- Swan
+- Doughnut
+- Christmas tree
+- Watch
+- Snack
+- Elephant
+- Miniskirt
+- Closet
+- Goose
+- Bust
+- Sunflower
+- Vase
+- Baked goods
+- Pizza
+- Pastry
+- Cello
+- Helicopter
+- Cake
+- Beetle
+- Carnivore
+- Giraffe
+- Duck
+- Tripod
+- Medical equipment
+- Bed
+- Trombone
+- Whiteboard
+- Monkey
+- Ski
+- Broccoli
+- Loveseat
+- Surfboard
+- Office building
+- Training bench
+- Sewing machine
+- Ceiling fan
+- Bathroom cabinet
+- Radish
+- Curtain
+- Bowling equipment
+- Snowmobile
+- Tiger
+- Snowboard
+- Brassiere
+- Marine invertebrates
+- Food processor
+- Snake
+- Tank
+- Sparrow
+- Computer keyboard
+- Goldfish
+- Accordion
+- Golf cart
+- Moths and butterflies
+- Pretzel
+- Invertebrate
+- Jug
+- Pitcher
+- Tablet computer
+- Lizard
+- Coconut
+- Mouse
+- Kangaroo
+- Window blind
+- Chainsaw
+- Nightstand
+- Rhinoceros
+- Ipod
+- Seafood
+- Barrel
+- Limousine
+- Cosmetics
+- Hamster
+- Worm
+- Frog
+- Marine mammal
+- Volleyball
+- Teddy bear
+- Aircraft
+- Stool
+- Dolphin
+- Whale
+- Brown bear
+- Otter
+- Goat
+- Shower
+- Spider
+- Skull
+- Crown
+- Jet ski
+- Envelope
+- Segway
+- Tin can
+- Swim cap
+- Tortoise
+- Strawberry
+- Alpaca
+- Sheep
+- Watermelon
+- Computer mouse
+- Fox
+- Cricket ball
+- Parachute
+- Sock
+- Mixing bowl
+- Jaguar
+- Leopard
+- Printer
+- Centipede
+- Ice cream
+- Camel
+- Polar bear
+- Table tennis racket
+- Panda
+- Cookie
+- Parking meter
+- Orange
+- Chopsticks
+- Cabbage
+- Pig
+- Reptile
+- Sea turtle
+- Banjo
+- Lantern
+- Penguin
+- Cannon
+- Cake stand
+- Lily
+- Wardrobe
+- Mechanical fan
+- Maple
+- Snail
+- Chicken
+- Lynx
+- Dairy
+- Crutch
+- Punching bag
+- Cassette deck
+- Billiard table
+- Blue jay
+- Sandwich
+- Bear
+- Stop sign
+- Pear
+- Ostrich
+- Ladybug
+- Submarine sandwich
+- Lavender
+- Plastic bag
+- Tool
+- Zebra
+- Oboe
+- Red panda
+- Bread
+- Balance beam
+- Refrigerator
+- Squash
+- Lighthouse
+- Hamburger
+- Crocodile
+- Organ
+- Treadmill
+- Willow
+- Owl
+- Bagel
+- Hippopotamus
+- Muffin
+- Snowplow
+- Egg
+- Filing cabinet
+- Cheetah
+- Stretcher
+- Grape
+- Stationary bicycle
+- Canary
+- Binoculars
+- Candy
+- Common fig
+- Cutting board
+- Coffeemaker
+- Teapot
+- Telephone
+- Unicycle
+- Potato
+- Tart
+- Corded phone
+- Seahorse
+- Cheese
+- Hammer
+- Rocket
+- Wine rack
+- Pen
+- Popcorn
+- Shark
+- Turkey
+- Knife
+- Kitchen knife
+- Lemon
+- Asparagus
+- Caterpillar
+- Shrimp
+- Slow cooker
+- Pineapple
+- Harp
+- Bat
+- Pomegranate
+- Sword
+- Remote control
+- Oyster
+- Adhesive tape
+- Artichoke
+- Bell pepper
+- Harpsichord
+- Flying disc
+- Woodpecker
+- Dog bed
+- Picnic basket
+- Harbor seal
+- Porcupine
+- Hedgehog
+- Raccoon
+- Alarm clock
+- Drill
+- Toothbrush
+- Jellyfish
+- Koala
+- Dumbbell
+- Plumbing fixture
+- Kitchen utensil
+- Cantaloupe
+- Guacamole
+- Grapefruit
+- Raven
+- Fax
+- Taco
+- Submarine
+- Briefcase
+- Tree house
+- Pasta
+- Soap dispenser
+- Winter melon
+- Mixer
+- Washing machine
+- Heater
+- Shellfish
+- Croissant
+- Sea lion
+- Towel
+- Ruler
+- Milk
+- Dishwasher
+- Light bulb
+- Magpie
+- Horizontal bar
