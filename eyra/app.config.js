@@ -58,7 +58,7 @@ export default {
       typedRoutes: true
     },
     extra: {
-      backendUrl: "http://10.126.188.99:8000",
+      backendUrl: "http://10.231.226.100:8000",
       router: {
         origin: false
       },

@@ -1,32 +1,28 @@
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from "../navigator/appNavigator";
+import { useRouter } from 'expo-router';
 import * as Speech from 'expo-speech';
-
-type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
 const BUTTONS = [
   { 
     label: "Indoor Navigation", 
-    // action: (navigation: HomeScreenNavigationProp) => navigation.navigate('IndoorNavigation'),
+    path: '/screens/indoorNavigation',
     type: 'navigation' as const
   },
   { 
     label: "Main Menu", 
-    action: (navigation: HomeScreenNavigationProp) => navigation.navigate('MainMenu'),
+    path: '/screens/menu',
     type: 'navigation' as const
   },
   { 
     label: "Normal Mode", 
-    action: (navigation: HomeScreenNavigationProp) => navigation.navigate('NormalMode'),
+    path: '/screens/normal',
     type: 'navigation' as const
   }
 ];
 
 export default function HomeScreen() {
-  const navigation = useNavigation<HomeScreenNavigationProp>();
+  const router = useRouter();
   useEffect(() => {
     const names = BUTTONS.map(b => b.label).join(", ");
     Speech.speak(`Welcome to Ziya. Available options are: ${names}.`);
@@ -36,7 +32,7 @@ export default function HomeScreen() {
     <View style={styles.container}>
        <TouchableOpacity
          style={styles.circle} 
-        onPress={() => navigation.navigate('MainMenu')}
+        onPress={() => router.push('/screens/menu')}
         accessibilityRole="button"
         accessibilityLabel="Ziya logo, navigate to Main Menu"
         accessibilityHint="Tap to open Main Menu"
@@ -50,7 +46,7 @@ export default function HomeScreen() {
           style={styles.button}
           onPress={() => {
             Speech.speak(`${button.label} selected`);
-            (button.action as (nav: HomeScreenNavigationProp) => void)(navigation);
+            router.push(button.path as any);
           }}
           accessibilityLabel={button.label}
           accessibilityRole="button"

@@ -1,0 +1,60 @@
+{
+  "faces": [
+    {
+      "face_id": "face_1762394365205_o8qdji",
+      "face_name": "Cs",
+      "image_path": "user_face_images\\demo_user_123\\face_1762394365205_o8qdji.jpg",
+      "image_filename": "face_1762394365205_o8qdji.jpg",
+      "metadata": {
+        "bounding_box": [
+          2244,
+          640,
+          2287,
+          597
+        ],
+        "confidence": null
+      },
+      "added_at": "2025-11-06T07:29:30.786541",
+      "last_updated": "2025-11-06T07:29:31.521023",
+      "is_active": false,
+      "deleted_at": "2025-11-06T07:30:10.752130"
+    },
+    {
+      "face_id": "face_1762394444031_p1uxw",
+      "face_name": "Saas",
+      "image_path": "user_face_images\\demo_user_123\\face_1762394444031_p1uxw.jpg",
+      "image_filename": "face_1762394444031_p1uxw.jpg",
+      "metadata": {
+        "bounding_box": [
+          1276,
+          812,
+          1597,
+          491
+        ],
+        "confidence": null
+      },
+      "added_at": "2025-11-06T07:30:47.010774",
+      "last_updated": "2025-11-06T07:30:47.010774",
+      "is_active": false,
+      "deleted_at": "2025-11-06T07:31:32.192880"
+    },
+    {
+      "face_id": "face_1762394453531_u8bi1l",
+      "face_name": "Soni",
+      "image_path": "user_face_images\\demo_user_123\\face_1762394453531_u8bi1l.jpg",
+      "image_filename": "face_1762394453531_u8bi1l.jpg",
+      "metadata": {
+        "bounding_box": [
+          1531,
+          1146,
+          1916,
+          760
+        ],
+        "confidence": null
+      },
+      "added_at": "2025-11-06T07:31:01.746480",
+      "last_updated": "2025-11-06T07:31:01.746480",
+      "is_active": true
+    }
+  ]
+}

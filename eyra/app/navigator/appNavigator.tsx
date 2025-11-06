@@ -31,8 +31,8 @@ export default function AppNavigator() {
       <Stack.Screen name="MainMenu" component={MainMenu} />
       <Stack.Screen name="SetFloorMap" component={SetFloorMap} />
       <Stack.Screen name="FloorMapManagement" component={FloorMapManagement} />
-  <Stack.Screen name="ProcessFloorMap" component={ProcessFloorMapScreen} />
-  <Stack.Screen name="ProcessedMapViewer" component={ProcessedMapViewer} />
+      <Stack.Screen name="ProcessFloorMap" component={ProcessFloorMapScreen} />
+      <Stack.Screen name="ProcessedMapViewer" component={ProcessedMapViewer} />
       <Stack.Screen name="NormalMode" component={NormalModeScreen} />
     </Stack.Navigator>
   );

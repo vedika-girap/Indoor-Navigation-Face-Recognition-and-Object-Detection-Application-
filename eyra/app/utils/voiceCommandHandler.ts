@@ -1,10 +1,10 @@
-import { NavigationProp } from '@react-navigation/native';
+import { Router } from 'expo-router';
 import * as Speech from 'expo-speech';
 import { Alert } from 'react-native';
 import { VoiceCommand } from '../components/wakewordDetection';
 
 export interface VoiceCommandHandlerContext {
-  navigation?: NavigationProp<any>;
+  router?: Router;
   onSaveImage?: (name?: string) => void;
   onDetect?: () => void;
   onUpload?: () => void;
@@ -14,7 +14,7 @@ export const handleVoiceCommand = async (
   command: VoiceCommand,
   context: VoiceCommandHandlerContext
 ) => {
-  const { navigation, onSaveImage, onDetect, onUpload } = context;
+  const { router, onSaveImage, onDetect, onUpload } = context;
 
   switch (command.action) {
     case 'save_image':
@@ -28,12 +28,13 @@ export const handleVoiceCommand = async (
       break;
 
     case 'navigate':
-      if (navigation && command.params?.destination) {
+      if (router && command.params?.destination) {
         const destination = command.params.destination;
         Speech.speak(`Navigating to ${getReadableScreenName(destination)}`);
         
         try {
-          navigation.navigate(destination as never);
+          const route = getRouteFromScreenName(destination);
+          router.push(route as any);
         } catch (error) {
           console.error('Navigation error:', error);
           Speech.speak('Unable to navigate to that screen');
@@ -91,6 +92,19 @@ const getReadableScreenName = (screenName: string): string => {
   };
 
   return nameMap[screenName] || screenName;
+};
+
+// Convert screen names to Expo Router paths
+const getRouteFromScreenName = (screenName: string): string => {
+  const routeMap: { [key: string]: string } = {
+    'MainMenu': '/screens/menu',
+    'SetFloorMap': '/screens/setFloorMap',
+    'IndoorNavigation': '/screens/indoorNavigation',
+    'NormalMode': '/screens/normal',
+    'ProcessFloorMap': '/screens/processFloorMap',
+  };
+
+  return routeMap[screenName] || '/';
 };
 
 // Voice command help text

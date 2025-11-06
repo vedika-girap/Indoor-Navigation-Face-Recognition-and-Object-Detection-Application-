@@ -41,3 +41,5 @@ app-example
 .env
 
 FLOOR_MAP_EXPO_GUIDE.md
+*.md
+docs/

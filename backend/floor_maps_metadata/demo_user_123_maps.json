@@ -1,0 +1,268 @@
+{
+  "maps": [
+    {
+      "map_id": "map_1762382728023",
+      "map_name": "2nd floor",
+      "building_name": "Main building",
+      "floor_number": "2nd",
+      "local_uri": "file:///data/user/0/host.exp.exponent/files/floor_maps/map_1762382728023.png",
+      "metadata": {
+        "original_name": "2ND Floor.png",
+        "file_size": 1948513,
+        "added_at": "2025-11-05T22:45:28.046Z"
+      },
+      "added_at": "2025-11-05T22:45:28.046Z",
+      "last_accessed": "2025-11-06T04:42:05.249269",
+      "is_active": true,
+      "updated_at": "2025-11-06T04:27:11.053367"
+    },
+    {
+      "map_id": "map_1762384436646",
+      "map_name": "1st",
+      "building_name": "Pg",
+      "floor_number": "1st",
+      "local_uri": "file:///data/user/0/host.exp.exponent/files/floor_maps/map_1762384436646.png",
+      "metadata": {
+        "original_name": "2ND Floor.png",
+        "file_size": 1948513,
+        "added_at": "2025-11-05T23:13:56.670Z"
+      },
+      "added_at": "2025-11-05T23:13:56.670Z",
+      "last_accessed": "2025-11-06T05:21:18.474200",
+      "is_active": true
+    },
+    {
+      "map_id": "map_1762387924112",
+      "map_name": "2nd floor (Processed)",
+      "building_name": "Main building",
+      "floor_number": "2nd",
+      "local_uri": "file:///data/user/0/host.exp.exponent/files/floor_maps/map_1762387924112_processed.png",
+      "metadata": {
+        "original_map_id": "map_1762382728023",
+        "is_processed": true,
+        "labels": [
+          {
+            "label": "room_1",
+            "bbox": [
+              248,
+              1424,
+              654,
+              1202
+            ],
+            "area": 83637.5,
+            "aspect_ratio": 1.8288288288288288,
+            "circularity": 0.6565736907529874
+          },
+          {
+            "label": "room_2",
+            "bbox": [
+              73,
+              545,
+              858,
+              276
+            ],
+            "area": 59763,
+            "aspect_ratio": 2.9182156133828996,
+            "circularity": 0.11538198693705391
+          },
+          {
+            "label": "room_3",
+            "bbox": [
+              388,
+              408,
+              531,
+              143
+            ],
+            "area": 37381.5,
+            "aspect_ratio": 1.8531468531468531,
+            "circularity": 0.6999591611954978
+          },
+          {
+            "label": "room_4",
+            "bbox": [
+              73,
+              408,
+              213,
+              144
+            ],
+            "area": 36294,
+            "aspect_ratio": 1.8857142857142857,
+            "circularity": 0.691239602547885
+          },
+          {
+            "label": "room_5",
+            "bbox": [
+              222,
+              297,
+              379,
+              64
+            ],
+            "area": 35999,
+            "aspect_ratio": 1.484076433121019,
+            "circularity": 0.7539014401973301
+          },
+          {
+            "label": "room_6",
+            "bbox": [
+              835,
+              776,
+              976,
+              541
+            ],
+            "area": 23176.5,
+            "aspect_ratio": 1.6666666666666667,
+            "circularity": 0.4399401010788978
+          },
+          {
+            "label": "room_7",
+            "bbox": [
+              73,
+              632,
+              227,
+              494
+            ],
+            "area": 20557,
+            "aspect_ratio": 1.1159420289855073,
+            "circularity": 0.7575851894593676
+          },
+          {
+            "label": "room_8",
+            "bbox": [
+              236,
+              632,
+              384,
+              494
+            ],
+            "area": 19794.5,
+            "aspect_ratio": 1.0724637681159421,
+            "circularity": 0.7695774724020867
+          },
+          {
+            "label": "room_9",
+            "bbox": [
+              360,
+              1161,
+              462,
+              970
+            ],
+            "area": 18948,
+            "aspect_ratio": 1.8725490196078431,
+            "circularity": 0.7034404124897837
+          },
+          {
+            "label": "room_10",
+            "bbox": [
+              714,
+              256,
+              893,
+              146
+            ],
+            "area": 18740.5,
+            "aspect_ratio": 1.6272727272727272,
+            "circularity": 0.7526888162296125
+          },
+          {
+            "label": "room_11",
+            "bbox": [
+              471,
+              1161,
+              566,
+              970
+            ],
+            "area": 17754,
+            "aspect_ratio": 2.0105263157894737,
+            "circularity": 0.7089668617098877
+          },
+          {
+            "label": "room_12",
+            "bbox": [
+              709,
+              1061,
+              889,
+              962
+            ],
+            "area": 17168,
+            "aspect_ratio": 1.8181818181818181,
+            "circularity": 0.7345567459316303
+          },
+          {
+            "label": "room_13",
+            "bbox": [
+              714,
+              137,
+              909,
+              42
+            ],
+            "area": 15811,
+            "aspect_ratio": 2.0526315789473686,
+            "circularity": 0.3789589671858738
+          },
+          {
+            "label": "room_14",
+            "bbox": [
+              709,
+              1339,
+              887,
+              1224
+            ],
+            "area": 15561,
+            "aspect_ratio": 1.5478260869565217,
+            "circularity": 0.33032878893468454
+          },
+          {
+            "label": "room_15",
+            "bbox": [
+              709,
+              1167,
+              888,
+              1070
+            ],
+            "area": 15301.5,
+            "aspect_ratio": 1.8453608247422681,
+            "circularity": 0.39090178784100055
+          },
+          {
+            "label": "room_16",
+            "bbox": [
+              714,
+              365,
+              875,
+              266
+            ],
+            "area": 15120,
+            "aspect_ratio": 1.6262626262626263,
+            "circularity": 0.7576800033082886
+          },
+          {
+            "label": "room_17",
+            "bbox": [
+              476,
+              631,
+              602,
+              494
+            ],
+            "area": 13683.5,
+            "aspect_ratio": 1.0873015873015872,
+            "circularity": 0.5128987522049604
+          },
+          {
+            "label": "room_18",
+            "bbox": [
+              276,
+              1161,
+              352,
+              970
+            ],
+            "area": 12840,
+            "aspect_ratio": 2.513157894736842,
+            "circularity": 0.516150291266836
+          }
+        ],
+        "processed_at": "2025-11-06T00:12:04.120Z"
+      },
+      "added_at": null,
+      "last_accessed": "2025-11-06T06:44:18.448787",
+      "is_active": true
+    }
+  ]
+}

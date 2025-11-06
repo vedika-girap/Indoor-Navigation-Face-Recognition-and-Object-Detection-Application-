@@ -1,18 +1,13 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import * as Speech from 'expo-speech';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../navigator/appNavigator';
+import { useRouter } from 'expo-router';
 
-type MainMenuNavigationProp = NativeStackNavigationProp<RootStackParamList, 'MainMenu'>;
-
-interface MainMenuProps {
-  navigation: MainMenuNavigationProp;
-}
-
-const MainMenu = ({ navigation }: MainMenuProps) => {
+const MainMenu = () => {
+  const router = useRouter();
+  
   useEffect(() => {
-    const options = ['set floor map', 'manage floor maps', 'check your surrounding'];
+    const options = ['indoor navigation', 'manage floor maps', 'manage faces', 'process floor map', 'check your surrounding'];
     const speechText = `Available options are: ${options.join(', ')}. Please select an option.`;
     Speech.speak(speechText);
   }, []);
@@ -22,21 +17,21 @@ const MainMenu = ({ navigation }: MainMenuProps) => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          Speech.speak('Set floor map selected');
-          navigation.navigate('SetFloorMap');
+          Speech.speak('Indoor navigation selected');
+          router.push('/screens/indoorNavigation');
         }}
-        accessibilityLabel="Set floor map"
+        accessibilityLabel="Indoor navigation"
         accessibilityRole="button"
-        accessibilityHint="Navigates to set floor map screen"
+        accessibilityHint="Navigate using recorded floor maps"
       >
-        <Text style={styles.buttonText}>Set Floor Map</Text>
+        <Text style={styles.buttonText}>Indoor{'\n'}Navigation</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
           Speech.speak('Manage floor maps selected');
-          navigation.navigate('FloorMapManagement');
+          router.push('/screens/floorMapManagement');
         }}
         accessibilityLabel="Manage floor maps"
         accessibilityRole="button"
@@ -48,8 +43,21 @@ const MainMenu = ({ navigation }: MainMenuProps) => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
+          Speech.speak('Manage faces selected');
+          router.push('/screens/faceManagement');
+        }}
+        accessibilityLabel="Manage faces"
+        accessibilityRole="button"
+        accessibilityHint="Manage saved faces, edit names, or delete"
+      >
+        <Text style={styles.buttonText}>Manage{'\n'}Faces</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
           Speech.speak('Process floor map selected');
-          navigation.navigate('ProcessFloorMap' as any);
+          router.push('/screens/processFloorMap');
         }}
         accessibilityLabel="Process floor map"
         accessibilityRole="button"
@@ -62,7 +70,7 @@ const MainMenu = ({ navigation }: MainMenuProps) => {
         style={styles.button}
         onPress={() => {
           Speech.speak('Check your surrounding selected');
-          navigation.navigate('NormalMode');
+          router.push('/screens/normal');
         }}
         accessibilityLabel="Check your surrounding"
         accessibilityRole="button"

@@ -4,7 +4,6 @@
  */
 
 import { Ionicons } from '@expo/vector-icons';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
@@ -18,20 +17,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import type { RootStackParamList } from '../navigator/appNavigator';
+import { useRouter, useFocusEffect } from 'expo-router';
 import type { FloorMap, FloorMapStats } from '../services/floorMapService';
 import * as FloorMapService from '../services/floorMapService';
+import { DEMO_USER_ID } from '../constants/user';
 
-type FloorMapManagementNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'FloorMapManagement'
->;
-
-interface FloorMapManagementProps {
-  navigation: FloorMapManagementNavigationProp;
-}
-
-export default function FloorMapManagement({ navigation }: FloorMapManagementProps) {
+export default function FloorMapManagement() {
+  const router = useRouter();
   const [maps, setMaps] = useState<FloorMap[]>([]);
   const [stats, setStats] = useState<FloorMapStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,12 +37,20 @@ export default function FloorMapManagement({ navigation }: FloorMapManagementPro
   const [buildingName, setBuildingName] = useState('');
   const [floorNumber, setFloorNumber] = useState('');
 
-  // Replace with actual user ID (from authentication system)
-  const USER_ID = 'user123';
+  // Use consistent user ID
+  const USER_ID = DEMO_USER_ID;
 
   useEffect(() => {
     loadMaps();
   }, []);
+
+  // Reload maps whenever screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('FloorMapManagement screen focused - reloading maps');
+      loadMaps();
+    }, [])
+  );
 
   const loadMaps = async () => {
     setLoading(true);
@@ -152,8 +152,8 @@ export default function FloorMapManagement({ navigation }: FloorMapManagementPro
   const handleViewMap = async (map: FloorMap) => {
     const fullMap = await FloorMapService.getFloorMap(USER_ID, map.map_id);
     if (fullMap) {
-      // Navigate to map viewer or navigation screen
-      navigation.navigate('IndoorNavigation', { floorMap: fullMap });
+      // Navigate to indoor navigation screen
+      router.push('/screens/indoorNavigation' as any);
     }
   };
 

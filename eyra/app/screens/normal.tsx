@@ -1,5 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useRouter } from 'expo-router';
 import {
   CameraCapturedPicture,
   CameraView,
@@ -9,17 +8,12 @@ import Constants from "expo-constants";
 import * as Speech from 'expo-speech';
 import { useEffect, useRef, useState } from "react";
 import { Alert, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import type { RootStackParamList } from "../navigator/appNavigator";
-import { useWakeWordDetection, testWakeWord } from '../components/wakewordDetection';
-import { isNativeSpeechRecognitionAvailable } from '../libs/expoSpeechRecognitionShim';
-import { handleVoiceCommand } from '../utils/voiceCommandHandler';
+import { DEMO_USER_ID } from '../constants/user';
 
-type NormalModeNavigationProp = NativeStackNavigationProp<RootStackParamList, 'NormalMode'>;
-
-const BACKEND_URL = Constants.backendUrl || "";
+const BACKEND_URL = Constants.backendUrl || "http://10.231.226.100:8000";
 
 export default function NormalModeScreen() {
-  const navigation = useNavigation<NormalModeNavigationProp>();
+  const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView | null>(null);
   const [detections, setDetections] = useState<any[]>([]);
@@ -29,40 +23,6 @@ export default function NormalModeScreen() {
   const [savingFaces, setSavingFaces] = useState<boolean[]>([]);
   const [lastPhotoUri, setLastPhotoUri] = useState<string | null>(null);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
-
-  // Voice command detection
-  const { isListening, isRecording, hasPermission: hasMicPermission } = useWakeWordDetection({
-    onWakeWordDetected: () => {
-      Speech.speak('hii Im ziya, how can I help you?');
-    },
-    onCommandDetected: async (command) => {
-      console.log('Command detected:', command);
-      
-      // Handle save face command
-      if (command.action === 'save_image' && command.params?.name) {
-        if (faces.length === 0) {
-          Speech.speak('No faces detected. Please detect faces first.');
-          return;
-        }
-        
-        // Save the first detected face with the voice-provided name
-        const faceIndex = 0;
-        setFaceNames(prev => {
-          const newNames = [...prev];
-          newNames[faceIndex] = command.params!.name!;
-          return newNames;
-        });
-        
-        // Wait a moment for state to update, then save
-        setTimeout(() => saveFace(faceIndex), 100);
-        return;
-      }
-      
-      // Handle navigation and other commands
-      await handleVoiceCommand(command, navigation as any);
-    },
-    enabled: voiceEnabled,
-  });
 
   useEffect(() => {
     if (!permission?.granted) {
@@ -112,6 +72,15 @@ export default function NormalModeScreen() {
           type: "image/jpeg",
         } as any);
 
+        // Create separate FormData for face recognition with user_id
+        const faceFormData = new FormData();
+        faceFormData.append("file", {
+          uri: photo.uri,
+          name: "photo.jpg",
+          type: "image/jpeg",
+        } as any);
+        faceFormData.append("user_id", DEMO_USER_ID);
+
         // Send to both endpoints concurrently
         const [objResponse, faceResponse] = await Promise.all([
           fetch(`${BACKEND_URL}/object_detection/`, {
@@ -120,7 +89,7 @@ export default function NormalModeScreen() {
           }),
           fetch(`${BACKEND_URL}/face_recognition/`, {
             method: "POST",
-            body: formData,
+            body: faceFormData,
           }),
         ]);
 
@@ -169,6 +138,10 @@ export default function NormalModeScreen() {
 
     try {
       const face = faces[faceIndex];
+      
+      // Generate unique face_id
+      const faceId = `face_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+      
       const formData = new FormData();
       
       // Use the stored photo URI from the last detection
@@ -178,20 +151,25 @@ export default function NormalModeScreen() {
         name: 'face.jpg',
       } as any);
       
-      formData.append('label', faceName.trim());
-      formData.append('bounding_box', JSON.stringify(face.bounding_box));
+      formData.append('user_id', DEMO_USER_ID);
+      formData.append('face_id', faceId);
+      formData.append('face_name', faceName.trim());
+      
+      // Add metadata with bounding box and confidence if available
+      const metadata = {
+        bounding_box: face.bounding_box,
+        confidence: face.confidence || null,
+      };
+      formData.append('metadata', JSON.stringify(metadata));
 
-      const response = await fetch(`${BACKEND_URL}/face_save/`, {
+      const response = await fetch(`${BACKEND_URL}/user_faces/save`, {
         method: 'POST',
         body: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
       });
 
       const result = await response.json();
 
-      if (response.ok) {
+      if (response.ok && result.success) {
         Alert.alert('Success', `Face for '${faceName}' saved successfully!`);
         Speech.speak(`Face for ${faceName} saved successfully`);
         
@@ -202,7 +180,7 @@ export default function NormalModeScreen() {
           return newNames;
         });
       } else {
-        Alert.alert('Error', result.detail || 'Failed to save face');
+        Alert.alert('Error', result.message || 'Failed to save face');
       }
     } catch (error) {
       console.error('Error saving face:', error);
@@ -245,95 +223,42 @@ export default function NormalModeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Voice Status Indicator */}
+      {/* Simple Voice Toggle */}
       <View style={styles.voiceStatusContainer}>
-        <View style={[styles.voiceIndicator, isListening && styles.voiceIndicatorActive]}>
-          <Text style={styles.voiceStatusText}>
-            {isListening ? (isRecording ? '🎤 Recording...' : '👂 Listening for "Ziya"...') : '🔇 Voice Off'}
-          </Text>
-        </View>
         <TouchableOpacity
-          style={styles.voiceToggleButton}
-          onPress={() => setVoiceEnabled(!voiceEnabled)}
+          style={[styles.voiceToggleButton, voiceEnabled && styles.voiceToggleButtonActive]}
+          onPress={() => {
+            const newState = !voiceEnabled;
+            setVoiceEnabled(newState);
+            Speech.speak(newState ? 'Voice assistance enabled' : 'Voice assistance disabled');
+          }}
         >
-          <Text style={styles.voiceToggleText}>{voiceEnabled ? 'Disable' : 'Enable'} Voice</Text>
+          <Text style={styles.voiceToggleText}>
+            {voiceEnabled ? '🔊 Voice: ON' : '🔇 Voice: OFF'}
+          </Text>
         </TouchableOpacity>
-        <View style={{marginLeft:12, justifyContent:'center'}}>
-          <Text style={{fontSize:12, color:'#999'}}>{isNativeSpeechRecognitionAvailable ? 'Native speech available' : 'Using shim (no native recognition)'}</Text>
-        </View>
-      </View>
-
-      {/* Test Voice Command Button (Native only) */}
-      {Platform.OS !== 'web' && (
-        <View style={styles.testButtonContainer}>
+        
+        {/* Simple voice command button */}
+        {voiceEnabled && (
           <TouchableOpacity
-            style={styles.testButton}
+            style={styles.simpleVoiceButton}
             onPress={() => {
-              Alert.alert(
-                'Test Voice Command',
-                'Choose a command to test:',
-                [
-                  {
-                    text: 'Save face as John',
-                    onPress: () => testWakeWord(
-                      () => Speech.speak('Yes?'),
-                      async (cmd) => {
-                        if (cmd.action === 'save_image' && cmd.params?.name) {
-                          if (faces.length === 0) {
-                            Speech.speak('No faces detected. Please detect faces first.');
-                            return;
-                          }
-                          const faceIndex = 0;
-                          setFaceNames(prev => {
-                            const newNames = [...prev];
-                            newNames[faceIndex] = cmd.params!.name!;
-                            return newNames;
-                          });
-                          setTimeout(() => saveFace(faceIndex), 100);
-                        } else {
-                          await handleVoiceCommand(cmd, navigation as any);
-                        }
-                      },
-                      'save face as John'
-                    )
-                  },
-                  {
-                    text: 'Navigate to menu',
-                    onPress: () => testWakeWord(
-                      () => Speech.speak('Yes?'),
-                      async (cmd) => await handleVoiceCommand(cmd, navigation as any),
-                      'navigate to menu'
-                    )
-                  },
-                  {
-                    text: 'Detect',
-                    onPress: () => testWakeWord(
-                      () => Speech.speak('Yes?'),
-                      async (cmd) => {
-                        if (cmd.action === 'detect') {
-                          await captureAndAnalyzeFrame();
-                        } else {
-                          await handleVoiceCommand(cmd, navigation as any);
-                        }
-                      },
-                      'detect'
-                    )
-                  },
-                  { text: 'Cancel', style: 'cancel' }
-                ]
-              );
+              Speech.speak('Hi, I am Ziya. You can say: detect, go to menu, or save face');
             }}
           >
-            <Text style={styles.testButtonText}>🎤 Test Voice Command</Text>
+            <Text style={styles.simpleVoiceButtonText}>💬 Help</Text>
           </TouchableOpacity>
-        </View>
-      )}
+        )}
+      </View>
 
       <CameraView style={styles.cameraContainer} facing="back" ref={cameraRef} />
 
       <TouchableOpacity
         style={[styles.captureButton, isProcessing && styles.captureButtonDisabled]}
-        onPress={captureAndAnalyzeFrame}
+        onPress={() => {
+          captureAndAnalyzeFrame();
+          if (voiceEnabled) Speech.speak('Detecting');
+        }}
         disabled={isProcessing}
         accessibilityRole="button"
         accessibilityLabel="Detect objects and faces"
@@ -456,53 +381,35 @@ const styles = StyleSheet.create({
     zIndex: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  voiceIndicator: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    flex: 1,
-    marginRight: 8,
-  },
-  voiceIndicatorActive: {
-    backgroundColor: 'rgba(75, 230, 218, 0.9)',
-  },
-  voiceStatusText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: pastelColors.detectionLabelText,
+    gap: 10,
   },
   voiceToggleButton: {
-    backgroundColor: pastelColors.buttonBackground,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: '#ddd',
+  },
+  voiceToggleButtonActive: {
+    backgroundColor: 'rgba(75, 230, 218, 0.95)',
+    borderColor: '#3AAFA9',
   },
   voiceToggleText: {
-    color: pastelColors.buttonText,
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  testButtonContainer: {
-    position: 'absolute',
-    top: 60,
-    left: 10,
-    right: 10,
-    zIndex: 10,
-  },
-  testButton: {
-    backgroundColor: 'rgba(58, 175, 169, 0.9)',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 25,
-    alignItems: 'center',
-  },
-  testButtonText: {
-    color: pastelColors.buttonText,
+    color: pastelColors.detectionLabelText,
     fontSize: 14,
     fontWeight: '700',
+  },
+  simpleVoiceButton: {
+    backgroundColor: 'rgba(58, 175, 169, 0.9)',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 25,
+  },
+  simpleVoiceButtonText: {
+    color: pastelColors.buttonText,
+    fontSize: 14,
+    fontWeight: '600',
   },
   detectionsContainer: {
     position: "absolute",

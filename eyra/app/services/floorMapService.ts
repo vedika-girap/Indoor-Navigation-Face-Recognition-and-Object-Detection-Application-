@@ -9,16 +9,15 @@
 
 import Constants from 'expo-constants';
 import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { Alert } from 'react-native';
 
-const BACKEND_URL = Constants.expoConfig?.extra?.backendUrl || 'http://10.84.28.100:8000';
+const BACKEND_URL = Constants.expoConfig?.extra?.backendUrl || 'http://10.231.226.100:8000';
 
 // Directory for storing floor maps in Expo app
-// Directory for storing floor maps in Expo app
-// Use FileSystem.documentDirectory and fall back to FileSystem.cacheDirectory if needed.
-const BASE_DIR = (FileSystem as any).documentDirectory ?? (FileSystem as any).cacheDirectory ?? '';
+const BASE_DIR = FileSystem.documentDirectory ?? FileSystem.cacheDirectory ?? '';
 const FLOOR_MAPS_DIR = `${BASE_DIR}floor_maps/`;
+
 export interface FloorMap {
   map_id: string;
   map_name: string;
@@ -30,11 +29,20 @@ export interface FloorMap {
     height?: number;
     file_size?: number;
     added_at?: string;
+    // Processed map metadata
+    is_processed?: boolean;
+    original_map_id?: string;  // Links processed map to original
+    labels?: any[];            // Detected room labels
+    processed_at?: string;
     [key: string]: any;
   };
   added_at: string;
   last_accessed?: string;
   is_active: boolean;
+  // New fields for processed maps
+  is_processed?: boolean;
+  original_map_id?: string;
+  processed_maps?: FloorMap[];  // List of processed versions
 }
 
 export interface FloorMapStats {
@@ -249,6 +257,69 @@ export async function updateFloorMapMetadata(
 }
 
 /**
+ * Process a floor map through the backend
+ * Sends the local image file to backend for processing (convert to B&W, detect rooms, label)
+ * Returns processed image as base64 and detected regions
+ */
+export async function processFloorMap(
+  userId: string,
+  map: FloorMap
+): Promise<{
+  success: boolean;
+  processed_image_base64?: string;
+  labels?: Array<{ label: string; bbox: number[]; area: number }>;
+  original_size?: { width: number; height: number };
+  message?: string;
+} | null> {
+  try {
+    console.log('🔄 Processing floor map:', map.map_name);
+
+    // Verify local file exists
+    const fileInfo = await FileSystem.getInfoAsync(map.local_uri);
+    if (!fileInfo.exists) {
+      throw new Error('Local floor map file not found on device');
+    }
+
+    console.log('📤 Uploading map to backend for processing...');
+    
+    // Create form data with the local file
+    const formData = new FormData();
+    const fileName = map.local_uri.split('/').pop() || `${map.map_id}.png`;
+    
+    // @ts-ignore - React Native FormData file
+    formData.append('file', {
+      uri: map.local_uri,
+      name: fileName,
+      type: 'image/png',
+    });
+    formData.append('user_id', userId);
+    formData.append('map_id', map.map_id);
+
+    const response = await fetch(`${BACKEND_URL}/floor_maps/process`, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      console.log('✅ Floor map processed successfully!');
+      console.log(`   Detected ${data.labels?.length || 0} regions`);
+      return data;
+    } else {
+      throw new Error(data.message || 'Processing failed');
+    }
+  } catch (error) {
+    console.error('❌ Error processing floor map:', error);
+    Alert.alert('Processing Error', `Failed to process map: ${error}`);
+    return null;
+  }
+}
+
+/**
  * Delete floor map
  * @param permanent - If true, deletes from server and device. If false, only soft delete.
  */
@@ -379,6 +450,60 @@ export async function cleanupOrphanedFiles(userId: string): Promise<number> {
   } catch (error) {
     console.error('❌ Error during cleanup:', error);
     return 0;
+  }
+}
+
+/**
+ * Get all processed maps for a specific original map
+ */
+export async function getProcessedMapsFor(
+  userId: string,
+  originalMapId: string
+): Promise<FloorMap[]> {
+  try {
+    console.log('🔍 Fetching processed maps for original:', originalMapId);
+    const allMaps = await listFloorMaps(userId);
+    
+    // Filter for processed maps that link to this original
+    const processedMaps = allMaps.filter(
+      (map) => map.metadata?.original_map_id === originalMapId && map.metadata?.is_processed
+    );
+    
+    console.log(`✅ Found ${processedMaps.length} processed maps`);
+    return processedMaps;
+  } catch (error) {
+    console.error('❌ Error fetching processed maps:', error);
+    return [];
+  }
+}
+
+/**
+ * Get maps with their processed versions attached
+ */
+export async function listMapsWithProcessed(userId: string): Promise<FloorMap[]> {
+  try {
+    const allMaps = await listFloorMaps(userId);
+    
+    // Separate original and processed maps
+    const originalMaps = allMaps.filter((map) => !map.metadata?.is_processed);
+    const processedMaps = allMaps.filter((map) => map.metadata?.is_processed);
+    
+    // Attach processed maps to their originals
+    const mapsWithProcessed = originalMaps.map((original) => {
+      const processed = processedMaps.filter(
+        (p) => p.metadata?.original_map_id === original.map_id
+      );
+      return {
+        ...original,
+        processed_maps: processed,
+      };
+    });
+    
+    console.log(`✅ Loaded ${mapsWithProcessed.length} maps with processed versions`);
+    return mapsWithProcessed;
+  } catch (error) {
+    console.error('❌ Error loading maps with processed:', error);
+    return [];
   }
 }
 
