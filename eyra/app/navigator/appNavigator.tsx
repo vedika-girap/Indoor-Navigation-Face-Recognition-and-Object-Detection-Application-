@@ -2,7 +2,6 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/home';
 import MainMenu from '../screens/menu';
-import NormalModeScreen from '../screens/normal';
 import SetFloorMap from '../screens/setFloorMap';
 import IndoorNavigation from '../screens/indoorNavigation';
 import FloorMapManagement from '../screens/floorMapManagement';
@@ -14,7 +13,6 @@ export type RootStackParamList = {
   Home: undefined;
   MainMenu: undefined;
   SetFloorMap: undefined;
-  NormalMode: undefined;
   IndoorNavigation: { floorMap?: FloorMap };
   FloorMapManagement: undefined;
   ProcessFloorMap: undefined;
@@ -33,7 +31,6 @@ export default function AppNavigator() {
       <Stack.Screen name="FloorMapManagement" component={FloorMapManagement} />
       <Stack.Screen name="ProcessFloorMap" component={ProcessFloorMapScreen} />
       <Stack.Screen name="ProcessedMapViewer" component={ProcessedMapViewer} />
-      <Stack.Screen name="NormalMode" component={NormalModeScreen} />
     </Stack.Navigator>
   );
 }

@@ -59,6 +59,8 @@ export default function DetectionScreen() {
   const [stats, setStats] = useState<DetectionStats>({ totalDetections: 0, avgConfidence: 0, categories: {}, faces: 0 });
   const [detectionRange, setDetectionRange] = useState<'short' | 'medium' | 'all'>('medium');
   const [showRangeSelector, setShowRangeSelector] = useState(true);
+  const [backendConnected, setBackendConnected] = useState(true);
+  const [consecutiveErrors, setConsecutiveErrors] = useState(0);
   
   // Navigation state
   const [isNavigating, setIsNavigating] = useState(false);
@@ -254,14 +256,33 @@ export default function DetectionScreen() {
   const captureAndDetect = async () => {
     if (!cameraRef.current || isProcessing) return;
 
+    // Check camera permission
+    if (!permission?.granted) {
+      console.warn('Camera permission not granted');
+      return;
+    }
+
     try {
       setIsProcessing(true);
-      const photo = await cameraRef.current.takePictureAsync({
+      
+      // Add timeout for camera capture
+      const capturePromise = cameraRef.current.takePictureAsync({
         quality: 0.6,
         base64: false,
+        skipProcessing: true, // Skip processing for faster capture
       });
 
-      if (!photo) return;
+      // Timeout after 5 seconds
+      const timeoutPromise = new Promise<null>((_, reject) => 
+        setTimeout(() => reject(new Error('Camera capture timeout')), 5000)
+      );
+
+      const photo = await Promise.race([capturePromise, timeoutPromise]);
+
+      if (!photo || !photo.uri) {
+        console.warn('No photo captured or invalid URI');
+        return;
+      }
 
       // Resize for faster processing
       const resized = await manipulateAsync(
@@ -270,15 +291,32 @@ export default function DetectionScreen() {
         { compress: 0.7, format: SaveFormat.JPEG }
       );
 
-      // Detect objects
+      // Detect objects with network error handling
       const results = await detectObjects(resized.uri);
       
       if (results) {
         processDetections(results);
+        setBackendConnected(true);
+        setConsecutiveErrors(0);
+      } else {
+        // Increment error counter
+        setConsecutiveErrors(prev => prev + 1);
+        if (consecutiveErrors > 3) {
+          setBackendConnected(false);
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Detection error:', error);
-      await errorRecoveryService.handleError('Object detection', error, 'medium', false);
+      
+      // Handle specific errors
+      if (error.message?.includes('timeout')) {
+        console.warn('Camera capture timeout - camera may be busy');
+      } else if (error.message?.includes('Failed to capture')) {
+        console.warn('Camera capture failed - retrying on next interval');
+      } else {
+        // Only log non-critical errors, don't show to user
+        await errorRecoveryService.handleError('Object detection', error, 'low', false);
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -294,19 +332,31 @@ export default function DetectionScreen() {
       } as any);
       formData.append('user_id', DEMO_USER_ID);
 
-      console.log('Calling combined detection API:', API_ENDPOINTS.combinedDetection);
+      // Add timeout for network request
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
       const response = await fetch(API_ENDPOINTS.combinedDetection, {
         method: 'POST',
         body: formData,
         headers: {
           'Accept': 'application/json',
         },
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Detection failed:', response.status, errorText);
-        throw new Error(`Detection failed: ${response.status}`);
+        console.error('Detection API error:', response.status, errorText);
+        
+        // Return empty array instead of throwing to keep app running
+        if (response.status === 500) {
+          console.warn('Backend error - continuing with empty detections');
+          return [];
+        }
+        return null;
       }
 
       const data = await response.json();
@@ -315,7 +365,7 @@ export default function DetectionScreen() {
       const combinedDetections: Detection[] = [];
       
       // Add object detections
-      if (data.detections) {
+      if (data.detections && Array.isArray(data.detections)) {
         data.detections.forEach((det: any) => {
           combinedDetections.push({
             label: det.label || det.class,
@@ -327,7 +377,7 @@ export default function DetectionScreen() {
       }
       
       // Add face detections
-      if (data.faces) {
+      if (data.faces && Array.isArray(data.faces)) {
         data.faces.forEach((face: any) => {
           const faceName = face.name || face.label || 'Unknown Person';
           combinedDetections.push({
@@ -340,8 +390,15 @@ export default function DetectionScreen() {
       }
       
       return combinedDetections;
-    } catch (error) {
-      console.error('Detection API error:', error);
+    } catch (error: any) {
+      // Handle network errors gracefully
+      if (error.name === 'AbortError') {
+        console.warn('Detection request timeout - backend may be slow');
+      } else if (error.message?.includes('Network request failed')) {
+        console.error('Network connection lost - check if backend is running');
+      } else {
+        console.error('Detection API error:', error);
+      }
       return null;
     }
   };
@@ -548,6 +605,14 @@ export default function DetectionScreen() {
               />
             </TouchableOpacity>
           </View>
+          
+          {/* Connection Status Indicator */}
+          {!backendConnected && (
+            <View style={styles.connectionWarning}>
+              <Ionicons name="cloud-offline" size={16} color="#ff6b6b" />
+              <Text style={styles.connectionWarningText}>Backend Disconnected</Text>
+            </View>
+          )}
         </LinearGradient>
 
         {/* Range Selector - Shows on first load */}
@@ -1032,6 +1097,22 @@ const styles = StyleSheet.create({
   },
   iconButtonMuted: {
     backgroundColor: 'rgba(255,107,107,0.3)',
+  },
+  connectionWarning: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 107, 107, 0.2)',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    marginTop: 8,
+    gap: 6,
+  },
+  connectionWarningText: {
+    color: '#ff6b6b',
+    fontSize: 12,
+    fontWeight: '600',
   },
   titleText: {
     fontSize: 20,

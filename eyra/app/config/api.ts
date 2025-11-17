@@ -17,7 +17,7 @@ import Constants from 'expo-constants';
  * 1. Update the backendUrl in app.config.js, OR
  * 2. Change the DEFAULT_BACKEND_URL below
  */
-const DEFAULT_BACKEND_URL = 'http://192.168.29.40:8000';
+const DEFAULT_BACKEND_URL = 'http://192.168.1.101:8000';
 
 export const API_BASE_URL = Constants.expoConfig?.extra?.backendUrl || DEFAULT_BACKEND_URL;
 

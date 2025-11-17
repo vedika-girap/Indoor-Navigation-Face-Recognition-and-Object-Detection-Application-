@@ -11,24 +11,19 @@ import {
   Modal,
   TextInput,
   RefreshControl,
+  StatusBar,
+  Dimensions,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import * as Speech from 'expo-speech';
 import { DEMO_USER_ID } from '../constants/user';
 import { API_ENDPOINTS } from '../config/api';
-import { colors } from '../theme';
 
-const pastelColors = {
-  background: colors.background,
-  cardBackground: colors.cardBackground,
-  primary: colors.primary,
-  success: colors.success,
-  danger: colors.danger,
-  warning: colors.accent,
-  text: colors.text,
-  textSecondary: colors.muted,
-  border: colors.border,
-};
+const { width } = Dimensions.get('window');
 
 interface SavedFace {
   face_id: string;
@@ -70,7 +65,8 @@ export default function FaceManagementScreen() {
 
       if (data.success) {
         setFaces(data.faces);
-        Speech.speak(`${data.total_faces} saved face${data.total_faces !== 1 ? 's' : ''} found`);
+        const count = data.total_faces || data.faces.length;
+        Speech.speak(`${count} saved face${count !== 1 ? 's' : ''} found`);
       }
     } catch (error) {
       console.error('Error loading faces:', error);
@@ -176,80 +172,152 @@ export default function FaceManagementScreen() {
     }
   };
 
-  const renderFaceCard = ({ item }: { item: SavedFace }) => (
-    <View style={styles.faceCard}>
-      <View style={styles.faceInfo}>
-        <Text style={styles.faceName}>{item.face_name}</Text>
-        <Text style={styles.faceDate}>
-          Added: {new Date(item.added_at).toLocaleDateString()}
-        </Text>
+  const renderFaceCard = ({ item, index }: { item: SavedFace; index: number }) => {
+    const gradients = [
+      ['#667eea', '#764ba2'],
+      ['#f093fb', '#f5576c'],
+      ['#4facfe', '#00f2fe'],
+      ['#43e97b', '#38f9d7'],
+      ['#fa709a', '#fee140'],
+    ];
+    const gradient = gradients[index % gradients.length];
+
+    return (
+      <View style={styles.faceCard}>
+        <LinearGradient
+          colors={gradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.cardGradient}
+        >
+          <View style={styles.cardHeader}>
+            <View style={styles.avatarCircle}>
+              <Ionicons name="person" size={32} color="#fff" />
+            </View>
+            <View style={styles.cardInfo}>
+              <Text style={styles.faceName}>{item.face_name}</Text>
+              <View style={styles.dateRow}>
+                <Ionicons name="calendar-outline" size={14} color="rgba(255,255,255,0.8)" />
+                <Text style={styles.faceDate}>
+                  {new Date(item.added_at).toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                  })}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.actionButtons}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => viewFaceDetails(item)}
+              accessibilityRole="button"
+              accessibilityLabel={`View ${item.face_name}`}
+            >
+              <View style={styles.actionButtonContent}>
+                <Ionicons name="eye-outline" size={20} color="#fff" />
+                <Text style={styles.actionButtonText}>View</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => openEditModal(item)}
+              accessibilityRole="button"
+              accessibilityLabel={`Edit ${item.face_name}`}
+            >
+              <View style={styles.actionButtonContent}>
+                <Ionicons name="create-outline" size={20} color="#fff" />
+                <Text style={styles.actionButtonText}>Edit</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => deleteFace(item)}
+              accessibilityRole="button"
+              accessibilityLabel={`Delete ${item.face_name}`}
+            >
+              <View style={styles.actionButtonContent}>
+                <Ionicons name="trash-outline" size={20} color="#fff" />
+                <Text style={styles.actionButtonText}>Delete</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
       </View>
-
-      <View style={styles.actionButtons}>
-        <TouchableOpacity
-          style={[styles.actionButton, styles.viewButton]}
-          onPress={() => viewFaceDetails(item)}
-          accessibilityRole="button"
-          accessibilityLabel={`View ${item.face_name}`}
-          accessibilityHint="View face image and details"
-        >
-          <Text style={styles.actionButtonText}>View</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.actionButton, styles.editButton]}
-          onPress={() => openEditModal(item)}
-          accessibilityRole="button"
-          accessibilityLabel={`Edit ${item.face_name}`}
-          accessibilityHint="Change person's name"
-        >
-          <Text style={styles.actionButtonText}>Edit</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.actionButton, styles.deleteButton]}
-          onPress={() => deleteFace(item)}
-          accessibilityRole="button"
-          accessibilityLabel={`Delete ${item.face_name}`}
-          accessibilityHint="Remove face from saved list"
-        >
-          <Text style={styles.actionButtonText}>Delete</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+    );
+  };
 
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={pastelColors.primary} />
-        <Text style={styles.loadingText}>Loading saved faces...</Text>
+        <LinearGradient
+          colors={['#667eea', '#764ba2']}
+          style={styles.loadingGradient}
+        >
+          <ActivityIndicator size="large" color="#fff" />
+          <Text style={styles.loadingText}>Loading saved faces...</Text>
+        </LinearGradient>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => {
-            Speech.speak('Going back');
-            router.back();
-          }}
-          style={styles.backButton}
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-        >
-          <Text style={styles.backButtonText}>← Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Saved Faces</Text>
-      </View>
+      <StatusBar barStyle="light-content" />
+      
+      {/* Modern Gradient Header */}
+      <LinearGradient
+        colors={['#667eea', '#764ba2']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <View style={styles.headerTop}>
+          <TouchableOpacity
+            onPress={() => {
+              Speech.speak('Going back');
+              router.back();
+            }}
+            style={styles.backButton}
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
+          >
+            <Ionicons name="arrow-back" size={28} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Saved Faces</Text>
+          <TouchableOpacity
+            onPress={onRefresh}
+            style={styles.refreshButton}
+            accessibilityRole="button"
+            accessibilityLabel="Refresh list"
+          >
+            <Ionicons name="refresh" size={24} color="#fff" />
+          </TouchableOpacity>
+        </View>
+        
+        <View style={styles.statsRow}>
+          <View style={styles.statBadge}>
+            <Ionicons name="people" size={20} color="#fff" />
+            <Text style={styles.statText}>{faces.length} Faces</Text>
+          </View>
+        </View>
+      </LinearGradient>
 
       {faces.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No saved faces yet</Text>
+          <LinearGradient
+            colors={['#f093fb', '#f5576c']}
+            style={styles.emptyCircle}
+          >
+            <Ionicons name="person-add-outline" size={48} color="#fff" />
+          </LinearGradient>
+          <Text style={styles.emptyText}>No Saved Faces Yet</Text>
           <Text style={styles.emptySubtext}>
-            Detected faces will appear here after you save them
+            Detected faces will appear here after you save them during object detection
           </Text>
         </View>
       ) : (
@@ -258,11 +326,12 @@ export default function FaceManagementScreen() {
           renderItem={renderFaceCard}
           keyExtractor={(item) => item.face_id}
           contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor={pastelColors.primary}
+              tintColor="#667eea"
             />
           }
         />
@@ -278,22 +347,57 @@ export default function FaceManagementScreen() {
           setFaceImage(null);
         }}
       >
-        <View style={styles.modalOverlay}>
+        <BlurView intensity={90} style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{selectedFace?.face_name}</Text>
+            <LinearGradient
+              colors={['#667eea', '#764ba2']}
+              style={styles.modalHeader}
+            >
+              <Text style={styles.modalTitle}>{selectedFace?.face_name}</Text>
+            </LinearGradient>
 
-            {faceImage ? (
-              <Image
-                source={{ uri: `data:image/jpeg;base64,${faceImage}` }}
-                style={styles.faceImage}
-                resizeMode="contain"
-              />
-            ) : (
-              <ActivityIndicator size="large" color={pastelColors.primary} />
-            )}
+            <View style={styles.modalBody}>
+              {faceImage ? (
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={{ uri: `data:image/jpeg;base64,${faceImage}` }}
+                    style={styles.faceImage}
+                    resizeMode="contain"
+                  />
+                </View>
+              ) : (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="large" color="#667eea" />
+                  <Text style={styles.loadingImageText}>Loading image...</Text>
+                </View>
+              )}
+
+              <View style={styles.detailsCard}>
+                <View style={styles.detailRow}>
+                  <Ionicons name="calendar" size={18} color="#667eea" />
+                  <Text style={styles.detailLabel}>Added:</Text>
+                  <Text style={styles.detailValue}>
+                    {selectedFace && new Date(selectedFace.added_at).toLocaleDateString('en-US', {
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </Text>
+                </View>
+                <View style={styles.detailRow}>
+                  <Ionicons name="time" size={18} color="#667eea" />
+                  <Text style={styles.detailLabel}>Time:</Text>
+                  <Text style={styles.detailValue}>
+                    {selectedFace && new Date(selectedFace.added_at).toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </Text>
+                </View>
+              </View>
+            </View>
 
             <TouchableOpacity
-              style={styles.closeButton}
               onPress={() => {
                 setSelectedFace(null);
                 setFaceImage(null);
@@ -302,10 +406,16 @@ export default function FaceManagementScreen() {
               accessibilityRole="button"
               accessibilityLabel="Close"
             >
-              <Text style={styles.closeButtonText}>Close</Text>
+              <LinearGradient
+                colors={['#667eea', '#764ba2']}
+                style={styles.closeButton}
+              >
+                <Ionicons name="close-circle-outline" size={24} color="#fff" />
+                <Text style={styles.closeButtonText}>Close</Text>
+              </LinearGradient>
             </TouchableOpacity>
           </View>
-        </View>
+        </BlurView>
       </Modal>
 
       {/* Edit Name Modal */}
@@ -315,45 +425,65 @@ export default function FaceManagementScreen() {
         transparent={true}
         onRequestClose={() => setShowEditModal(false)}
       >
-        <View style={styles.modalOverlay}>
+        <BlurView intensity={90} style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Edit Name</Text>
+            <LinearGradient
+              colors={['#f093fb', '#f5576c']}
+              style={styles.modalHeader}
+            >
+              <Ionicons name="create-outline" size={28} color="#fff" />
+              <Text style={styles.modalTitle}>Edit Name</Text>
+            </LinearGradient>
 
-            <Text style={styles.inputLabel}>Person's Name:</Text>
-            <TextInput
-              style={styles.textInput}
-              value={newName}
-              onChangeText={setNewName}
-              placeholder="Enter name"
-              autoFocus
-              accessibilityLabel="Person's name"
-              accessibilityHint="Enter new name for this person"
-            />
+            <View style={styles.modalBody}>
+              <Text style={styles.inputLabel}>Person's Name</Text>
+              <View style={styles.inputContainer}>
+                <Ionicons name="person-outline" size={20} color="#667eea" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.textInput}
+                  value={newName}
+                  onChangeText={setNewName}
+                  placeholder="Enter name"
+                  placeholderTextColor="#999"
+                  autoFocus
+                  accessibilityLabel="Person's name"
+                />
+              </View>
+            </View>
 
             <View style={styles.modalButtons}>
               <TouchableOpacity
-                style={[styles.modalButton, styles.cancelButton]}
                 onPress={() => {
                   setShowEditModal(false);
                   Speech.speak('Cancelled');
                 }}
                 accessibilityRole="button"
                 accessibilityLabel="Cancel"
+                style={styles.modalButtonWrapper}
               >
-                <Text style={styles.modalButtonText}>Cancel</Text>
+                <View style={styles.cancelButton}>
+                  <Ionicons name="close-circle-outline" size={20} color="#666" />
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </View>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.modalButton, styles.saveButton]}
                 onPress={updateFaceName}
                 accessibilityRole="button"
                 accessibilityLabel="Save changes"
+                style={styles.modalButtonWrapper}
               >
-                <Text style={styles.modalButtonText}>Save</Text>
+                <LinearGradient
+                  colors={['#50c878', '#3bb55f']}
+                  style={styles.saveButton}
+                >
+                  <Ionicons name="checkmark-circle-outline" size={20} color="#fff" />
+                  <Text style={styles.saveButtonText}>Save</Text>
+                </LinearGradient>
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </BlurView>
       </Modal>
     </View>
   );
@@ -362,183 +492,323 @@ export default function FaceManagementScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: pastelColors.background,
+    backgroundColor: '#f5f7fa',
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: pastelColors.background,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    backgroundColor: '#f5f7fa',
     padding: 20,
-    paddingTop: 50,
-    backgroundColor: pastelColors.cardBackground,
-    borderBottomWidth: 1,
-    borderBottomColor: pastelColors.border,
   },
-  backButton: {
-    marginRight: 15,
-  },
-  backButtonText: {
-    fontSize: 18,
-    color: pastelColors.primary,
-    fontWeight: '600',
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: pastelColors.text,
+  loadingGradient: {
+    padding: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    gap: 15,
   },
   loadingText: {
-    marginTop: 10,
     fontSize: 16,
-    color: pastelColors.textSecondary,
+    color: '#fff',
+    fontWeight: '600',
+  },
+  header: {
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  refreshButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
+    flex: 1,
+    textAlign: 'center',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    gap: 8,
+  },
+  statText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 30,
+    padding: 40,
+  },
+  emptyCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 30,
   },
   emptyText: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: pastelColors.text,
-    marginBottom: 10,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2c3e50',
+    marginBottom: 12,
+    textAlign: 'center',
   },
   emptySubtext: {
     fontSize: 16,
-    color: pastelColors.textSecondary,
+    color: '#7f8c8d',
     textAlign: 'center',
+    lineHeight: 24,
   },
   listContainer: {
-    padding: 15,
+    padding: 20,
+    paddingBottom: 40,
   },
   faceCard: {
-    backgroundColor: pastelColors.cardBackground,
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 15,
+    marginBottom: 20,
+    borderRadius: 20,
+    overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
   },
-  faceInfo: {
-    marginBottom: 12,
+  cardGradient: {
+    padding: 20,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  avatarCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  cardInfo: {
+    flex: 1,
   },
   faceName: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: pastelColors.text,
-    marginBottom: 5,
+    color: '#fff',
+    marginBottom: 6,
+  },
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   faceDate: {
     fontSize: 14,
-    color: pastelColors.textSecondary,
+    color: 'rgba(255, 255, 255, 0.9)',
   },
   actionButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: 12,
   },
   actionButton: {
     flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    marginHorizontal: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    borderRadius: 12,
+    paddingVertical: 12,
     alignItems: 'center',
   },
-  viewButton: {
-    backgroundColor: pastelColors.primary,
-  },
-  editButton: {
-    backgroundColor: pastelColors.warning,
-  },
-  deleteButton: {
-    backgroundColor: pastelColors.danger,
+  actionButtonContent: {
+    alignItems: 'center',
+    gap: 4,
   },
   actionButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
+    color: '#fff',
+    fontSize: 13,
     fontWeight: '600',
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: pastelColors.cardBackground,
-    borderRadius: 15,
-    padding: 25,
-    width: '85%',
-    maxHeight: '80%',
+    width: width * 0.9,
+    maxWidth: 400,
+    backgroundColor: '#fff',
+    borderRadius: 24,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    gap: 12,
   },
   modalTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: pastelColors.text,
+    color: '#fff',
+  },
+  modalBody: {
+    padding: 20,
+  },
+  imageContainer: {
+    borderRadius: 16,
+    overflow: 'hidden',
     marginBottom: 20,
-    textAlign: 'center',
+    backgroundColor: '#f5f7fa',
   },
   faceImage: {
     width: '100%',
-    height: 300,
-    borderRadius: 10,
-    marginBottom: 20,
+    height: 320,
+  },
+  loadingContainer: {
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 12,
+  },
+  loadingImageText: {
+    fontSize: 14,
+    color: '#7f8c8d',
+  },
+  detailsCard: {
+    backgroundColor: '#f5f7fa',
+    borderRadius: 12,
+    padding: 16,
+    gap: 12,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  detailLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#2c3e50',
+  },
+  detailValue: {
+    fontSize: 15,
+    color: '#7f8c8d',
+    flex: 1,
   },
   inputLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: pastelColors.text,
-    marginBottom: 8,
+    color: '#2c3e50',
+    marginBottom: 12,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f5f7fa',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    borderWidth: 2,
+    borderColor: '#e0e6ed',
+  },
+  inputIcon: {
+    marginRight: 12,
   },
   textInput: {
-    backgroundColor: pastelColors.background,
-    borderWidth: 1,
-    borderColor: pastelColors.border,
-    borderRadius: 8,
-    padding: 12,
+    flex: 1,
     fontSize: 16,
-    marginBottom: 20,
+    color: '#2c3e50',
+    paddingVertical: 14,
   },
   modalButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    padding: 20,
+    paddingTop: 0,
+    gap: 12,
   },
-  modalButton: {
+  modalButtonWrapper: {
     flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    marginHorizontal: 5,
-    alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: pastelColors.textSecondary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f5f7fa',
+    paddingVertical: 14,
+    borderRadius: 12,
+    gap: 8,
+    borderWidth: 2,
+    borderColor: '#e0e6ed',
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
   },
   saveButton: {
-    backgroundColor: pastelColors.success,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    borderRadius: 12,
+    gap: 8,
   },
-  modalButtonText: {
-    color: '#FFFFFF',
+  saveButtonText: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#fff',
   },
   closeButton: {
-    backgroundColor: pastelColors.primary,
-    paddingVertical: 12,
-    borderRadius: 8,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    margin: 20,
+    marginTop: 0,
+    paddingVertical: 14,
+    borderRadius: 12,
+    gap: 8,
   },
   closeButtonText: {
-    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+    color: '#fff',
   },
 });
