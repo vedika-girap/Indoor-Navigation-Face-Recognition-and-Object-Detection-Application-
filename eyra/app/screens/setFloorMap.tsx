@@ -5,7 +5,8 @@ import * as Speech from 'expo-speech';
 import { useState } from 'react';
 import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { RootStackParamList } from '../navigator/appNavigator';
-const BACKEND_URL = Constants.backendUrl ;
+import { API_ENDPOINTS } from '../config/api';
+import { colors } from '../theme';
 
 type SetFloorMapNavigationProp = NativeStackNavigationProp<RootStackParamList, 'SetFloorMap'>;
 
@@ -61,7 +62,7 @@ export default function SetFloorMap({ navigation }: SetFloorMapProps) {
       } as any);
 
       // Replace with your actual backend URL
-      const uploadResponse = await fetch(`${BACKEND_URL}/upload_floor_map`, {
+      const uploadResponse = await fetch(API_ENDPOINTS.uploadFloorMap, {
         method: 'POST',
         body: formData,
         // Do NOT set Content-Type header; fetch sets it automatically for multipart/form-data
@@ -129,14 +130,14 @@ export default function SetFloorMap({ navigation }: SetFloorMapProps) {
 }
 
 const pastelColors = {
-  background: '#E8F0F2',
-  cardBackground: '#F8F2F7',
-  buttonBackground: '#A3D2CA',
+  background: colors.background,
+  cardBackground: colors.cardBackground,
+  buttonBackground: colors.secondary,
   buttonDisabledBackground: '#c5dacf',
-  textPrimary: '#20639B',
-  textSecondary: '#395B64',
-  placeholderBackground: '#D6DBD2',
-  borderColor: '#2F5061',
+  textPrimary: colors.primary,
+  textSecondary: colors.muted,
+  placeholderBackground: colors.border,
+  borderColor: colors.border,
 };
 
 const styles = StyleSheet.create({

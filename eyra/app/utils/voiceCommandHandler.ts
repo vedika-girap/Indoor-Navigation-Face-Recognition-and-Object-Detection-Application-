@@ -1,6 +1,6 @@
 import { Router } from 'expo-router';
 import * as Speech from 'expo-speech';
-import { Alert } from 'react-native';
+import { Alert, Platform, ToastAndroid } from 'react-native';
 import { VoiceCommand } from '../components/wakewordDetection';
 
 export interface VoiceCommandHandlerContext {
@@ -16,6 +16,9 @@ export const handleVoiceCommand = async (
 ) => {
   const { router, onSaveImage, onDetect, onUpload } = context;
 
+  // Log incoming command and available context for debugging
+  console.log('🟢 handleVoiceCommand invoked', { command, hasRouter: !!router, hasSave: !!onSaveImage, hasDetect: !!onDetect, hasUpload: !!onUpload });
+
   switch (command.action) {
     case 'save_image':
       if (onSaveImage) {
@@ -30,16 +33,28 @@ export const handleVoiceCommand = async (
     case 'navigate':
       if (router && command.params?.destination) {
         const destination = command.params.destination;
+        console.log(`➡️ Voice navigation requested to: ${destination}`);
         Speech.speak(`Navigating to ${getReadableScreenName(destination)}`);
-        
         try {
           const route = getRouteFromScreenName(destination);
+          console.log('🔗 Resolved route:', route);
+          // Attempt navigation
           router.push(route as any);
+          console.log('✅ Navigation pushed to route:', route);
+          // Lightweight UI feedback: toast on Android, alert fallback on iOS
+          const msg = `Navigated to ${getReadableScreenName(destination)}`;
+          if (Platform.OS === 'android') {
+            ToastAndroid.show(msg, ToastAndroid.SHORT);
+          } else {
+            // non-blocking alert as fallback
+            Alert.alert('Navigation', msg);
+          }
         } catch (error) {
-          console.error('Navigation error:', error);
+          console.error('❌ Navigation error:', error);
           Speech.speak('Unable to navigate to that screen');
         }
       } else {
+        console.warn('⚠️ Navigation requested but router or destination missing', { routerPresent: !!router, destination: command.params?.destination });
         Speech.speak('Navigation is not available');
       }
       break;

@@ -1,6 +1,6 @@
-opencv-python
+opencv-python<4.10
 face-recognition
-numpy
+numpy<2.0,>=1.24.0
 dlib
 vosk== 0.3.45
 sounddevice== 0.5.2
@@ -11,3 +11,6 @@ playsound== 1.2.2
 fastapi
 uvicorn
 python-multipart
+pytesseract
+pillow
+easyocr

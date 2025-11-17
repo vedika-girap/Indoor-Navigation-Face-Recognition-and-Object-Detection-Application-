@@ -15,19 +15,19 @@ import {
 import { useRouter } from 'expo-router';
 import * as Speech from 'expo-speech';
 import { DEMO_USER_ID } from '../constants/user';
-
-const API_BASE_URL = 'http://10.231.226.100:8000';
+import { API_ENDPOINTS } from '../config/api';
+import { colors } from '../theme';
 
 const pastelColors = {
-  background: '#F0F4F8',
-  cardBackground: '#FFFFFF',
-  primary: '#4A90E2',
-  success: '#50C878',
-  danger: '#E74C3C',
-  warning: '#FFB74D',
-  text: '#2C3E50',
-  textSecondary: '#7F8C8D',
-  border: '#E0E6ED',
+  background: colors.background,
+  cardBackground: colors.cardBackground,
+  primary: colors.primary,
+  success: colors.success,
+  danger: colors.danger,
+  warning: colors.accent,
+  text: colors.text,
+  textSecondary: colors.muted,
+  border: colors.border,
 };
 
 interface SavedFace {
@@ -55,12 +55,17 @@ export default function FaceManagementScreen() {
   useEffect(() => {
     Speech.speak('Face management. Swipe down to refresh the list.');
     loadFaces();
+    
+    // Cleanup: Stop speech when leaving screen
+    return () => {
+      Speech.stop();
+    };
   }, []);
 
   const loadFaces = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/user_faces/list/${userId}`);
+      const response = await fetch(API_ENDPOINTS.listUserFaces(userId));
       const data = await response.json();
 
       if (data.success) {
@@ -86,7 +91,7 @@ export default function FaceManagementScreen() {
   const viewFaceDetails = async (face: SavedFace) => {
     try {
       Speech.speak(`Loading details for ${face.face_name}`);
-      const response = await fetch(`${API_BASE_URL}/user_faces/get/${userId}/${face.face_id}`);
+      const response = await fetch(API_ENDPOINTS.getUserFace(userId, face.face_id));
       const data = await response.json();
 
       if (data.success) {
@@ -111,7 +116,7 @@ export default function FaceManagementScreen() {
           onPress: async () => {
             try {
               const response = await fetch(
-                `${API_BASE_URL}/user_faces/delete/${userId}/${face.face_id}`,
+                API_ENDPOINTS.deleteUserFace(userId, face.face_id),
                 { method: 'DELETE' }
               );
               const data = await response.json();
@@ -150,7 +155,7 @@ export default function FaceManagementScreen() {
       formData.append('face_name', newName.trim());
 
       const response = await fetch(
-        `${API_BASE_URL}/user_faces/update/${userId}/${selectedFace.face_id}`,
+        API_ENDPOINTS.updateUserFace(userId, selectedFace.face_id),
         {
           method: 'PUT',
           body: formData,

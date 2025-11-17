@@ -13,17 +13,18 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as Speech from 'expo-speech';
 import { DEMO_USER_ID } from '../constants/user';
+import { colors } from '../theme';
 
 const pastelColors = {
-  background: '#F0F4F8',
-  cardBackground: '#FFFFFF',
-  primary: '#4A90E2',
-  success: '#50C878',
-  danger: '#E74C3C',
-  warning: '#FFB74D',
-  text: '#2C3E50',
-  textSecondary: '#7F8C8D',
-  border: '#E0E6ED',
+  background: colors.background,
+  cardBackground: colors.cardBackground,
+  primary: colors.primary,
+  success: colors.success,
+  danger: colors.danger,
+  warning: colors.accent,
+  text: colors.text,
+  textSecondary: colors.muted,
+  border: colors.border,
 };
 
 interface CapturedWaypoint {

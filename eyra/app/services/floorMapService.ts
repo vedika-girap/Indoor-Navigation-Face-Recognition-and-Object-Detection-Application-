@@ -7,12 +7,10 @@
  * - Works offline once maps are downloaded
  */
 
-import Constants from 'expo-constants';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system/legacy';
 import { Alert } from 'react-native';
-
-const BACKEND_URL = Constants.expoConfig?.extra?.backendUrl || 'http://10.231.226.100:8000';
+import { API_ENDPOINTS } from '../config/api';
 
 // Directory for storing floor maps in Expo app
 const BASE_DIR = FileSystem.documentDirectory ?? FileSystem.cacheDirectory ?? '';
@@ -131,7 +129,7 @@ export async function addFloorMap(
     );
 
     console.log('☁️ Syncing metadata to server...');
-    const response = await fetch(`${BACKEND_URL}/floor_maps/add`, {
+    const response = await fetch(API_ENDPOINTS.addFloorMap, {
       method: 'POST',
       body: formData,
     });
@@ -157,7 +155,7 @@ export async function addFloorMap(
 export async function listFloorMaps(userId: string): Promise<FloorMap[]> {
   try {
     console.log('📋 Fetching floor maps for user:', userId);
-    const response = await fetch(`${BACKEND_URL}/floor_maps/list/${userId}`);
+    const response = await fetch(API_ENDPOINTS.listFloorMaps(userId));
     const data = await response.json();
 
     if (data.success) {
@@ -181,7 +179,7 @@ export async function getFloorMap(
 ): Promise<FloorMap | null> {
   try {
     console.log('🔍 Fetching floor map:', mapId);
-    const response = await fetch(`${BACKEND_URL}/floor_maps/get/${userId}/${mapId}`);
+    const response = await fetch(API_ENDPOINTS.getFloorMap(userId, mapId));
     const data = await response.json();
 
     if (data.success) {
@@ -215,6 +213,11 @@ export async function getFloorMap(
   }
 }
 
+// Default export placeholder so Expo Router won't treat this service file as a screen route
+export default function FloorMapServicePlaceholder(): null {
+  return null;
+}
+
 /**
  * Update floor map metadata (name, building, floor)
  */
@@ -237,7 +240,7 @@ export async function updateFloorMapMetadata(
 
     console.log('🔄 Updating floor map metadata...');
     const response = await fetch(
-      `${BACKEND_URL}/floor_maps/update_metadata/${userId}/${mapId}`,
+      API_ENDPOINTS.updateFloorMapMetadata(userId, mapId),
       { method: 'POST', body: formData }
     );
 
@@ -295,7 +298,7 @@ export async function processFloorMap(
     formData.append('user_id', userId);
     formData.append('map_id', map.map_id);
 
-    const response = await fetch(`${BACKEND_URL}/floor_maps/process`, {
+    const response = await fetch(API_ENDPOINTS.processFloorMap, {
       method: 'POST',
       body: formData,
       headers: {
@@ -339,7 +342,7 @@ export async function deleteFloorMap(
       // Delete from server
       console.log('🗑️ Permanently deleting from server...');
       const response = await fetch(
-        `${BACKEND_URL}/floor_maps/delete_permanent/${userId}/${mapId}`,
+        API_ENDPOINTS.deleteFloorMapPermanent(userId, mapId),
         { method: 'DELETE' }
       );
 
@@ -363,7 +366,7 @@ export async function deleteFloorMap(
       // Soft delete (mark as inactive)
       console.log('🗑️ Soft deleting floor map...');
       const response = await fetch(
-        `${BACKEND_URL}/floor_maps/delete/${userId}/${mapId}`,
+        API_ENDPOINTS.deleteFloorMap(userId, mapId),
         { method: 'DELETE' }
       );
 
@@ -389,7 +392,7 @@ export async function deleteFloorMap(
 export async function getFloorMapStats(userId: string): Promise<FloorMapStats | null> {
   try {
     console.log('📊 Fetching floor map statistics...');
-    const response = await fetch(`${BACKEND_URL}/floor_maps/stats/${userId}`);
+    const response = await fetch(API_ENDPOINTS.getFloorMapStats(userId));
     const data = await response.json();
 
     if (data.success) {

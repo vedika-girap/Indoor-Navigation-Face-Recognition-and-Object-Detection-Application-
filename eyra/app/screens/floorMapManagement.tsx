@@ -21,6 +21,7 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import type { FloorMap, FloorMapStats } from '../services/floorMapService';
 import * as FloorMapService from '../services/floorMapService';
 import { DEMO_USER_ID } from '../constants/user';
+import { colors } from '../theme';
 
 export default function FloorMapManagement() {
   const router = useRouter();
@@ -206,10 +207,10 @@ export default function FloorMapManagement() {
 
       <View style={styles.mapActions}>
         <TouchableOpacity onPress={() => openEditModal(item)} style={styles.actionButton}>
-          <Ionicons name="pencil" size={20} color="#007AFF" />
+          <Ionicons name="pencil" size={20} color={colors.primary} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleDeleteMap(item)} style={styles.actionButton}>
-          <Ionicons name="trash" size={20} color="#FF3B30" />
+          <Ionicons name="trash" size={20} color={colors.danger} />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
@@ -375,12 +376,12 @@ export default function FloorMapManagement() {
       {/* Bottom Actions */}
       <View style={styles.bottomActions}>
         <TouchableOpacity style={styles.bottomButton} onPress={handleCleanup}>
-          <Ionicons name="trash-bin-outline" size={20} color="#007AFF" />
+          <Ionicons name="trash-bin-outline" size={20} color={colors.primary} />
           <Text style={styles.bottomButtonText}>Cleanup</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.bottomButton} onPress={handleExport}>
-          <Ionicons name="download-outline" size={20} color="#007AFF" />
+          <Ionicons name="download-outline" size={20} color={colors.primary} />
           <Text style={styles.bottomButtonText}>Export</Text>
         </TouchableOpacity>
       </View>
@@ -394,10 +395,10 @@ export default function FloorMapManagement() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.background,
   },
   header: {
-    backgroundColor: 'white',
+    backgroundColor: colors.cardBackground,
     padding: 20,
     marginBottom: 10,
   },
@@ -416,7 +417,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#007AFF',
+    color: colors.primary,
   },
   statLabel: {
     fontSize: 12,
@@ -441,7 +442,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 8,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.border,
   },
   mapInfo: {
     flex: 1,
@@ -454,12 +455,12 @@ const styles = StyleSheet.create({
   },
   mapDetail: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 2,
   },
   mapDate: {
     fontSize: 12,
-    color: '#999',
+    color: colors.muted,
   },
   mapActions: {
     flexDirection: 'row',
@@ -480,12 +481,12 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#999',
+    color: colors.muted,
     marginTop: 16,
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#BBB',
+    color: colors.muted,
     marginTop: 8,
   },
   fab: {
@@ -495,7 +496,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#007AFF',
+  backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -510,7 +511,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: colors.border,
     justifyContent: 'space-around',
   },
   bottomButton: {
@@ -521,7 +522,7 @@ const styles = StyleSheet.create({
   bottomButtonText: {
     marginLeft: 6,
     fontSize: 14,
-    color: '#007AFF',
+    color: colors.primary,
     fontWeight: '500',
   },
   modalContainer: {
@@ -531,7 +532,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: colors.cardBackground,
     borderRadius: 16,
     padding: 24,
     width: '85%',
@@ -545,7 +546,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#DDD',
+    borderColor: colors.border,
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
@@ -564,7 +565,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: '#F0F0F0',
+    backgroundColor: colors.background,
   },
   cancelButtonText: {
     color: '#333',
@@ -572,7 +573,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   addButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
   },
   addButtonText: {
     color: 'white',

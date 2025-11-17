@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, ScrollView, Button, StyleSheet, Alert, TextInput, TouchableOpacity } from 'react-native';
 import * as FileSystem from 'expo-file-system/legacy';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Constants from 'expo-constants';
 import { addFloorMap } from '../services/floorMapService';
 import { DEMO_USER_ID } from '../constants/user';
+import { API_BASE_URL, API_ENDPOINTS } from '../config/api';
 
-const BACKEND_URL = Constants.expoConfig?.extra?.backendUrl || 'http://10.231.226.100:8000';
+const colors = {
+  secondary: '#3b82f6',
+  danger: '#ef4444',
+  border: '#e5e7eb',
+  cardBackground: '#ffffff',
+  text: '#111827',
+  muted: '#6b7280',
+};
 
 export default function ProcessedMapViewer() {
   const params = useLocalSearchParams();
@@ -15,6 +23,9 @@ export default function ProcessedMapViewer() {
   const original = params.original ? JSON.parse(params.original as string) : null;
   const [saving, setSaving] = useState(false);
   const [imageUri, setImageUri] = useState<string>('');
+  const [editMode, setEditMode] = useState(false);
+  const [editedLabels, setEditedLabels] = useState<any[]>([]);
+  const [updating, setUpdating] = useState(false);
   const userId = DEMO_USER_ID;
 
   useEffect(() => {
@@ -27,6 +38,10 @@ export default function ProcessedMapViewer() {
       labels_count: processed?.labels?.length || 0,
     });
     loadImage();
+    // Initialize edited labels
+    if (processed?.labels) {
+      setEditedLabels(processed.labels.map((l: any) => ({ ...l })));
+    }
   }, []);
 
   const loadImage = async () => {
@@ -173,8 +188,8 @@ export default function ProcessedMapViewer() {
         })
       );
 
-      console.log('Saving to backend URL:', BACKEND_URL);
-      const response = await fetch(`${BACKEND_URL}/floor_maps/add`, {
+      console.log('Saving to backend URL:', API_BASE_URL);
+      const response = await fetch(API_ENDPOINTS.addFloorMap, {
         method: 'POST',
         body: formData,
       });
@@ -209,6 +224,85 @@ export default function ProcessedMapViewer() {
     }
   };
 
+  const updateLabels = async () => {
+    try {
+      setUpdating(true);
+      
+      // Build the updates array
+      const updates = editedLabels.map((label, idx) => ({
+        old_label: labels[idx]?.label || `room_${idx + 1}`,
+        new_label: label.label,
+        bbox: label.bbox,
+      }));
+
+      console.log('Updating labels:', updates);
+
+      const mapId = processed.map_id || original?.map_id;
+      if (!mapId) {
+        throw new Error('No map ID available');
+      }
+
+      const formData = new FormData();
+      formData.append('labels', JSON.stringify(updates));
+
+      const response = await fetch(
+        API_ENDPOINTS.updateFloorMapLabels(userId, mapId),
+        {
+          method: 'PUT',
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Server error: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      setUpdating(false);
+
+      if (data.success) {
+        Alert.alert(
+          'Success!',
+          `Updated ${data.updated_labels?.length || updates.length} room labels`,
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                setEditMode(false);
+                // Update the processed labels
+                if (processed) {
+                  processed.labels = editedLabels;
+                }
+              },
+            },
+          ]
+        );
+      } else {
+        Alert.alert('Error', data.message || 'Failed to update labels');
+      }
+    } catch (e) {
+      setUpdating(false);
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      console.error('Update labels error:', errorMessage, e);
+      Alert.alert('Error', `Failed to update labels: ${errorMessage}`);
+    }
+  };
+
+  const handleLabelChange = (index: number, newLabel: string) => {
+    const updated = [...editedLabels];
+    updated[index] = { ...updated[index], label: newLabel };
+    setEditedLabels(updated);
+  };
+
+  const toggleEditMode = () => {
+    if (editMode) {
+      // Exiting edit mode - reset to original labels
+      setEditedLabels(labels.map((l: any) => ({ ...l })));
+    }
+    setEditMode(!editMode);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Processed Map{isSaved ? ' (Saved)' : ''}</Text>
@@ -222,16 +316,97 @@ export default function ProcessedMapViewer() {
       )}
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Detected Regions ({labels.length})</Text>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Detected Regions ({labels.length})</Text>
+          <TouchableOpacity
+            onPress={toggleEditMode}
+            style={[styles.editButton, editMode && styles.editButtonActive]}
+          >
+            <Text style={[styles.editButtonText, editMode && styles.editButtonTextActive]}>
+              {editMode ? '✕ Cancel' : '✏️ Edit Labels'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         {labels.length === 0 ? (
           <Text style={{ color: '#666' }}>No regions detected</Text>
         ) : (
-          labels.map((l: any, idx: number) => (
-            <View key={idx} style={styles.labelRow}>
-              <Text style={styles.labelText}>{l.label}</Text>
-              <Text style={styles.meta}>{`area: ${Math.round(l.area)}`}</Text>
-            </View>
-          ))
+          <>
+            {(editMode ? editedLabels : labels).map((l: any, idx: number) => (
+              <View key={idx} style={styles.labelRow}>
+                <View style={styles.labelInfo}>
+                  {/* OCR/Auto indicator */}
+                  <View
+                    style={[
+                      styles.labelBadge,
+                      l.text_extracted ? styles.ocrBadge : styles.autoBadge,
+                    ]}
+                  >
+                    <Text style={styles.badgeText}>
+                      {l.text_extracted ? 'OCR' : 'AUTO'}
+                    </Text>
+                  </View>
+
+                  {/* Label text or input */}
+                  {editMode ? (
+                    <TextInput
+                      style={styles.labelInput}
+                      value={editedLabels[idx]?.label || ''}
+                      onChangeText={(text) => handleLabelChange(idx, text)}
+                      placeholder={`Room ${idx + 1}`}
+                      placeholderTextColor="#999"
+                    />
+                  ) : (
+                    <Text style={styles.labelText}>{l.label}</Text>
+                  )}
+                </View>
+
+                {/* Metadata */}
+                <View style={styles.metaContainer}>
+                  <Text style={styles.meta}>{`Area: ${Math.round(l.area)}`}</Text>
+                  {l.ocr_confidence > 0 && (
+                    <Text style={styles.meta}>{`Conf: ${l.ocr_confidence}%`}</Text>
+                  )}
+                </View>
+              </View>
+            ))}
+
+            {/* Update button in edit mode */}
+            {editMode && (
+              <TouchableOpacity
+                style={styles.updateButton}
+                onPress={updateLabels}
+                disabled={updating}
+              >
+                <Text style={styles.updateButtonText}>
+                  {updating ? '⟳ Updating...' : '✓ Update Labels'}
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            {/* Stats section */}
+            {processed?.stats && (
+              <View style={styles.statsContainer}>
+                <Text style={styles.statsTitle}>Detection Statistics</Text>
+                <View style={styles.statsRow}>
+                  <Text style={styles.statsLabel}>Total Rooms:</Text>
+                  <Text style={styles.statsValue}>{processed.stats.total_rooms}</Text>
+                </View>
+                <View style={styles.statsRow}>
+                  <Text style={styles.statsLabel}>OCR Labeled:</Text>
+                  <Text style={[styles.statsValue, styles.ocrColor]}>
+                    {processed.stats.ocr_labeled}
+                  </Text>
+                </View>
+                <View style={styles.statsRow}>
+                  <Text style={styles.statsLabel}>Auto Labeled:</Text>
+                  <Text style={[styles.statsValue, styles.autoColor]}>
+                    {processed.stats.auto_labeled}
+                  </Text>
+                </View>
+              </View>
+            )}
+          </>
         )}
       </View>
 
@@ -307,20 +482,146 @@ const styles = StyleSheet.create({
   title: { fontSize: 18, fontWeight: '700', marginBottom: 12 },
   image: { width: '100%', height: 400, backgroundColor: '#eee', justifyContent: 'center', alignItems: 'center' },
   section: { width: '100%', marginTop: 12 },
-  sectionTitle: { fontSize: 16, fontWeight: '600', marginBottom: 8 },
-  labelRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: 1, borderColor: '#f0f0f0' },
-  labelText: { fontWeight: '600' },
-  meta: { color: '#666' },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  sectionTitle: { fontSize: 16, fontWeight: '600' },
+  editButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: colors.secondary,
+    borderRadius: 16,
+  },
+  editButtonActive: {
+    backgroundColor: colors.danger,
+  },
+  editButtonText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  editButtonTextActive: {
+    color: '#fff',
+  },
+  labelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    borderBottomWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.cardBackground,
+    marginBottom: 4,
+    borderRadius: 6,
+  },
+  labelInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  labelBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+    minWidth: 40,
+    alignItems: 'center',
+  },
+  ocrBadge: {
+    backgroundColor: colors.secondary,
+  },
+  autoBadge: {
+    backgroundColor: colors.secondary,
+  },
+  badgeText: {
+    color: '#fff',
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  labelInput: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '600',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    backgroundColor: colors.cardBackground,
+    borderWidth: 1,
+    borderColor: colors.secondary,
+    borderRadius: 6,
+    color: colors.text,
+  },
+  labelText: { fontSize: 15, fontWeight: '600', flex: 1, color: colors.text },
+  metaContainer: {
+    alignItems: 'flex-end',
+  },
+  meta: { color: '#666', fontSize: 11 },
+  updateButton: {
+  backgroundColor: colors.secondary,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginTop: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  updateButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  statsContainer: {
+    backgroundColor: colors.cardBackground,
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  statsTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.text,
+    marginBottom: 8,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 4,
+  },
+  statsLabel: {
+    fontSize: 13,
+    color: colors.muted,
+  },
+  statsValue: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  ocrColor: {
+    color: colors.secondary,
+  },
+  autoColor: {
+    color: colors.secondary,
+  },
   savedInfo: {
     backgroundColor: '#E8F5F3',
     padding: 12,
     borderRadius: 8,
     marginVertical: 12,
     borderLeftWidth: 4,
-    borderLeftColor: '#4BE6DA',
+    borderLeftColor: colors.secondary,
   },
   savedInfoText: {
-    color: '#2F5061',
+    color: colors.text,
     fontSize: 14,
     fontWeight: '500',
   },

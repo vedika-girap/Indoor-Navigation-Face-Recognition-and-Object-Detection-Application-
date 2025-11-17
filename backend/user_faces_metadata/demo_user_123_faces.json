@@ -54,6 +54,136 @@
       },
       "added_at": "2025-11-06T07:31:01.746480",
       "last_updated": "2025-11-06T07:31:01.746480",
+      "is_active": false,
+      "deleted_at": "2025-11-12T12:15:37.609502"
+    },
+    {
+      "face_id": "face_1762415777162_jcw5n",
+      "face_name": "Rohan",
+      "image_path": "user_face_images\\demo_user_123\\face_1762415777162_jcw5n.jpg",
+      "image_filename": "face_1762415777162_jcw5n.jpg",
+      "metadata": {
+        "bounding_box": [
+          1020,
+          1685,
+          1686,
+          1019
+        ],
+        "confidence": null
+      },
+      "added_at": "2025-11-06T13:26:24.263896",
+      "last_updated": "2025-11-06T13:26:24.263896",
+      "is_active": true
+    },
+    {
+      "face_id": "face_1762415867394_09au7g",
+      "face_name": "Sameeksha",
+      "image_path": "user_face_images\\demo_user_123\\face_1762415867394_09au7g.jpg",
+      "image_filename": "face_1762415867394_09au7g.jpg",
+      "metadata": {
+        "bounding_box": [
+          1454,
+          1133,
+          1775,
+          812
+        ],
+        "confidence": null
+      },
+      "added_at": "2025-11-06T13:27:54.740186",
+      "last_updated": "2025-11-06T13:27:54.740186",
+      "is_active": false,
+      "deleted_at": "2025-11-11T15:39:43.930897"
+    },
+    {
+      "face_id": "face_1762855860336_xgz5dk",
+      "face_name": "Santosh",
+      "image_path": "user_face_images\\demo_user_123\\face_1762855860336_xgz5dk.jpg",
+      "image_filename": "face_1762855860336_xgz5dk.jpg",
+      "metadata": {
+        "bounding_box": [
+          911,
+          1650,
+          1466,
+          1096
+        ],
+        "confidence": 0.4096448161486105
+      },
+      "added_at": "2025-11-11T15:41:03.943725",
+      "last_updated": "2025-11-11T15:41:03.943725",
+      "is_active": true
+    },
+    {
+      "face_id": "face_1762855960782_cuvk9",
+      "face_name": "Sinchana",
+      "image_path": "user_face_images\\demo_user_123\\face_1762855960782_cuvk9.jpg",
+      "image_filename": "face_1762855960782_cuvk9.jpg",
+      "metadata": {
+        "bounding_box": [
+          354,
+          1463,
+          1020,
+          798
+        ],
+        "confidence": null
+      },
+      "added_at": "2025-11-11T15:42:52.491441",
+      "last_updated": "2025-11-11T15:42:52.491441",
+      "is_active": false,
+      "deleted_at": "2025-11-11T15:43:30.585815"
+    },
+    {
+      "face_id": "face_1762856036881_2o8tbm",
+      "face_name": "Sinchana",
+      "image_path": "user_face_images\\demo_user_123\\face_1762856036881_2o8tbm.jpg",
+      "image_filename": "face_1762856036881_2o8tbm.jpg",
+      "metadata": {
+        "bounding_box": [
+          781,
+          1845,
+          1579,
+          1046
+        ],
+        "confidence": null
+      },
+      "added_at": "2025-11-11T15:44:08.973545",
+      "last_updated": "2025-11-11T15:44:08.973545",
+      "is_active": true
+    },
+    {
+      "face_id": "face_1763024979131_dr9dz",
+      "face_name": "Sameeksha",
+      "image_path": "user_face_images\\demo_user_123\\face_1763024979131_dr9dz.jpg",
+      "image_filename": "face_1763024979131_dr9dz.jpg",
+      "metadata": {
+        "bounding_box": [
+          217,
+          464,
+          440,
+          241
+        ],
+        "confidence": null
+      },
+      "added_at": "2025-11-13T14:39:38.055512",
+      "last_updated": "2025-11-13T14:41:49.282240",
+      "is_active": false,
+      "deleted_at": "2025-11-13T14:41:48.746397"
+    },
+    {
+      "face_id": "face_1763025618219_o097p",
+      "face_name": "Suvarna",
+      "image_path": "user_face_images\\demo_user_123\\face_1763025618219_o097p.jpg",
+      "image_filename": "face_1763025618219_o097p.jpg",
+      "metadata": {
+        "bounding_box": [
+          150,
+          373,
+          305,
+          218
+        ],
+        "confidence": null
+      },
+      "added_at": "2025-11-13T14:50:17.501973",
+      "last_updated": "2025-11-13T14:50:17.501973",
       "is_active": true
     }
   ]

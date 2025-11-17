@@ -10,6 +10,11 @@ const MainMenu = () => {
     const options = ['indoor navigation', 'manage floor maps', 'manage faces', 'process floor map', 'check your surrounding'];
     const speechText = `Available options are: ${options.join(', ')}. Please select an option.`;
     Speech.speak(speechText);
+    
+    // Cleanup: Stop speech when leaving screen
+    return () => {
+      Speech.stop();
+    };
   }, []);
 
   return (
@@ -17,8 +22,9 @@ const MainMenu = () => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
+          Speech.stop();
           Speech.speak('Indoor navigation selected');
-          router.push('/screens/indoorNavigation');
+          setTimeout(() => router.push('/screens/indoorNavigation'), 500);
         }}
         accessibilityLabel="Indoor navigation"
         accessibilityRole="button"
@@ -30,8 +36,9 @@ const MainMenu = () => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
+          Speech.stop();
           Speech.speak('Manage floor maps selected');
-          router.push('/screens/floorMapManagement');
+          setTimeout(() => router.push('/screens/floorMapManagement'), 500);
         }}
         accessibilityLabel="Manage floor maps"
         accessibilityRole="button"
@@ -43,8 +50,9 @@ const MainMenu = () => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
+          Speech.stop();
           Speech.speak('Manage faces selected');
-          router.push('/screens/faceManagement');
+          setTimeout(() => router.push('/screens/faceManagement'), 500);
         }}
         accessibilityLabel="Manage faces"
         accessibilityRole="button"
@@ -56,8 +64,9 @@ const MainMenu = () => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
+          Speech.stop();
           Speech.speak('Process floor map selected');
-          router.push('/screens/processFloorMap');
+          setTimeout(() => router.push('/screens/processFloorMap'), 500);
         }}
         accessibilityLabel="Process floor map"
         accessibilityRole="button"
@@ -69,8 +78,9 @@ const MainMenu = () => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
+          Speech.stop();
           Speech.speak('Check your surrounding selected');
-          router.push('/screens/normal');
+          setTimeout(() => router.push('/screens/normal'), 500);
         }}
         accessibilityLabel="Check your surrounding"
         accessibilityRole="button"

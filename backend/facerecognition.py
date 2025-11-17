@@ -2,12 +2,48 @@ import cv2
 import face_recognition
 import numpy as np
 import os
+import time
 
 DATASET_DIR = "faces"
 os.makedirs(DATASET_DIR, exist_ok=True)
 
 known_face_encodings = []
 known_face_names = []
+
+# Cache for user faces with timestamp-based invalidation
+_user_faces_cache = {}
+_cache_ttl = 300  # Cache for 5 minutes
+
+def _get_metadata_mtime(user_id: str) -> float:
+    """Get modification time of user faces metadata file. Returns 0 if file doesn't exist."""
+    try:
+        metadata_file = os.path.join("user_faces_metadata", f"{user_id}_faces.json")
+        if os.path.exists(metadata_file):
+            return os.path.getmtime(metadata_file)
+    except Exception as e:
+        print(f"[WARNING] Error getting mtime for user {user_id}: {e}")
+    return 0.0
+
+def clear_user_faces_cache(user_id: str = None):
+    """
+    Clear the face cache for a specific user or all users.
+    Call this when faces are added/updated/deleted.
+    """
+    global _user_faces_cache
+    try:
+        if user_id:
+            if user_id in _user_faces_cache:
+                del _user_faces_cache[user_id]
+                print(f"[CACHE] Cleared cache for user {user_id}")
+            else:
+                print(f"[CACHE] No cache entry found for user {user_id}")
+        else:
+            _user_faces_cache.clear()
+            print("[CACHE] Cleared all user faces cache")
+    except Exception as e:
+        print(f"[CACHE ERROR] Failed to clear cache: {e}")
+        # Force clear the cache dictionary
+        _user_faces_cache = {}
 
 def load_faces():
     known_face_encodings.clear()
@@ -105,10 +141,42 @@ def save_new_face(image_bytes: bytes, bounding_box: list, label: str):
 
 def load_user_faces(user_id: str):
     """
-    Load face encodings from user-specific saved faces.
+    Load face encodings from user-specific saved faces with caching.
     Returns: (encodings_list, names_list)
     """
     import json
+    
+    # Check cache first
+    current_time = time.time()
+    
+    # Get metadata modification time (0 if file doesn't exist)
+    try:
+        metadata_mtime = _get_metadata_mtime(user_id)
+    except Exception as e:
+        print(f"[CACHE WARNING] Error checking metadata mtime: {e}")
+        metadata_mtime = 0
+    
+    cache_key = user_id
+    if cache_key in _user_faces_cache:
+        try:
+            cached_data = _user_faces_cache[cache_key]
+            # Check if cache is still valid (not expired and metadata not modified)
+            cache_age = current_time - cached_data.get('timestamp', 0)
+            cache_mtime = cached_data.get('metadata_mtime', -1)
+            
+            if cache_age < _cache_ttl and cache_mtime == metadata_mtime:
+                print(f"[CACHE HIT] Using cached faces for user {user_id} ({len(cached_data.get('encodings', []))} faces)")
+                return cached_data.get('encodings', []), cached_data.get('names', [])
+            else:
+                print(f"[CACHE EXPIRED] Age: {cache_age:.1f}s, mtime changed: {cache_mtime != metadata_mtime}")
+        except Exception as e:
+            print(f"[CACHE ERROR] Failed to read cache for user {user_id}: {e}")
+            # Clear corrupted cache entry
+            if cache_key in _user_faces_cache:
+                del _user_faces_cache[cache_key]
+    
+    # Cache miss or expired - load from disk
+    print(f"[CACHE MISS] Loading faces from disk for user {user_id}")
     
     user_encodings = []
     user_names = []
@@ -156,8 +224,22 @@ def load_user_faces(user_id: str):
         
         print(f"[INFO] Loaded {len(user_encodings)} faces for user {user_id}")
         
+        # Update cache with safe values
+        try:
+            _user_faces_cache[cache_key] = {
+                'encodings': user_encodings.copy() if user_encodings else [],
+                'names': user_names.copy() if user_names else [],
+                'timestamp': current_time,
+                'metadata_mtime': metadata_mtime
+            }
+            print(f"[CACHE] Updated cache for user {user_id}")
+        except Exception as cache_err:
+            print(f"[CACHE WARNING] Failed to update cache: {cache_err}")
+        
     except Exception as e:
         print(f"[ERROR] Failed to load user faces metadata: {e}")
+        import traceback
+        traceback.print_exc()
     
     return user_encodings, user_names
 
@@ -166,17 +248,23 @@ def run_face_recognition_with_user_faces(image_bytes: bytes, user_id: str):
     """
     Recognize faces using user-specific saved faces.
     """
-    # Load user's saved faces
-    user_encodings, user_names = load_user_faces(user_id)
-    
     # Decode image
     nparr = np.frombuffer(image_bytes, np.uint8)
     frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     rgb_frame = np.ascontiguousarray(rgb_frame[:, :, :3], dtype=np.uint8)
 
-    # Detect faces in the image
+    # Detect faces in the image FIRST - if no faces, skip loading encodings
     face_locations = face_recognition.face_locations(rgb_frame)
+    
+    # Early return if no faces detected - saves loading all face encodings
+    if not face_locations:
+        print(f"[OPTIMIZATION] No faces detected in image, skipping face loading for user {user_id}")
+        return {"faces": []}
+    
+    # Only load user faces if we actually detected faces
+    user_encodings, user_names = load_user_faces(user_id)
+    
     face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
 
     faces = []

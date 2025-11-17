@@ -17,22 +17,12 @@ import * as Speech from 'expo-speech';
 import * as DocumentPicker from 'expo-document-picker';
 import { addFloorMap, listFloorMaps, deleteFloorMap, FloorMap } from '../services/floorMapService';
 import { DEMO_USER_ID } from '../constants/user';
-
-const pastelColors = {
-  background: '#E8F0F2',
-  cardBackground: '#F8F2F7',
-  buttonBackground: '#A3D2CA',
-  buttonDisabledBackground: '#c5dacf',
-  textPrimary: '#20639B',
-  textSecondary: '#395B64',
-  placeholderBackground: '#D6DBD2',
-  borderColor: '#2F5061',
-};
+import { AppColors } from '../theme/colors';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: pastelColors.background,
+    backgroundColor: AppColors.background,
     alignItems: 'center',
     padding: 30,
   },
@@ -40,16 +30,16 @@ const styles = StyleSheet.create({
     marginTop: 50,
     fontSize: 28,
     fontWeight: '700',
-    color: pastelColors.textPrimary,
+    color: AppColors.textPrimary,
     marginBottom: 30,
   },
   mapPlaceholder: {
     width: 300,
     height: 200,
-    backgroundColor: pastelColors.placeholderBackground,
+    backgroundColor: AppColors.placeholder,
     borderRadius: 20,
     borderWidth: 2,
-    borderColor: pastelColors.borderColor,
+    borderColor: AppColors.borderDark,
     marginBottom: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -61,7 +51,7 @@ const styles = StyleSheet.create({
   },
   mapName: {
     fontSize: 18,
-    color: pastelColors.textSecondary,
+    color: AppColors.textSecondary,
     fontWeight: '600',
     marginTop: 10,
     textAlign: 'center',
@@ -71,10 +61,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   card: {
-    backgroundColor: pastelColors.cardBackground,
+    backgroundColor: AppColors.cardBackground,
     borderRadius: 18,
     borderWidth: 2,
-    borderColor: pastelColors.borderColor,
+    borderColor: AppColors.border,
     padding: 10,
     alignItems: 'center',
     marginRight: 12,
@@ -87,7 +77,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   selectedCard: {
-    borderColor: pastelColors.textPrimary,
+    borderColor: AppColors.textPrimary,
     borderWidth: 3,
   },
   buttonRow: {
@@ -99,7 +89,7 @@ const styles = StyleSheet.create({
   button: {
     flex: 0.45,
     paddingVertical: 18,
-    backgroundColor: pastelColors.buttonBackground,
+    backgroundColor: AppColors.buttonPrimary,
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
@@ -110,12 +100,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
   },
   buttonDisabled: {
-    backgroundColor: pastelColors.buttonDisabledBackground,
+    backgroundColor: AppColors.buttonDisabled,
   },
   buttonText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#fff',
+    color: AppColors.textLight,
     letterSpacing: 0.5,
   },
   modalContainer: {
@@ -125,7 +115,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(55,75,75,0.2)',
   },
   modalView: {
-    backgroundColor: pastelColors.cardBackground,
+    backgroundColor: AppColors.cardBackground,
     borderRadius: 20,
     padding: 28,
     alignItems: 'center',
@@ -136,17 +126,17 @@ const styles = StyleSheet.create({
     width: 230,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: pastelColors.borderColor,
+    borderColor: AppColors.border,
     fontSize: 18,
-    backgroundColor: '#fff',
+    backgroundColor: AppColors.cardBackground,
     marginBottom: 18,
     padding: 10,
-    color: pastelColors.textPrimary,
+    color: AppColors.textPrimary,
     textAlign: 'center',
   },
   modalCancel: {
     marginTop: 8,
-    color: pastelColors.textSecondary,
+    color: AppColors.textSecondary,
     fontSize: 16,
   },
   imagePreview: {
@@ -167,6 +157,13 @@ export default function IndoorNavigation() {
   
   // Use consistent user ID across the app
   const userId = DEMO_USER_ID;
+
+  // Cleanup: Stop speech when leaving screen
+  useEffect(() => {
+    return () => {
+      Speech.stop();
+    };
+  }, []);
 
   // Load saved floor maps on mount and when screen gains focus
   useEffect(() => {
@@ -274,8 +271,8 @@ export default function IndoorNavigation() {
       
       {loading ? (
         <View style={{ marginVertical: 20 }}>
-          <ActivityIndicator size="large" color={pastelColors.buttonBackground} />
-          <Text style={{ color: pastelColors.textSecondary, marginTop: 10 }}>Loading maps...</Text>
+          <ActivityIndicator size="large" color={AppColors.buttonPrimary} />
+          <Text style={{ color: AppColors.textSecondary, marginTop: 10 }}>Loading maps...</Text>
         </View>
       ) : maps.length > 0 ? (
         <>
@@ -302,10 +299,10 @@ export default function IndoorNavigation() {
         </>
       ) : (
         <View style={{ padding: 20, alignItems: 'center' }}>
-          <Text style={{ color: pastelColors.textSecondary, marginBottom: 10 }}>
+          <Text style={{ color: AppColors.textSecondary, marginBottom: 10 }}>
             No floor maps available
           </Text>
-          <Text style={{ color: pastelColors.textSecondary, fontSize: 12, textAlign: 'center' }}>
+          <Text style={{ color: AppColors.textSecondary, fontSize: 12, textAlign: 'center' }}>
             Upload a floor map to get started with indoor navigation
           </Text>
         </View>
@@ -338,9 +335,37 @@ export default function IndoorNavigation() {
         </TouchableOpacity>
       </View>
       
-      {/* Show Start Navigation button for processed maps */}
+      {/* Show Navigation buttons for processed maps */}
       {selected?.floorMap?.metadata?.is_processed && selected?.floorMap?.metadata?.labels && (
-        <View style={{ marginTop: 10, width: '100%' }}>
+        <View style={{ marginTop: 10, width: '100%', gap: 10 }}>
+          {/* Start Live Navigation - Direct Access */}
+          <TouchableOpacity
+            style={[styles.button, { width: '100%', backgroundColor: '#FF6B35' }]}
+            onPress={() => {
+              const labels = selected.floorMap.metadata.labels || [];
+              const firstRoom = labels[0]?.label || 'entrance';
+              const lastRoom = labels[labels.length - 1]?.label || 'destination';
+              
+              router.push({
+                pathname: '/screens/liveNavigationScreen' as any,
+                params: {
+                  map: JSON.stringify({
+                    map_id: selected.floorMap.map_id,
+                    map_name: selected.floorMap.map_name,
+                  }),
+                  source: firstRoom,
+                  destination: lastRoom,
+                }
+              });
+            }}
+          >
+            <Text style={styles.buttonText}>▶️ Start Live Navigation Now</Text>
+            <Text style={{ color: '#FFF', fontSize: 11, marginTop: 4 }}>
+              Use recorded waypoints for positioning
+            </Text>
+          </TouchableOpacity>
+
+          {/* Old Navigation System - Room-based */}
           <TouchableOpacity
             style={[styles.button, { width: '100%', backgroundColor: '#50C878' }]}
             onPress={() => {
@@ -358,8 +383,45 @@ export default function IndoorNavigation() {
               });
             }}
           >
-            <Text style={styles.buttonText}>Start Navigation Setup →</Text>
+            <Text style={styles.buttonText}>📍 Setup Room Reference Images</Text>
+            <Text style={{ color: '#FFF', fontSize: 11, marginTop: 4 }}>
+              Attach 1 image per room (old system)
+            </Text>
           </TouchableOpacity>
+
+          {/* New Enhanced Navigation - Waypoint-based */}
+          <TouchableOpacity
+            style={[styles.button, { width: '100%', backgroundColor: '#4A90E2' }]}
+            onPress={() => {
+              router.push({
+                pathname: '/screens/pathRecordingMode' as any,
+                params: {
+                  map: JSON.stringify({
+                    map_id: selected.floorMap.map_id,
+                    map_name: selected.floorMap.map_name,
+                    metadata: {
+                      labels: selected.floorMap.metadata.labels,
+                    }
+                  })
+                }
+              });
+            }}
+          >
+            <Text style={styles.buttonText}>🎥 Record Navigation Waypoints</Text>
+            <Text style={{ color: '#FFF', fontSize: 11, marginTop: 4 }}>
+              Capture 20-30 images per location (recommended)
+            </Text>
+          </TouchableOpacity>
+          
+          <Text style={{ 
+            color: AppColors.textSecondary, 
+            fontSize: 11, 
+            textAlign: 'center',
+            marginTop: 5,
+            fontStyle: 'italic'
+          }}>
+            💡 Record waypoints first, then use "Start Live Navigation"
+          </Text>
         </View>
       )}
       
@@ -372,16 +434,16 @@ export default function IndoorNavigation() {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
-            <Text style={{ fontSize: 18, fontWeight: '700', color: pastelColors.textPrimary, marginBottom: 15 }}>
+            <Text style={{ fontSize: 18, fontWeight: '700', color: AppColors.textPrimary, marginBottom: 15 }}>
               Add Floor Map
             </Text>
-            <Text style={{ fontSize: 14, color: pastelColors.textSecondary, marginBottom: 15, textAlign: 'center' }}>
+            <Text style={{ fontSize: 14, color: AppColors.textSecondary, marginBottom: 15, textAlign: 'center' }}>
               Enter a name, then you'll be asked to select an image file.
             </Text>
             <TextInput
               style={styles.textInput}
               placeholder="Enter Floor Name"
-              placeholderTextColor={pastelColors.textSecondary}
+              placeholderTextColor={AppColors.textSecondary}
               value={newMapName}
               onChangeText={setNewMapName}
               editable={!saving}

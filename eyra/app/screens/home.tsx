@@ -26,6 +26,11 @@ export default function HomeScreen() {
   useEffect(() => {
     const names = BUTTONS.map(b => b.label).join(", ");
     Speech.speak(`Welcome to Ziya. Available options are: ${names}.`);
+    
+    // Cleanup: Stop speech when leaving screen
+    return () => {
+      Speech.stop();
+    };
   }, []);
 
   return (
@@ -45,8 +50,9 @@ export default function HomeScreen() {
           key={button.label}
           style={styles.button}
           onPress={() => {
+            Speech.stop();
             Speech.speak(`${button.label} selected`);
-            router.push(button.path as any);
+            setTimeout(() => router.push(button.path as any), 500);
           }}
           accessibilityLabel={button.label}
           accessibilityRole="button"

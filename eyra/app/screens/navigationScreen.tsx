@@ -12,6 +12,7 @@ import {
   FlatList,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import * as Speech from 'expo-speech';
 import { DEMO_USER_ID } from '../constants/user';
 import { calculateRoute, getRoomImage, type RoomWaypoint } from '../services/indoorNavigationService';
 
@@ -44,6 +45,13 @@ export default function NavigationScreen() {
   const [showDestPicker, setShowDestPicker] = useState(false);
   
   const userId = DEMO_USER_ID;
+
+  // Cleanup: Stop speech when leaving screen
+  useEffect(() => {
+    return () => {
+      Speech.stop();
+    };
+  }, []);
 
   const handleCalculateRoute = async () => {
     if (!sourceRoom || !destinationRoom) {
@@ -174,9 +182,14 @@ export default function NavigationScreen() {
                   selectedValue === item.label && styles.modalItemSelected
                 ]}
                 onPress={() => {
+                  Speech.speak(`Selected ${item.label.replace('_', ' ')}`);
                   onSelect(item.label);
                   onClose();
                 }}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel={item.label.replace('_', ' ')}
+                accessibilityHint="Double tap to select this room"
               >
                 <Text style={[
                   styles.modalItemText,
@@ -226,7 +239,14 @@ export default function NavigationScreen() {
               <Text style={styles.label}>Starting Room:</Text>
               <TouchableOpacity 
                 style={styles.pickerButton}
-                onPress={() => setShowSourcePicker(true)}
+                onPress={() => {
+                  Speech.speak(`Select starting room. ${allLabels.length} rooms available.`);
+                  setShowSourcePicker(true);
+                }}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel={sourceRoom ? `Starting room: ${sourceRoom.replace('_', ' ')}` : 'Select starting room'}
+                accessibilityHint="Double tap to open room list"
               >
                 <Text style={sourceRoom ? styles.pickerButtonTextSelected : styles.pickerButtonText}>
                   {sourceRoom ? sourceRoom.replace('_', ' ').toUpperCase() : 'Select starting room...'}
@@ -238,7 +258,14 @@ export default function NavigationScreen() {
               <Text style={styles.label}>Destination Room:</Text>
               <TouchableOpacity 
                 style={styles.pickerButton}
-                onPress={() => setShowDestPicker(true)}
+                onPress={() => {
+                  Speech.speak(`Select destination room. ${allLabels.length} rooms available.`);
+                  setShowDestPicker(true);
+                }}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel={destinationRoom ? `Destination room: ${destinationRoom.replace('_', ' ')}` : 'Select destination room'}
+                accessibilityHint="Double tap to open room list"
               >
                 <Text style={destinationRoom ? styles.pickerButtonTextSelected : styles.pickerButtonText}>
                   {destinationRoom ? destinationRoom.replace('_', ' ').toUpperCase() : 'Select destination room...'}

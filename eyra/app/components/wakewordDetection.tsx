@@ -379,3 +379,8 @@ export const testWakeWord = async (
     onCommandDetected(command);
   }, 500);
 };
+
+// Default export placeholder to satisfy Expo Router (this file is not a route)
+export default function WakewordDetectionPlaceholder(): null {
+  return null;
+}
