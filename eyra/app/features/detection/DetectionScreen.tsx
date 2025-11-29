@@ -11,6 +11,10 @@ import {
   LayoutAnimation,
   UIManager,
   ScrollView,
+  Modal,
+  TextInput,
+  KeyboardAvoidingView,
+  ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -79,11 +83,26 @@ export default function DetectionScreen() {
   const frameIntervalRef = useRef<any>(null);
   const announcedObjectsRef = useRef<Map<string, number>>(new Map());
   const prevDetectionsRef = useRef<string[]>([]);
+  
+  // Face saving state - matching normal.tsx
+  const [faceNames, setFaceNames] = useState<string[]>([]);
+  const [savingFaces, setSavingFaces] = useState<boolean[]>([]);
+  const [lastPhotoUri, setLastPhotoUri] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    if (!permission?.granted) {
-      requestPermission();
-    }
+    const checkPermissions = async () => {
+      if (permission && !permission.granted && permission.canAskAgain) {
+        const result = await requestPermission();
+        if (result.granted) {
+          setIsInitialized(true);
+        }
+      } else if (permission?.granted) {
+        setIsInitialized(true);
+      }
+    };
+    
+    checkPermissions();
   }, [permission]);
 
   useEffect(() => {
@@ -91,9 +110,14 @@ export default function DetectionScreen() {
     if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
-    initializeDetection();
+    
+    // Only initialize detection if camera permission is granted
+    if (isInitialized && permission?.granted) {
+      initializeDetection();
+    }
+    
     return cleanup;
-  }, []);
+  }, [isInitialized]);
 
   // Auto-speak navigation instructions when step changes
   useEffect(() => {
@@ -242,9 +266,8 @@ export default function DetectionScreen() {
   };
 
   const startContinuousDetection = () => {
-    // Adaptive frame rate based on performance
-    const isLowPower = offlineManager.isOfflineMode();
-    const interval = isLowPower ? 2000 : 800; // Reduced from 700ms for battery
+    // Capture images at 1 second intervals
+    const interval = 1000; // 1 second interval
     
     frameIntervalRef.current = setInterval(() => {
       if (!isProcessing) {
@@ -256,10 +279,9 @@ export default function DetectionScreen() {
   const captureAndDetect = async () => {
     if (!cameraRef.current || isProcessing) return;
 
-    // Check camera permission
+    // Check camera permission - return silently if not granted
     if (!permission?.granted) {
-      console.warn('Camera permission not granted');
-      return;
+      return; // Don't spam console warnings
     }
 
     try {
@@ -283,6 +305,9 @@ export default function DetectionScreen() {
         console.warn('No photo captured or invalid URI');
         return;
       }
+
+      // Store photo URI for face saving later
+      setLastPhotoUri(photo.uri);
 
       // Resize for faster processing
       const resized = await manipulateAsync(
@@ -334,7 +359,7 @@ export default function DetectionScreen() {
 
       // Add timeout for network request
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout for face recognition
 
       const response = await fetch(API_ENDPOINTS.combinedDetection, {
         method: 'POST',
@@ -361,6 +386,12 @@ export default function DetectionScreen() {
 
       const data = await response.json();
       
+      console.log('[DETECTION] Response data:', {
+        detections_count: data.detections?.length || 0,
+        faces_count: data.faces?.length || 0,
+        faces: data.faces
+      });
+      
       // Combine objects and faces
       const combinedDetections: Detection[] = [];
       
@@ -378,8 +409,10 @@ export default function DetectionScreen() {
       
       // Add face detections
       if (data.faces && Array.isArray(data.faces)) {
+        console.log('[DETECTION] Processing faces:', data.faces);
         data.faces.forEach((face: any) => {
           const faceName = face.name || face.label || 'Unknown Person';
+          console.log('[DETECTION] Adding face:', faceName, 'confidence:', face.confidence);
           combinedDetections.push({
             label: faceName,
             confidence: face.confidence || 0.9,
@@ -388,6 +421,9 @@ export default function DetectionScreen() {
           });
         });
       }
+      
+      console.log('[DETECTION] Combined detections:', combinedDetections.length, 'items');
+      console.log('[DETECTION] Faces in combined:', combinedDetections.filter(d => d.type === 'face').length);
       
       return combinedDetections;
     } catch (error: any) {
@@ -404,17 +440,41 @@ export default function DetectionScreen() {
   };
 
   const processDetections = useCallback((newDetections: Detection[]) => {
-    // Filter by detection range based on confidence
-    let filteredDetections = newDetections;
+    // Separate faces and objects like normal.tsx
+    const faceDetections = newDetections.filter(d => d.type === 'face');
+    const objectDetections = newDetections.filter(d => d.type === 'object');
+    
+    console.log('[PROCESS] Total detections:', newDetections.length);
+    console.log('[PROCESS] Face detections:', faceDetections.length, faceDetections.map(f => f.label));
+    console.log('[PROCESS] Object detections:', objectDetections.length);
+    
+    // Filter objects by detection range based on confidence
+    let filteredObjects = objectDetections;
     
     if (detectionRange === 'short') {
       // High confidence only (close objects)
-      filteredDetections = newDetections.filter(d => d.confidence >= 0.7);
+      filteredObjects = objectDetections.filter(d => d.confidence >= 0.7);
     } else if (detectionRange === 'medium') {
       // Medium to high confidence (moderate distance)
-      filteredDetections = newDetections.filter(d => d.confidence >= 0.5);
+      filteredObjects = objectDetections.filter(d => d.confidence >= 0.5);
     }
     // 'all' shows everything (no filter)
+    
+    // Combine filtered objects with all faces
+    const filteredDetections = [...filteredObjects, ...faceDetections];
+    
+    // Initialize face names array if faces detected
+    if (faceDetections.length > 0) {
+      console.log('[PROCESS] Initializing face names arrays for', faceDetections.length, 'faces');
+      setFaceNames(new Array(faceDetections.length).fill(''));
+      setSavingFaces(new Array(faceDetections.length).fill(false));
+    } else {
+      console.log('[PROCESS] No faces detected, clearing face arrays');
+      setFaceNames([]);
+      setSavingFaces([]);
+    }
+    
+    console.log('[PROCESS] Final filtered detections:', filteredDetections.length);
     
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setDetections(filteredDetections);
@@ -521,6 +581,105 @@ export default function DetectionScreen() {
     accessibilityService.speak(text, priority, priority > 2);
   };
 
+  const handleFaceNameChange = (index: number, text: string) => {
+    setFaceNames(prev => {
+      const updated = [...prev];
+      updated[index] = text;
+      return updated;
+    });
+  };
+
+  const saveFaceToDatabase = async (faceIndex: number) => {
+    const faceName = faceNames[faceIndex];
+    if (!faceName.trim()) {
+      Alert.alert('Error', 'Please enter a name for the face');
+      Speech.speak('Please enter a name for the face before saving', { rate: 0.9 });
+      return;
+    }
+
+    if (!lastPhotoUri) {
+      Alert.alert('Error', 'No photo available. Please detect faces first.');
+      Speech.speak('No photo available. Please detect faces first.', { rate: 0.9 });
+      return;
+    }
+
+    // Announce saving action
+    Speech.speak(`Saving face for ${faceName}`, { rate: 0.9 });
+
+    // Set saving state for this face
+    setSavingFaces(prev => {
+      const newState = [...prev];
+      newState[faceIndex] = true;
+      return newState;
+    });
+
+    try {
+      const faces = detections.filter(d => d.type === 'face');
+      const face = faces[faceIndex];
+      
+      // Generate unique face_id
+      const faceId = `face_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+      
+      const formData = new FormData();
+      
+      // Use the stored photo URI from the last detection
+      formData.append('file', {
+        uri: lastPhotoUri,
+        type: 'image/jpeg',
+        name: 'face.jpg',
+      } as any);
+      
+      formData.append('user_id', DEMO_USER_ID);
+      formData.append('face_id', faceId);
+      formData.append('face_name', faceName.trim());
+      
+      // Add metadata with bounding box and confidence if available
+      const metadata = {
+        bounding_box: face.bbox,
+        confidence: face.confidence || null,
+      };
+      formData.append('metadata', JSON.stringify(metadata));
+
+      console.log('[FACE SAVE] Saving face:', faceName, 'for user:', DEMO_USER_ID);
+
+      const response = await fetch(API_ENDPOINTS.saveUserFace, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        accessibilityService.triggerHaptic('success');
+        Alert.alert('Success', `Face saved as "${faceName}"`);
+        Speech.speak(`Face saved successfully as ${faceName}`, { rate: 0.9 });
+        
+        console.log('[FACE SAVE] ✅ Success! Face ID:', result.face_id);
+        
+        // Clear the name field for this face
+        setFaceNames(prev => {
+          const updated = [...prev];
+          updated[faceIndex] = '';
+          return updated;
+        });
+      } else {
+        throw new Error(result.message || result.detail || 'Failed to save face');
+      }
+    } catch (error: any) {
+      console.error('[FACE SAVE] ❌ Error:', error);
+      accessibilityService.triggerHaptic('error');
+      Alert.alert('Error', 'Failed to save face. Please try again.');
+      Speech.speak('Error occurred while saving face. Please try again.', { rate: 0.9 });
+    } finally {
+      // Clear saving state for this face
+      setSavingFaces(prev => {
+        const newState = [...prev];
+        newState[faceIndex] = false;
+        return newState;
+      });
+    }
+  };
+
   const toggleVoice = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
     const newState = !voiceEnabled;
@@ -548,7 +707,8 @@ export default function DetectionScreen() {
   if (!permission) {
     return (
       <View style={styles.permissionContainer}>
-        <Text style={styles.permissionText}>Requesting camera permission...</Text>
+        <ActivityIndicator size="large" color="#667eea" />
+        <Text style={styles.permissionText}>Checking camera permission...</Text>
       </View>
     );
   }
@@ -559,11 +719,32 @@ export default function DetectionScreen() {
         <Ionicons name="camera-outline" size={64} color="#667eea" />
         <Text style={styles.permissionTitle}>Camera Access Needed</Text>
         <Text style={styles.permissionText}>
-          Ziya needs camera access to detect objects and obstacles around you.
+          Eyra needs camera access to detect objects and obstacles around you.
         </Text>
-        <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
-          <Text style={styles.permissionButtonText}>Grant Permission</Text>
-        </TouchableOpacity>
+        {permission.canAskAgain ? (
+          <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
+            <Text style={styles.permissionButtonText}>Grant Permission</Text>
+          </TouchableOpacity>
+        ) : (
+          <>
+            <Text style={styles.permissionText}>
+              Camera permission was denied. Please enable it in your device settings:
+              {'\n\n'}Settings → Apps → Eyra → Permissions → Camera
+            </Text>
+            <TouchableOpacity 
+              style={styles.permissionButton} 
+              onPress={() => {
+                Alert.alert(
+                  'Enable Camera Permission',
+                  'Go to Settings → Apps → Eyra → Permissions and enable Camera',
+                  [{ text: 'OK' }]
+                );
+              }}
+            >
+              <Text style={styles.permissionButtonText}>Open Settings Guide</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </View>
     );
   }
@@ -728,14 +909,22 @@ export default function DetectionScreen() {
           </TouchableOpacity>
         )}
 
-        {/* Detection Stats Card */}
+        {/* Detection Stats Card - Simplified */}
         {detections.length > 0 && (
           <BlurView intensity={80} style={styles.statsCard}>
             <View style={styles.statsRow}>
               <View style={styles.statItem}>
                 <Ionicons name="scan-outline" size={24} color="#667eea" />
                 <Text style={styles.statValue}>{stats.totalDetections}</Text>
-                <Text style={styles.statLabel}>Objects</Text>
+                <Text style={styles.statLabel}>Total</Text>
+              </View>
+
+              <View style={styles.statDivider} />
+
+              <View style={styles.statItem}>
+                <Ionicons name="people-outline" size={24} color="#FFB74D" />
+                <Text style={styles.statValue}>{stats.faces}</Text>
+                <Text style={styles.statLabel}>Faces</Text>
               </View>
 
               <View style={styles.statDivider} />
@@ -747,26 +936,6 @@ export default function DetectionScreen() {
                 </Text>
                 <Text style={styles.statLabel}>Confidence</Text>
               </View>
-
-              <View style={styles.statDivider} />
-
-              <View style={styles.statItem}>
-                <Ionicons name="people-outline" size={24} color="#FFB74D" />
-                <Text style={styles.statValue}>
-                  {stats.faces}
-                </Text>
-                <Text style={styles.statLabel}>Faces</Text>
-              </View>
-
-              <View style={styles.statDivider} />
-
-              <View style={styles.statItem}>
-                <Ionicons name="albums-outline" size={24} color="#f5576c" />
-                <Text style={styles.statValue}>
-                  {Object.keys(stats.categories).length}
-                </Text>
-                <Text style={styles.statLabel}>Categories</Text>
-              </View>
             </View>
           </BlurView>
         )}
@@ -775,19 +944,35 @@ export default function DetectionScreen() {
         {detections.length > 0 && (
           <View style={styles.detectionList}>
             {detections.slice(0, 5).map((det, index) => (
-              <BlurView key={index} intensity={70} style={styles.detectionItem}>
+              <BlurView key={index} intensity={70} style={[
+                styles.detectionItem,
+                det.type === 'face' && styles.faceDetectionItem
+              ]}>
                 <View style={[
                   styles.detectionIndicator,
                   det.type === 'face' && styles.faceIndicator
                 ]} />
                 <Ionicons 
-                  name={det.type === 'face' ? 'person-circle-outline' : 'cube-outline'} 
-                  size={16} 
+                  name={det.type === 'face' ? 'person-circle' : 'cube-outline'} 
+                  size={20} 
                   color={det.type === 'face' ? '#FFB74D' : '#667eea'} 
                   style={styles.detectionIcon}
                 />
-                <Text style={styles.detectionLabel}>{det.label}</Text>
-                <View style={styles.confidenceBadge}>
+                <View style={styles.detectionContent}>
+                  <Text style={[
+                    styles.detectionLabel,
+                    det.type === 'face' && styles.faceLabel
+                  ]}>
+                    {det.label}
+                  </Text>
+                  {det.type === 'face' && det.label !== 'Unknown Person' && (
+                    <Text style={styles.recognizedText}>✓ Recognized</Text>
+                  )}
+                </View>
+                <View style={[
+                  styles.confidenceBadge,
+                  det.type === 'face' && styles.faceConfidenceBadge
+                ]}>
                   <Text style={styles.confidenceText}>
                     {(det.confidence * 100).toFixed(0)}%
                   </Text>
@@ -903,27 +1088,105 @@ export default function DetectionScreen() {
             </BlurView>
           ) : (
             <>
-              {lastAnnouncement && (
-                <BlurView intensity={80} style={styles.announcementBox}>
-                  <Ionicons name="volume-medium-outline" size={20} color="#fff" />
-                  <Text style={styles.announcementText} numberOfLines={2}>
-                    {lastAnnouncement}
-                  </Text>
-                </BlurView>
-              )}
-              
+              {/* Navigation Button */}
               <TouchableOpacity 
                 style={styles.navButton} 
                 onPress={() => setShowNavSetup(true)}
+                accessible={true}
+                accessibilityLabel="Start indoor navigation"
+                accessibilityRole="button"
               >
                 <BlurView intensity={80} style={styles.navButtonContent}>
                   <Ionicons name="navigate" size={24} color="#667eea" />
-                  <Text style={styles.navButtonText}>Start Navigation</Text>
+                  <Text style={styles.navButtonText}>Navigation</Text>
                 </BlurView>
               </TouchableOpacity>
             </>
           )}
         </LinearGradient>
+
+        {/* Detections Container - Clean UI like normal.tsx */}
+        {(detections.filter(d => d.type === 'object').length > 0 || detections.filter(d => d.type === 'face').length > 0) && (
+          <View style={styles.detectionsContainer}>
+            {/* Objects Section */}
+            {detections.filter(d => d.type === 'object').length > 0 && (
+              <View style={styles.detectionSection}>
+                <Text style={styles.detectionsTitle}>Objects</Text>
+                <ScrollView style={styles.scrollView} nestedScrollEnabled={true}>
+                  {detections.filter(d => d.type === 'object').map((det, index) => (
+                    <View key={`obj-${index}`} style={styles.detectionBox}>
+                      <Text style={styles.detectionLabel}>{det.label}</Text>
+                      <Text style={styles.detectionConfidence}>
+                        {(det.confidence * 100).toFixed(0)}%
+                      </Text>
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+
+            {/* Faces Section */}
+            {detections.filter(d => d.type === 'face').length > 0 && (
+              <View style={styles.detectionSection}>
+                <Text style={styles.detectionsTitle}>Faces</Text>
+                <ScrollView style={styles.scrollView} nestedScrollEnabled={true}>
+                  {detections.filter(d => d.type === 'face').map((face, faceIndex) => {
+                    const isUnknown = face.label === 'Unknown Person' || face.label === 'Unknown' || face.label.includes('Unknown');
+                    console.log('[UI] Rendering face', faceIndex, ':', face.label, 'isUnknown:', isUnknown);
+                    return (
+                      <View key={`face-${faceIndex}`} style={styles.faceDetectionBox}>
+                        <View style={styles.faceInfo}>
+                          <View style={styles.detectionBox}>
+                            <Text style={styles.detectionLabel}>{face.label}</Text>
+                            <Text style={styles.detectionConfidence}>
+                              {(face.confidence * 100).toFixed(0)}%
+                            </Text>
+                          </View>
+                          {face.bbox && (
+                            <Text style={styles.boundingBoxText}>
+                              Position: {face.bbox.map(v => Math.round(v)).join(', ')}
+                            </Text>
+                          )}
+                        </View>
+                        
+                        {/* Save Unknown Face */}
+                        {isUnknown && (
+                          <View style={styles.faceSaveSection}>
+                            <TextInput
+                              style={styles.nameInput}
+                              placeholder="Enter name..."
+                              placeholderTextColor="#95a5a6"
+                              value={faceNames[faceIndex] || ''}
+                              onChangeText={(text) => handleFaceNameChange(faceIndex, text)}
+                              accessible={true}
+                              accessibilityLabel={`Enter name for unknown person ${faceIndex + 1}`}
+                              accessibilityHint="Type a name to save this face"
+                            />
+                            <TouchableOpacity
+                              style={[
+                                styles.saveFaceButton,
+                                savingFaces[faceIndex] && styles.saveFaceButtonDisabled
+                              ]}
+                              onPress={() => saveFaceToDatabase(faceIndex)}
+                              disabled={savingFaces[faceIndex]}
+                              accessible={true}
+                              accessibilityLabel={savingFaces[faceIndex] ? 'Saving face' : 'Save this face'}
+                              accessibilityRole="button"
+                            >
+                              <Text style={styles.saveFaceButtonText}>
+                                {savingFaces[faceIndex] ? 'Saving...' : 'Save'}
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                      </View>
+                    );
+                  })}
+                </ScrollView>
+              </View>
+            )}
+          </View>
+        )}
 
         {/* Navigation Setup Modal */}
         {showNavSetup && (
@@ -1167,6 +1430,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     overflow: 'hidden',
   },
+  faceDetectionItem: {
+    backgroundColor: 'rgba(255, 183, 77, 0.15)',
+  },
   detectionIndicator: {
     width: 8,
     height: 8,
@@ -1180,17 +1446,28 @@ const styles = StyleSheet.create({
   detectionIcon: {
     marginRight: 8,
   },
-  detectionLabel: {
+  detectionContent: {
     flex: 1,
+  },
+  faceLabel: {
     fontSize: 16,
+    fontWeight: '700',
+    color: '#FFB74D',
+  },
+  recognizedText: {
+    fontSize: 11,
+    color: '#50c878',
     fontWeight: '600',
-    color: '#fff',
+    marginTop: 2,
   },
   confidenceBadge: {
     backgroundColor: 'rgba(102,126,234,0.8)',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 8,
+  },
+  faceConfidenceBadge: {
+    backgroundColor: 'rgba(255, 183, 77, 0.8)',
   },
   confidenceText: {
     fontSize: 12,
@@ -1597,5 +1874,103 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#667eea',
+  },
+  // Detections Container (matches normal.tsx clean design)
+  detectionsContainer: {
+    position: 'absolute',
+    bottom: 130,
+    left: 12,
+    right: 12,
+    maxHeight: 220,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+  },
+  detectionSection: {
+    marginBottom: 8,
+  },
+  detectionsTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 6,
+    color: '#2B7A78',
+  },
+  scrollView: {
+    flexGrow: 0,
+    maxHeight: 120,
+  },
+  detectionBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#EFF7F6',
+    marginVertical: 3,
+    padding: 8,
+    borderRadius: 5,
+  },
+  detectionLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2c3e50',
+  },
+  detectionConfidence: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#7f8c8d',
+  },
+  faceDetectionBox: {
+    backgroundColor: '#EFF7F6',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#C1E3E1',
+  },
+  faceInfo: {
+    marginBottom: 8,
+  },
+  boundingBoxText: {
+    fontSize: 12,
+    color: '#7F8C8D',
+    opacity: 0.7,
+    marginTop: 4,
+  },
+  faceSaveSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 8,
+  },
+  nameInput: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: '#C1E3E1',
+    fontSize: 14,
+    color: '#2c3e50',
+  },
+  saveFaceButton: {
+    backgroundColor: '#2B7A78',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 6,
+    minWidth: 80,
+    alignItems: 'center',
+  },
+  saveFaceButtonDisabled: {
+    backgroundColor: '#A0CFCB',
+  },
+  saveFaceButtonText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '600',
   },
 });

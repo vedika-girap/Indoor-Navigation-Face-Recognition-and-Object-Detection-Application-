@@ -9,10 +9,13 @@ import {
   Platform,
   ActivityIndicator,
   Alert,
+  Vibration,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import * as Speech from 'expo-speech';
 
 import accessibilityService from '../../services/accessibilityService';
 import actionHistoryManager from '../../services/actionHistoryManager';
@@ -29,13 +32,19 @@ export default function MapManagementScreen() {
 
   useEffect(() => {
     initializeManagement();
+    
+    // Cleanup: Stop speech when leaving screen
+    return () => {
+      Speech.stop();
+    };
   }, []);
 
   const initializeManagement = async () => {
     actionHistoryManager.addBreadcrumb('management', 'Map Management');
     
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     accessibilityService.speak(
-      'Map management. View, record, and process indoor floor maps.',
+      'Map management screen loaded. Swipe to explore options for recording, processing, and viewing your floor maps.',
       2,
       false
     );
@@ -61,6 +70,10 @@ export default function MapManagementScreen() {
         const loadedMaps = await listFloorMaps(DEMO_USER_ID);
         setMaps(loadedMaps);
         await offlineManager.cacheData(cacheKey, loadedMaps, 604800000);
+        
+        const count = loadedMaps.length;
+        const message = count === 0 ? 'No saved maps found.' : `Loaded ${count} map${count === 1 ? '' : 's'}.`;
+        accessibilityService.speak(message, 2);
       }
     } catch (error) {
       await errorRecoveryService.handleError('Load maps', error, 'medium', true);
@@ -69,37 +82,53 @@ export default function MapManagementScreen() {
     }
   };
 
-  const handleRecordMap = () => {
-    accessibilityService.speak('Opening map recording mode', 2, false);
+  const handleRecordMap = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    accessibilityService.speak('Record new map. Walk through your space while the app captures images.', 2, false);
     // Navigate to recording screen (to be implemented)
     Alert.alert('Coming Soon', 'Map recording feature will be available soon.');
   };
 
-  const handleProcessMap = () => {
-    accessibilityService.speak('Opening map processing', 2, false);
+  const handleProcessMap = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    accessibilityService.speak('Opening process floor plan. Upload an image to convert it into a navigation map.', 2, false);
     router.push('/screens/processFloorMap' as any);
   };
 
-  const handleViewMap = (map: FloorMap) => {
-    accessibilityService.speak(`Viewing ${map.map_name || 'map'}`, 2, false);
+  const handleViewMap = async (map: FloorMap, index: number) => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const rooms = map.metadata?.labels?.length || 0;
+    accessibilityService.speak(
+      `Opening ${map.map_name || 'map'}. ${rooms} room${rooms === 1 ? '' : 's'} detected.`,
+      2,
+      false
+    );
     router.push({
       pathname: '/screens/indoorNavigation' as any,
       params: { selectedMapId: map.map_id },
     });
   };
 
-  const handleDeleteMap = (map: FloorMap) => {
+  const handleDeleteMap = async (map: FloorMap) => {
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    accessibilityService.speak(`Delete ${map.map_name || 'map'}. Confirm deletion?`, 2);
+    
     Alert.alert(
       'Delete Map',
       `Are you sure you want to delete ${map.map_name || 'this map'}?`,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Cancel', 
+          style: 'cancel',
+          onPress: () => accessibilityService.speak('Cancelled', 1)
+        },
         {
           text: 'Delete',
           style: 'destructive',
           onPress: async () => {
+            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             // Implement delete logic
-            accessibilityService.speak('Map deleted', 2);
+            accessibilityService.speak('Map deleted successfully', 2);
             await loadMaps();
           },
         },
@@ -116,7 +145,10 @@ export default function MapManagementScreen() {
         <View style={styles.headerTop}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => router.back()}
+            onPress={() => {
+              Speech.stop();
+              router.back();
+            }}
             accessible={true}
             accessibilityLabel="Go back"
             accessibilityRole="button"
@@ -126,9 +158,14 @@ export default function MapManagementScreen() {
           <Text style={styles.headerTitle}>Map Management</Text>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={loadMaps}
+            onPress={async () => {
+              await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              accessibilityService.speak('Refreshing maps', 1);
+              await loadMaps();
+            }}
             accessible={true}
-            accessibilityLabel="Refresh maps"
+            accessibilityLabel="Refresh maps list"
+            accessibilityHint="Double tap to reload all maps"
             accessibilityRole="button"
           >
             <Ionicons name="refresh" size={24} color="#fff" />
@@ -209,44 +246,63 @@ export default function MapManagementScreen() {
               </Text>
             </View>
           ) : (
-            maps.map((map, index) => (
+            maps.map((map, index) => {
+              const roomCount = map.metadata?.labels?.length || 0;
+              const mapLabel = `Map ${index + 1} of ${maps.length}. ${map.map_name || 'Unnamed'}. ${roomCount} room${roomCount === 1 ? '' : 's'}. Created ${formatDate(map.added_at)}.`;
+              
+              return (
               <View key={map.map_id} style={styles.mapCard}>
-                <View style={styles.mapIconContainer}>
-                  <Ionicons name="map" size={32} color="#4facfe" />
-                </View>
+                <TouchableOpacity
+                  style={styles.mapCardTouchable}
+                  onPress={async () => {
+                    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    accessibilityService.speak(mapLabel, 2);
+                  }}
+                  accessible={true}
+                  accessibilityLabel={mapLabel}
+                  accessibilityHint="Double tap to hear details again"
+                  accessibilityRole="button"
+                >
+                  <View style={styles.mapIconContainer}>
+                    <Ionicons name="map" size={36} color="#4facfe" />
+                  </View>
 
-                <View style={styles.mapInfo}>
-                  <Text style={styles.mapName}>
-                    {map.map_name || `Floor Map ${index + 1}`}
-                  </Text>
-                  <Text style={styles.mapDetails}>
-                    {map.metadata?.labels?.length || 0} rooms • Created {formatDate(map.added_at)}
-                  </Text>
-                </View>
+                  <View style={styles.mapInfo}>
+                    <Text style={styles.mapName}>
+                      {map.map_name || `Floor Map ${index + 1}`}
+                    </Text>
+                    <Text style={styles.mapDetails}>
+                      {roomCount} room{roomCount === 1 ? '' : 's'} • {formatDate(map.added_at)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
 
                 <View style={styles.mapActions}>
                   <TouchableOpacity
                     style={styles.mapActionButton}
-                    onPress={() => handleViewMap(map)}
+                    onPress={() => handleViewMap(map, index)}
                     accessible={true}
-                    accessibilityLabel="View map details"
+                    accessibilityLabel={`View ${map.map_name || 'map'}`}
+                    accessibilityHint="Double tap to open this map"
                     accessibilityRole="button"
                   >
-                    <Ionicons name="eye-outline" size={22} color="#4facfe" />
+                    <Ionicons name="eye-outline" size={26} color="#4facfe" />
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     style={styles.mapActionButton}
                     onPress={() => handleDeleteMap(map)}
                     accessible={true}
-                    accessibilityLabel="Delete map"
+                    accessibilityLabel={`Delete ${map.map_name || 'map'}`}
+                    accessibilityHint="Double tap to delete this map"
                     accessibilityRole="button"
                   >
-                    <Ionicons name="trash-outline" size={22} color="#ff6b6b" />
+                    <Ionicons name="trash-outline" size={26} color="#ff6b6b" />
                   </TouchableOpacity>
                 </View>
               </View>
-            ))
+            );
+            })
           )}
         </View>
 
@@ -418,22 +474,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   mapCard: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 5,
+    overflow: 'hidden',
+  },
+  mapCardTouchable: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 3,
+    padding: 20,
+    minHeight: 88,
   },
   mapIconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: '#e8f5ff',
     justifyContent: 'center',
     alignItems: 'center',
@@ -443,23 +503,29 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mapName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '700',
     color: '#2c3e50',
-    marginBottom: 4,
+    marginBottom: 6,
   },
   mapDetails: {
-    fontSize: 13,
+    fontSize: 15,
     color: '#7f8c8d',
+    lineHeight: 20,
   },
   mapActions: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 12,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
   },
   mapActionButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    flex: 1,
+    minHeight: 52,
+    borderRadius: 12,
     backgroundColor: '#f5f7fa',
     justifyContent: 'center',
     alignItems: 'center',

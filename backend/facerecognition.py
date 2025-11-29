@@ -12,7 +12,7 @@ known_face_names = []
 
 # Cache for user faces with timestamp-based invalidation
 _user_faces_cache = {}
-_cache_ttl = 300  # Cache for 5 minutes
+_cache_ttl = 900  # Cache for 15 minutes (reduced disk I/O)
 
 def _get_metadata_mtime(user_id: str) -> float:
     """Get modification time of user faces metadata file. Returns 0 if file doesn't exist."""
@@ -247,48 +247,81 @@ def load_user_faces(user_id: str):
 def run_face_recognition_with_user_faces(image_bytes: bytes, user_id: str):
     """
     Recognize faces using user-specific saved faces.
+    Optimized for speed with early exits.
     """
+    start_time = time.time()
+    
     # Decode image
     nparr = np.frombuffer(image_bytes, np.uint8)
     frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    if frame is None:
+        print("[ERROR] Failed to decode image")
+        return {"faces": []}
+    
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     rgb_frame = np.ascontiguousarray(rgb_frame[:, :, :3], dtype=np.uint8)
 
-    # Detect faces in the image FIRST - if no faces, skip loading encodings
-    face_locations = face_recognition.face_locations(rgb_frame)
+    # Use faster CNN model for face detection (much faster than HOG)
+    face_locations = face_recognition.face_locations(rgb_frame, model="cnn" if cv2.cuda.getCudaEnabledDeviceCount() > 0 else "hog")
+    
+    detect_time = time.time() - start_time
+    print(f"[PERF] Face detection took {detect_time:.2f}s, found {len(face_locations)} faces")
     
     # Early return if no faces detected - saves loading all face encodings
     if not face_locations:
-        print(f"[OPTIMIZATION] No faces detected in image, skipping face loading for user {user_id}")
         return {"faces": []}
     
-    # Only load user faces if we actually detected faces
+    # Load user faces from cache (fast)
+    load_start = time.time()
     user_encodings, user_names = load_user_faces(user_id)
+    load_time = time.time() - load_start
+    print(f"[PERF] Loading {len(user_encodings)} user faces took {load_time:.2f}s")
     
+    # If no saved faces, return all as unknown (skip expensive encoding)
+    if not user_encodings:
+        print("[OPTIMIZATION] No saved faces, returning all as Unknown Person")
+        faces = []
+        for (top, right, bottom, left) in face_locations:
+            faces.append({
+                "name": "Unknown Person",
+                "bounding_box": [int(top), int(right), int(bottom), int(left)],
+                "confidence": 0.0
+            })
+        return {"faces": faces}
+    
+    # Generate face encodings (expensive operation)
+    encode_start = time.time()
     face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
+    encode_time = time.time() - encode_start
+    print(f"[PERF] Face encoding took {encode_time:.2f}s")
 
+    # Compare faces
+    compare_start = time.time()
     faces = []
     for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
-        name = "Unknown"
+        name = "Unknown Person"
         confidence = 0.0
         
-        if user_encodings:
-            # Compare with user's saved faces
-            matches = face_recognition.compare_faces(user_encodings, face_encoding, tolerance=0.6)
-            face_distances = face_recognition.face_distance(user_encodings, face_encoding)
-            
-            if len(face_distances) > 0:
-                best_match_index = np.argmin(face_distances)
-                if matches[best_match_index]:
-                    name = user_names[best_match_index]
-                    # Convert distance to confidence (lower distance = higher confidence)
-                    confidence = 1.0 - face_distances[best_match_index]
+        # Compare with user's saved faces
+        matches = face_recognition.compare_faces(user_encodings, face_encoding, tolerance=0.6)
+        face_distances = face_recognition.face_distance(user_encodings, face_encoding)
+        
+        if len(face_distances) > 0:
+            best_match_index = np.argmin(face_distances)
+            if matches[best_match_index]:
+                name = user_names[best_match_index]
+                # Convert distance to confidence (lower distance = higher confidence)
+                confidence = 1.0 - face_distances[best_match_index]
 
         faces.append({
             "name": name,
             "bounding_box": [int(top), int(right), int(bottom), int(left)],
-            "confidence": float(confidence) if name != "Unknown" else 0.0
+            "confidence": float(confidence) if name != "Unknown Person" else 0.0
         })
+    
+    compare_time = time.time() - compare_start
+    total_time = time.time() - start_time
+    print(f"[PERF] Face comparison took {compare_time:.2f}s, total {total_time:.2f}s")
     
     return {"faces": faces}
 

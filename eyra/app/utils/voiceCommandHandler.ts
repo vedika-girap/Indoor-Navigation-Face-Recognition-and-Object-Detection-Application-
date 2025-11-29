@@ -4,7 +4,7 @@ import { Alert, Platform, ToastAndroid } from 'react-native';
 import { VoiceCommand } from '../components/wakewordDetection';
 
 export interface VoiceCommandHandlerContext {
-  router?: Router;
+  router?: Router | any; // Support both expo-router and react-navigation
   onSaveImage?: (name?: string) => void;
   onDetect?: () => void;
   onUpload?: () => void;

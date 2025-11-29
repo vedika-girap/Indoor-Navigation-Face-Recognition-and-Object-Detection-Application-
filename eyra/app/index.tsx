@@ -42,6 +42,15 @@ const FEATURES: FeatureCard[] = [
     accessibilityLabel: 'Indoor Navigation. Get turn by turn directions inside buildings. Double tap to activate.'
   },
   {
+    id: 'pathguidance',
+    title: 'Path Guidance',
+    description: 'Real-time obstacle detection with voice alerts',
+    icon: 'walk-outline',
+    color: ['#ff9a56', '#ff6a88'],
+    path: '/screens/pathGuidance',
+    accessibilityLabel: 'Path Guidance. Real-time obstacle detection and path guidance with voice alerts. Double tap to activate.'
+  },
+  {
     id: 'faces',
     title: 'Face Management',
     description: 'Save and manage recognized faces',

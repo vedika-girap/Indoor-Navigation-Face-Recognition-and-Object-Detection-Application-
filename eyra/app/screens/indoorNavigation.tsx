@@ -10,139 +10,292 @@ import {
     TouchableOpacity,
     View,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    StatusBar,
+    Platform,
+    Dimensions,
+    ScrollView,
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import * as Speech from 'expo-speech';
 import * as DocumentPicker from 'expo-document-picker';
 import { addFloorMap, listFloorMaps, deleteFloorMap, FloorMap } from '../services/floorMapService';
 import { DEMO_USER_ID } from '../constants/user';
-import { AppColors } from '../theme/colors';
+
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: AppColors.background,
-    alignItems: 'center',
-    padding: 30,
+    backgroundColor: '#f5f7fa',
   },
   header: {
-    marginTop: 50,
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
     fontSize: 28,
-    fontWeight: '700',
-    color: AppColors.textPrimary,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 20,
+    paddingBottom: 40,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    marginTop: 100,
+  },
+  loadingGradient: {
+    padding: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    gap: 15,
+  },
+  loadingText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  carouselSection: {
     marginBottom: 30,
   },
-  mapPlaceholder: {
-    width: 300,
-    height: 200,
-    backgroundColor: AppColors.placeholder,
+  carouselContent: {
+    paddingVertical: 10,
+  },
+  mapCard: {
+    width: width * 0.75,
+    marginRight: 20,
     borderRadius: 20,
-    borderWidth: 2,
-    borderColor: AppColors.borderDark,
-    marginBottom: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 15,
+    overflow: 'hidden',
+    backgroundColor: '#fff',
     shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
+    elevation: 5,
   },
-  mapName: {
+  mapCardSelected: {
+    borderWidth: 3,
+    borderColor: '#50c878',
+  },
+  mapImageContainer: {
+    width: '100%',
+    height: 200,
+    position: 'relative',
+  },
+  mapImage: {
+    width: '100%',
+    height: '100%',
+  },
+  selectedBadge: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 4,
+  },
+  mapCardFooter: {
+    padding: 16,
+  },
+  mapCardTitle: {
     fontSize: 18,
-    color: AppColors.textSecondary,
-    fontWeight: '600',
-    marginTop: 10,
+    fontWeight: 'bold',
+    color: '#fff',
     textAlign: 'center',
   },
-  flatList: {
-    height: 120,
-    marginBottom: 15,
-  },
-  card: {
-    backgroundColor: AppColors.cardBackground,
-    borderRadius: 18,
-    borderWidth: 2,
-    borderColor: AppColors.border,
-    padding: 10,
+  emptyState: {
     alignItems: 'center',
-    marginRight: 12,
+    marginTop: 80,
+    marginBottom: 40,
+  },
+  emptyCircle: {
     width: 120,
-    elevation: 2,
+    height: 120,
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 30,
   },
-  smallImage: {
-    width: 96,
-    height: 64,
-    borderRadius: 8,
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2c3e50',
+    marginBottom: 12,
   },
-  selectedCard: {
-    borderColor: AppColors.textPrimary,
-    borderWidth: 3,
+  emptySubtext: {
+    fontSize: 16,
+    color: '#7f8c8d',
+    textAlign: 'center',
+    paddingHorizontal: 40,
   },
-  buttonRow: {
+  previewSection: {
+    marginBottom: 30,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2c3e50',
+    marginBottom: 16,
+  },
+  previewCard: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  previewImage: {
     width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 15,
+    height: 250,
+    borderRadius: 12,
+    marginBottom: 12,
   },
-  button: {
-    flex: 0.45,
-    paddingVertical: 18,
-    backgroundColor: AppColors.buttonPrimary,
-    borderRadius: 30,
+  previewName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#2c3e50',
+    textAlign: 'center',
+  },
+  actionsSection: {
+    gap: 16,
+  },
+  actionButtonWrapper: {
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  actionButtonDisabled: {
+    opacity: 0.5,
+  },
+  actionButton: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 5 },
+    paddingVertical: 18,
+    gap: 12,
   },
-  buttonDisabled: {
-    backgroundColor: AppColors.buttonDisabled,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: AppColors.textLight,
-    letterSpacing: 0.5,
+  actionButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(55,75,75,0.2)',
   },
   modalView: {
-    backgroundColor: AppColors.cardBackground,
-    borderRadius: 20,
-    padding: 28,
+    width: width * 0.9,
+    maxWidth: 400,
+    backgroundColor: '#fff',
+    borderRadius: 24,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  modalHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
-    elevation: 5,
-    width: 320,
+    justifyContent: 'center',
+    padding: 20,
+    gap: 12,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  modalBody: {
+    padding: 20,
+  },
+  modalSubtext: {
+    fontSize: 15,
+    color: '#7f8c8d',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f5f7fa',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    borderWidth: 2,
+    borderColor: '#e0e6ed',
+  },
+  inputIcon: {
+    marginRight: 12,
   },
   textInput: {
-    width: 230,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: AppColors.border,
-    fontSize: 18,
-    backgroundColor: AppColors.cardBackground,
-    marginBottom: 18,
-    padding: 10,
-    color: AppColors.textPrimary,
-    textAlign: 'center',
-  },
-  modalCancel: {
-    marginTop: 8,
-    color: AppColors.textSecondary,
+    flex: 1,
     fontSize: 16,
+    color: '#2c3e50',
+    paddingVertical: 14,
   },
-  imagePreview: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 18,
+  modalButtons: {
+    flexDirection: 'row',
+    padding: 20,
+    paddingTop: 0,
+    gap: 12,
+  },
+  modalButtonWrapper: {
+    flex: 1,
+  },
+  modalCancelButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f5f7fa',
+    paddingVertical: 14,
+    borderRadius: 12,
+    gap: 8,
+    borderWidth: 2,
+    borderColor: '#e0e6ed',
+  },
+  modalCancelText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+  },
+  modalSaveButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    borderRadius: 12,
+    gap: 8,
+  },
+  modalSaveText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
   },
 });
 
@@ -267,164 +420,168 @@ export default function IndoorNavigation() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Indoor Navigation</Text>
+      <StatusBar barStyle="light-content" />
       
-      {loading ? (
-        <View style={{ marginVertical: 20 }}>
-          <ActivityIndicator size="large" color={AppColors.buttonPrimary} />
-          <Text style={{ color: AppColors.textSecondary, marginTop: 10 }}>Loading maps...</Text>
+      {/* Modern Gradient Header */}
+      <LinearGradient
+        colors={['#667eea', '#764ba2']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <View style={styles.headerTop}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+            accessible={true}
+            accessibilityLabel="Go back"
+            accessibilityRole="button"
+          >
+            <Ionicons name="arrow-back" size={28} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Indoor Navigation</Text>
+          <View style={styles.backButton} />
         </View>
-      ) : maps.length > 0 ? (
-        <>
-          <FlatList
-            style={styles.flatList}
-            data={maps}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={item => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={[
-                  styles.card,
-                  item.id === selected?.id && styles.selectedCard
-                ]}
-                onPress={() => setSelected(item)}
-                activeOpacity={0.8}
-              >
-                <Image source={item.image} style={styles.smallImage} resizeMode="cover" />
-                <Text numberOfLines={1} style={styles.mapName}>{item.name}</Text>
-              </TouchableOpacity>
-            )}
-          />
-        </>
-      ) : (
-        <View style={{ padding: 20, alignItems: 'center' }}>
-          <Text style={{ color: AppColors.textSecondary, marginBottom: 10 }}>
-            No floor maps available
-          </Text>
-          <Text style={{ color: AppColors.textSecondary, fontSize: 12, textAlign: 'center' }}>
-            Upload a floor map to get started with indoor navigation
-          </Text>
-        </View>
-      )}
-      
-      <View style={styles.mapPlaceholder}>
-        {selected?.image ? (
-          <Image source={selected.image} style={styles.imagePreview} resizeMode="contain" />
+      </LinearGradient>
+
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <LinearGradient
+              colors={['#667eea', '#764ba2']}
+              style={styles.loadingGradient}
+            >
+              <ActivityIndicator size="large" color="#fff" />
+              <Text style={styles.loadingText}>Loading maps...</Text>
+            </LinearGradient>
+          </View>
         ) : (
-          <Text style={styles.mapName}>Select or add a floor map</Text>
+          <>
+            {/* Floor Maps Carousel */}
+            {maps.length > 0 ? (
+              <View style={styles.carouselSection}>
+                <FlatList
+                  data={maps}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  snapToInterval={width * 0.75 + 20}
+                  decelerationRate="fast"
+                  contentContainerStyle={styles.carouselContent}
+                  keyExtractor={item => item.id}
+                  renderItem={({ item, index }) => {
+                    const isSelected = item.id === selected?.id;
+                    const gradients = [
+                      ['#667eea', '#764ba2'],
+                      ['#f093fb', '#f5576c'],
+                      ['#4facfe', '#00f2fe'],
+                    ];
+                    const gradient = gradients[index % gradients.length];
+
+                    return (
+                      <TouchableOpacity
+                        style={[
+                          styles.mapCard,
+                          isSelected && styles.mapCardSelected
+                        ]}
+                        onPress={() => setSelected(item)}
+                        activeOpacity={0.9}
+                      >
+                        <View style={styles.mapImageContainer}>
+                          <Image 
+                            source={item.image} 
+                            style={styles.mapImage} 
+                            resizeMode="cover" 
+                          />
+                          {isSelected && (
+                            <View style={styles.selectedBadge}>
+                              <Ionicons name="checkmark-circle" size={24} color="#50c878" />
+                            </View>
+                          )}
+                        </View>
+                        <LinearGradient
+                          colors={gradient}
+                          style={styles.mapCardFooter}
+                        >
+                          <Text style={styles.mapCardTitle} numberOfLines={2}>
+                            {item.name}
+                          </Text>
+                        </LinearGradient>
+                      </TouchableOpacity>
+                    );
+                  }}
+                />
+              </View>
+            ) : (
+              <View style={styles.emptyState}>
+                <LinearGradient
+                  colors={['#f093fb', '#f5576c']}
+                  style={styles.emptyCircle}
+                >
+                  <Ionicons name="map-outline" size={48} color="#fff" />
+                </LinearGradient>
+                <Text style={styles.emptyTitle}>No Maps Yet</Text>
+                <Text style={styles.emptySubtext}>
+                  Upload a floor map to start indoor navigation
+                </Text>
+              </View>
+            )}
+
+            {/* Selected Map Preview */}
+            {selected && (
+              <View style={styles.previewSection}>
+                <Text style={styles.sectionTitle}>Selected Map</Text>
+                <View style={styles.previewCard}>
+                  <Image 
+                    source={selected.image} 
+                    style={styles.previewImage} 
+                    resizeMode="contain" 
+                  />
+                  <Text style={styles.previewName}>{selected.name}</Text>
+                </View>
+              </View>
+            )}
+
+            {/* Action Buttons */}
+            <View style={styles.actionsSection}>
+              <TouchableOpacity
+                onPress={() => setModalVisible(true)}
+                style={styles.actionButtonWrapper}
+              >
+                <LinearGradient
+                  colors={['#4facfe', '#00f2fe']}
+                  style={styles.actionButton}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="add-circle-outline" size={28} color="#fff" />
+                  <Text style={styles.actionButtonText}>Add Floor Map</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => router.push('/screens/processFloorMap')}
+                disabled={!selected}
+                style={[styles.actionButtonWrapper, !selected && styles.actionButtonDisabled]}
+              >
+                <LinearGradient
+                  colors={!selected ? ['#ccc', '#aaa'] : ['#50c878', '#3bb55f']}
+                  style={styles.actionButton}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="construct-outline" size={28} color="#fff" />
+                  <Text style={styles.actionButtonText}>Process Map</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </>
         )}
-      </View>
-      <Text style={styles.mapName}>{selected?.name || ''}</Text>
-      <View style={styles.buttonRow}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.buttonText}>Add Floor Map</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, !selected && styles.buttonDisabled]}
-          disabled={!selected}
-          onPress={() => {
-            console.log('Navigating to ProcessFloorMap');
-            router.push('/screens/processFloorMap');
-          }}
-        >
-          <Text style={styles.buttonText}>Process Map</Text>
-        </TouchableOpacity>
-      </View>
-      
-      {/* Show Navigation buttons for processed maps */}
-      {selected?.floorMap?.metadata?.is_processed && selected?.floorMap?.metadata?.labels && (
-        <View style={{ marginTop: 10, width: '100%', gap: 10 }}>
-          {/* Start Live Navigation - Direct Access */}
-          <TouchableOpacity
-            style={[styles.button, { width: '100%', backgroundColor: '#FF6B35' }]}
-            onPress={() => {
-              const labels = selected.floorMap.metadata.labels || [];
-              const firstRoom = labels[0]?.label || 'entrance';
-              const lastRoom = labels[labels.length - 1]?.label || 'destination';
-              
-              router.push({
-                pathname: '/screens/liveNavigationScreen' as any,
-                params: {
-                  map: JSON.stringify({
-                    map_id: selected.floorMap.map_id,
-                    map_name: selected.floorMap.map_name,
-                  }),
-                  source: firstRoom,
-                  destination: lastRoom,
-                }
-              });
-            }}
-          >
-            <Text style={styles.buttonText}>▶️ Start Live Navigation Now</Text>
-            <Text style={{ color: '#FFF', fontSize: 11, marginTop: 4 }}>
-              Use recorded waypoints for positioning
-            </Text>
-          </TouchableOpacity>
+      </ScrollView>
 
-          {/* Old Navigation System - Room-based */}
-          <TouchableOpacity
-            style={[styles.button, { width: '100%', backgroundColor: '#50C878' }]}
-            onPress={() => {
-              router.push({
-                pathname: '/screens/roomImageManager' as any,
-                params: {
-                  map: JSON.stringify({
-                    map_id: selected.floorMap.map_id,
-                    map_name: selected.floorMap.map_name,
-                    metadata: {
-                      labels: selected.floorMap.metadata.labels,
-                    }
-                  })
-                }
-              });
-            }}
-          >
-            <Text style={styles.buttonText}>📍 Setup Room Reference Images</Text>
-            <Text style={{ color: '#FFF', fontSize: 11, marginTop: 4 }}>
-              Attach 1 image per room (old system)
-            </Text>
-          </TouchableOpacity>
-
-          {/* New Enhanced Navigation - Waypoint-based */}
-          <TouchableOpacity
-            style={[styles.button, { width: '100%', backgroundColor: '#4A90E2' }]}
-            onPress={() => {
-              router.push({
-                pathname: '/screens/pathRecordingMode' as any,
-                params: {
-                  map: JSON.stringify({
-                    map_id: selected.floorMap.map_id,
-                    map_name: selected.floorMap.map_name,
-                    metadata: {
-                      labels: selected.floorMap.metadata.labels,
-                    }
-                  })
-                }
-              });
-            }}
-          >
-            <Text style={styles.buttonText}>🎥 Record Navigation Waypoints</Text>
-            <Text style={{ color: '#FFF', fontSize: 11, marginTop: 4 }}>
-              Capture 20-30 images per location (recommended)
-            </Text>
-          </TouchableOpacity>
-          
-          <Text style={{ 
-            color: AppColors.textSecondary, 
-            fontSize: 11, 
-            textAlign: 'center',
-            marginTop: 5,
-            fontStyle: 'italic'
-          }}>
-            💡 Record waypoints first, then use "Start Live Navigation"
-          </Text>
-        </View>
-      )}
-      
       {/* Modal for Adding New Map */}
       <Modal
         visible={modalVisible}
@@ -432,52 +589,71 @@ export default function IndoorNavigation() {
         transparent
         onRequestClose={() => !saving && setModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
+        <BlurView intensity={90} style={styles.modalContainer}>
           <View style={styles.modalView}>
-            <Text style={{ fontSize: 18, fontWeight: '700', color: AppColors.textPrimary, marginBottom: 15 }}>
-              Add Floor Map
-            </Text>
-            <Text style={{ fontSize: 14, color: AppColors.textSecondary, marginBottom: 15, textAlign: 'center' }}>
-              Enter a name, then you'll be asked to select an image file.
-            </Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Enter Floor Name"
-              placeholderTextColor={AppColors.textSecondary}
-              value={newMapName}
-              onChangeText={setNewMapName}
-              editable={!saving}
-              autoFocus
-            />
-            <TouchableOpacity
-              style={[
-                styles.button,
-                (!newMapName.trim() || saving) && styles.buttonDisabled,
-                { width: 180, marginTop: 10 },
-              ]}
-              onPress={handleAddMap}
-              disabled={!newMapName.trim() || saving}
+            <LinearGradient
+              colors={['#4facfe', '#00f2fe']}
+              style={styles.modalHeader}
             >
-              {saving ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.buttonText}>Continue & Select Image</Text>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity 
-              onPress={() => {
-                if (!saving) {
+              <Ionicons name="map" size={32} color="#fff" />
+              <Text style={styles.modalTitle}>Add Floor Map</Text>
+            </LinearGradient>
+
+            <View style={styles.modalBody}>
+              <Text style={styles.modalSubtext}>
+                Enter a name for your floor map
+              </Text>
+              
+              <View style={styles.inputContainer}>
+                <Ionicons name="document-text-outline" size={20} color="#667eea" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="e.g., 2nd Floor Building A"
+                  placeholderTextColor="#999"
+                  value={newMapName}
+                  onChangeText={setNewMapName}
+                  editable={!saving}
+                />
+              </View>
+            </View>
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                onPress={() => {
                   setModalVisible(false);
                   setNewMapName('');
-                }
-              }}
-              disabled={saving}
-              style={{ marginTop: 15 }}
-            >
-              <Text style={[styles.modalCancel, saving && { opacity: 0.5 }]}>Cancel</Text>
-            </TouchableOpacity>
+                }}
+                disabled={saving}
+                style={styles.modalButtonWrapper}
+              >
+                <View style={styles.modalCancelButton}>
+                  <Ionicons name="close-circle-outline" size={20} color="#666" />
+                  <Text style={styles.modalCancelText}>Cancel</Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={handleAddMap}
+                disabled={saving || !newMapName.trim()}
+                style={styles.modalButtonWrapper}
+              >
+                <LinearGradient
+                  colors={saving || !newMapName.trim() ? ['#ccc', '#aaa'] : ['#50c878', '#3bb55f']}
+                  style={styles.modalSaveButton}
+                >
+                  {saving ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <>
+                      <Ionicons name="checkmark-circle-outline" size={20} color="#fff" />
+                      <Text style={styles.modalSaveText}>Save & Select Image</Text>
+                    </>
+                  )}
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </BlurView>
       </Modal>
     </View>
   );

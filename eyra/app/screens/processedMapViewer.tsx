@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView, Button, StyleSheet, Alert, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Image, ScrollView, Button, StyleSheet, Alert, TextInput, TouchableOpacity, StatusBar, Platform } from 'react-native';
 import * as FileSystem from 'expo-file-system/legacy';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Constants from 'expo-constants';
 import { addFloorMap } from '../services/floorMapService';
 import { DEMO_USER_ID } from '../constants/user';
 import { API_BASE_URL, API_ENDPOINTS } from '../config/api';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Speech from 'expo-speech';
+import * as Haptics from 'expo-haptics';
 
 const colors = {
   secondary: '#3b82f6',
@@ -29,6 +33,17 @@ export default function ProcessedMapViewer() {
   const userId = DEMO_USER_ID;
 
   useEffect(() => {
+    const initScreen = async () => {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      const labelCount = processed?.labels?.length || 0;
+      const isSaved = processed?.is_saved || false;
+      Speech.speak(
+        `Processed map viewer. ${labelCount} room${labelCount === 1 ? '' : 's'} detected. ${isSaved ? 'Map is saved.' : 'Swipe down to save map.'} Swipe to edit room labels.`,
+        { rate: 0.9 }
+      );
+    };
+    initScreen();
+    
     console.log('ProcessedMapViewer - Processed data:', {
       is_saved: processed?.is_saved,
       has_base64: !!processed?.processed_image_base64,
@@ -42,6 +57,11 @@ export default function ProcessedMapViewer() {
     if (processed?.labels) {
       setEditedLabels(processed.labels.map((l: any) => ({ ...l })));
     }
+    
+    // Cleanup: Stop speech when leaving screen
+    return () => {
+      Speech.stop();
+    };
   }, []);
 
   const loadImage = async () => {
@@ -109,9 +129,12 @@ export default function ProcessedMapViewer() {
   const saveToDevice = async () => {
     try {
       setSaving(true);
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      Speech.speak('Saving processed map. Please wait.', { rate: 0.9 });
       
       // Check if already saved
       if (isSaved) {
+        Speech.speak('Map already saved', { rate: 0.9 });
         Alert.alert('Already Saved', 'This processed map is already saved to your device.');
         setSaving(false);
         return;
@@ -227,6 +250,24 @@ export default function ProcessedMapViewer() {
   const updateLabels = async () => {
     try {
       setUpdating(true);
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      
+      // If map is not saved yet, just update locally
+      if (!isSaved) {
+        Speech.speak(`Updated ${editedLabels.length} room label${editedLabels.length === 1 ? '' : 's'} locally`, { rate: 0.9 });
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        
+        // Update the processed labels locally
+        if (processed) {
+          processed.labels = editedLabels;
+        }
+        setEditMode(false);
+        setUpdating(false);
+        Alert.alert('Success!', 'Labels updated. Save the map to persist changes.');
+        return;
+      }
+      
+      Speech.speak('Updating room labels on server. Please wait.', { rate: 0.9 });
       
       // Build the updates array
       const updates = editedLabels.map((label, idx) => ({
@@ -235,16 +276,17 @@ export default function ProcessedMapViewer() {
         bbox: label.bbox,
       }));
 
-      console.log('Updating labels:', updates);
+      console.log('Updating labels for saved map:', updates);
 
-      const mapId = processed.map_id || original?.map_id;
+      const mapId = processed.map_id;
       if (!mapId) {
-        throw new Error('No map ID available');
+        throw new Error('No map ID available for saved map');
       }
 
       const formData = new FormData();
       formData.append('labels', JSON.stringify(updates));
 
+      console.log('Calling API:', API_ENDPOINTS.updateFloorMapLabels(userId, mapId));
       const response = await fetch(
         API_ENDPOINTS.updateFloorMapLabels(userId, mapId),
         {
@@ -262,9 +304,12 @@ export default function ProcessedMapViewer() {
       setUpdating(false);
 
       if (data.success) {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        const count = data.updated_labels?.length || updates.length;
+        Speech.speak(`Updated ${count} room label${count === 1 ? '' : 's'} successfully`, { rate: 0.9 });
         Alert.alert(
           'Success!',
-          `Updated ${data.updated_labels?.length || updates.length} room labels`,
+          `Updated ${count} room label${count === 1 ? '' : 's'}`,
           [
             {
               text: 'OK',
@@ -279,11 +324,15 @@ export default function ProcessedMapViewer() {
           ]
         );
       } else {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        Speech.speak('Failed to update labels', { rate: 0.9 });
         Alert.alert('Error', data.message || 'Failed to update labels');
       }
     } catch (e) {
       setUpdating(false);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       const errorMessage = e instanceof Error ? e.message : String(e);
+      Speech.speak('Error updating labels', { rate: 0.9 });
       console.error('Update labels error:', errorMessage, e);
       Alert.alert('Error', `Failed to update labels: ${errorMessage}`);
     }
@@ -295,334 +344,659 @@ export default function ProcessedMapViewer() {
     setEditedLabels(updated);
   };
 
-  const toggleEditMode = () => {
+  const toggleEditMode = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (editMode) {
       // Exiting edit mode - reset to original labels
+      Speech.speak('Edit mode cancelled', { rate: 0.9 });
       setEditedLabels(labels.map((l: any) => ({ ...l })));
+    } else {
+      Speech.speak(`Edit mode enabled. ${labels.length} room${labels.length === 1 ? '' : 's'} to edit.`, { rate: 0.9 });
     }
     setEditMode(!editMode);
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Processed Map{isSaved ? ' (Saved)' : ''}</Text>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
       
-      {imageUri ? (
-        <Image source={{ uri: imageUri }} style={styles.image} resizeMode="contain" />
-      ) : (
-        <View style={styles.image}>
-          <Text>Loading image...</Text>
-        </View>
-      )}
-
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Detected Regions ({labels.length})</Text>
+      {/* Modern Gradient Header */}
+      <LinearGradient colors={['#50c878', '#3bb55f']} style={styles.header}>
+        <View style={styles.headerTop}>
           <TouchableOpacity
-            onPress={toggleEditMode}
-            style={[styles.editButton, editMode && styles.editButtonActive]}
+            style={styles.backButton}
+            onPress={async () => {
+              await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              Speech.stop();
+              router.back();
+            }}
+            accessible={true}
+            accessibilityLabel="Go back"
+            accessibilityRole="button"
           >
-            <Text style={[styles.editButtonText, editMode && styles.editButtonTextActive]}>
-              {editMode ? '✕ Cancel' : '✏️ Edit Labels'}
-            </Text>
+            <Ionicons name="arrow-back" size={28} color="#fff" />
           </TouchableOpacity>
+          <View style={styles.headerCenter}>
+            <Text style={styles.headerTitle}>Processed Map</Text>
+            {isSaved && (
+              <View style={styles.savedBadge}>
+                <Ionicons name="checkmark-circle" size={14} color="#fff" />
+                <Text style={styles.savedBadgeText}>Saved</Text>
+              </View>
+            )}
+          </View>
+          <View style={styles.backButton} />
+        </View>
+      </LinearGradient>
+
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        {/* Map Image Card */}
+        <View style={styles.imageCard}>
+          {imageUri ? (
+            <Image source={{ uri: imageUri }} style={styles.image} resizeMode="contain" />
+          ) : (
+            <View style={styles.imagePlaceholder}>
+              <LinearGradient colors={['#4facfe', '#00f2fe']} style={styles.loadingGradient}>
+                <Ionicons name="image-outline" size={48} color="#fff" />
+                <Text style={styles.loadingText}>Loading map...</Text>
+              </LinearGradient>
+            </View>
+          )}
         </View>
 
-        {labels.length === 0 ? (
-          <Text style={{ color: '#666' }}>No regions detected</Text>
-        ) : (
-          <>
-            {(editMode ? editedLabels : labels).map((l: any, idx: number) => (
-              <View key={idx} style={styles.labelRow}>
-                <View style={styles.labelInfo}>
-                  {/* OCR/Auto indicator */}
-                  <View
-                    style={[
-                      styles.labelBadge,
-                      l.text_extracted ? styles.ocrBadge : styles.autoBadge,
-                    ]}
-                  >
-                    <Text style={styles.badgeText}>
-                      {l.text_extracted ? 'OCR' : 'AUTO'}
-                    </Text>
+        {/* Labels Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <View style={styles.sectionTitleContainer}>
+              <Ionicons name="pricetags" size={24} color="#2c3e50" />
+              <Text style={styles.sectionTitle}>Room Labels</Text>
+              <View style={styles.countBadge}>
+                <Text style={styles.countText}>{labels.length}</Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={toggleEditMode}
+              style={styles.editButtonWrapper}
+              accessible={true}
+              accessibilityLabel={editMode ? 'Cancel editing' : 'Edit room labels'}
+              accessibilityRole="button"
+            >
+              <LinearGradient
+                colors={editMode ? ['#ff6b6b', '#ee5a52'] : ['#4facfe', '#00f2fe']}
+                style={styles.editButton}
+              >
+                <Ionicons name={editMode ? 'close-circle' : 'create'} size={18} color="#fff" />
+                <Text style={styles.editButtonText}>
+                  {editMode ? 'Cancel' : 'Edit'}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+
+          {labels.length === 0 ? (
+            <View style={styles.emptyState}>
+              <LinearGradient colors={['#ffc371', '#ff5f6d']} style={styles.emptyCircle}>
+                <Ionicons name="alert-circle-outline" size={48} color="#fff" />
+              </LinearGradient>
+              <Text style={styles.emptyTitle}>No Rooms Detected</Text>
+              <Text style={styles.emptyText}>The map processing did not detect any rooms</Text>
+            </View>
+          ) : (
+            <>
+              {(editMode ? editedLabels : labels).map((l: any, idx: number) => {
+                const labelAccessibility = `Room ${idx + 1}. ${l.label}. ${l.text_extracted ? 'Detected by text recognition' : 'Auto-labeled'}. Area: ${Math.round(l.area)}.`;
+                
+                return (
+                <TouchableOpacity
+                  key={idx}
+                  style={styles.labelCard}
+                  accessible={true}
+                  accessibilityLabel={labelAccessibility}
+                  accessibilityRole="button"
+                  onPress={async () => {
+                    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    Speech.speak(labelAccessibility, { rate: 0.9 });
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.labelMain}>
+                    {/* Badge */}
+                    <LinearGradient
+                      colors={l.text_extracted ? ['#667eea', '#764ba2'] : ['#f093fb', '#f5576c']}
+                      style={styles.labelBadge}
+                    >
+                      <Text style={styles.badgeText}>
+                        {l.text_extracted ? 'OCR' : 'AUTO'}
+                      </Text>
+                    </LinearGradient>
+
+                    {/* Label text or input */}
+                    {editMode ? (
+                      <TextInput
+                        style={styles.labelInput}
+                        value={editedLabels[idx]?.label || ''}
+                        onChangeText={(text) => handleLabelChange(idx, text)}
+                        placeholder={`Room ${idx + 1}`}
+                        placeholderTextColor="#bdc3c7"
+                        accessible={true}
+                        accessibilityLabel={`Edit room ${idx + 1} name`}
+                        accessibilityHint="Type to change the room name"
+                      />
+                    ) : (
+                      <Text style={styles.labelText}>{l.label}</Text>
+                    )}
                   </View>
 
-                  {/* Label text or input */}
-                  {editMode ? (
-                    <TextInput
-                      style={styles.labelInput}
-                      value={editedLabels[idx]?.label || ''}
-                      onChangeText={(text) => handleLabelChange(idx, text)}
-                      placeholder={`Room ${idx + 1}`}
-                      placeholderTextColor="#999"
-                    />
-                  ) : (
-                    <Text style={styles.labelText}>{l.label}</Text>
-                  )}
-                </View>
+                  {/* Metadata */}
+                  <View style={styles.metaContainer}>
+                    <View style={styles.metaRow}>
+                      <Ionicons name="resize-outline" size={14} color="#7f8c8d" />
+                      <Text style={styles.meta}>{Math.round(l.area)}</Text>
+                    </View>
+                    {l.ocr_confidence > 0 && (
+                      <View style={styles.metaRow}>
+                        <Ionicons name="checkmark-circle" size={14} color="#50c878" />
+                        <Text style={styles.meta}>{l.ocr_confidence}%</Text>
+                      </View>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              );
+              })}
 
-                {/* Metadata */}
-                <View style={styles.metaContainer}>
-                  <Text style={styles.meta}>{`Area: ${Math.round(l.area)}`}</Text>
-                  {l.ocr_confidence > 0 && (
-                    <Text style={styles.meta}>{`Conf: ${l.ocr_confidence}%`}</Text>
-                  )}
+              {/* Update button in edit mode */}
+              {editMode && (
+                <TouchableOpacity
+                  style={styles.updateButtonWrapper}
+                  onPress={updateLabels}
+                  disabled={updating}
+                  accessible={true}
+                  accessibilityLabel={updating ? 'Updating labels' : 'Update all room labels'}
+                  accessibilityRole="button"
+                >
+                  <LinearGradient
+                    colors={updating ? ['#bdc3c7', '#95a5a6'] : ['#50c878', '#3bb55f']}
+                    style={styles.updateButton}
+                  >
+                    {updating ? (
+                      <Ionicons name="sync" size={22} color="#fff" />
+                    ) : (
+                      <Ionicons name="checkmark-circle" size={22} color="#fff" />
+                    )}
+                    <Text style={styles.updateButtonText}>
+                      {updating ? 'Updating...' : 'Update Labels'}
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              )}
+
+              {/* Stats section */}
+              {processed?.stats && (
+                <View style={styles.statsCard}>
+                  <View style={styles.statsHeader}>
+                    <Ionicons name="bar-chart" size={20} color="#2c3e50" />
+                    <Text style={styles.statsTitle}>Detection Stats</Text>
+                  </View>
+                  <View style={styles.statsGrid}>
+                    <View style={styles.statItem}>
+                      <Text style={styles.statValue}>{processed.stats.total_rooms}</Text>
+                      <Text style={styles.statLabel}>Total Rooms</Text>
+                    </View>
+                    <View style={styles.statItem}>
+                      <Text style={[styles.statValue, styles.ocrColor]}>{processed.stats.ocr_labeled}</Text>
+                      <Text style={styles.statLabel}>OCR Labeled</Text>
+                    </View>
+                    <View style={styles.statItem}>
+                      <Text style={[styles.statValue, styles.autoColor]}>{processed.stats.auto_labeled}</Text>
+                      <Text style={styles.statLabel}>Auto Labeled</Text>
+                    </View>
+                  </View>
                 </View>
+              )}
+            </>
+          )}
+        </View>
+
+        {/* Action Buttons */}
+        <View style={styles.actionsSection}>
+                {!isSaved ? (
+                  <TouchableOpacity 
+                    onPress={saveToDevice} 
+                    disabled={saving}
+                    style={styles.actionButtonWrapper}
+                    accessibilityLabel="Save processed map for navigation"
+                    accessibilityHint="Double tap to save the floor map"
+                  >
+                    <LinearGradient
+                      colors={saving ? ['#bdc3c7', '#95a5a6'] : ['#f093fb', '#f5576c']}
+                      style={styles.actionButton}
+                    >
+                      <Ionicons name={saving ? 'sync' : 'save-outline'} size={24} color="#fff" />
+                      <Text style={styles.actionButtonText}>
+                        {saving ? 'Saving...' : 'Save Processed Map'}
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                ) : (
+                  <>
+                    <View style={styles.savedInfoCard}>
+                      <Ionicons name="checkmark-circle" size={28} color="#50c878" />
+                      <Text style={styles.savedInfoTitle}>Map Ready</Text>
+                      <Text style={styles.savedInfoText}>
+                        This floor map is saved and ready for indoor navigation
+                      </Text>
+                    </View>
+
+                    {labels.length > 0 && (
+                      <>
+                        <TouchableOpacity 
+                          onPress={async () => {
+                            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                            Speech.speak('Opening room image manager', { rate: 0.9 });
+                            router.push({
+                              pathname: '/screens/roomImageManager' as any,
+                              params: {
+                                map: JSON.stringify({
+                                  map_id: processed.map_id || original?.map_id,
+                                  map_name: processed.map_name || original?.map_name,
+                                  metadata: {
+                                    labels: labels,
+                                  }
+                                })
+                              }
+                            });
+                          }}
+                          style={styles.actionButtonWrapper}
+                          accessibilityLabel="Manage room images and start navigation"
+                          accessibilityHint="Double tap to manage room images"
+                        >
+                          <LinearGradient
+                            colors={['#4facfe', '#00f2fe']}
+                            style={styles.actionButton}
+                          >
+                            <Ionicons name="images-outline" size={24} color="#fff" />
+                            <Text style={styles.actionButtonText}>Manage Room Images</Text>
+                          </LinearGradient>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity 
+                          onPress={async () => {
+                            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                            Speech.speak('Starting floor recording mode', { rate: 0.9 });
+                            router.push({
+                              pathname: '/screens/mapRecordingMode' as any,
+                              params: {
+                                map: JSON.stringify({
+                                  map_id: processed.map_id || original?.map_id,
+                                  map_name: processed.map_name || original?.map_name,
+                                  user_id: 'user_001',
+                                  metadata: {
+                                    labels: labels,
+                                  }
+                                })
+                              }
+                            });
+                          }}
+                          style={styles.actionButtonWrapper}
+                          accessibilityLabel="Start floor recording mode"
+                          accessibilityHint="Double tap to begin recording floor navigation"
+                        >
+                          <LinearGradient
+                            colors={['#667eea', '#764ba2']}
+                            style={styles.actionButton}
+                          >
+                            <Ionicons name="videocam-outline" size={24} color="#fff" />
+                            <Text style={styles.actionButtonText}>Start Floor Recording</Text>
+                          </LinearGradient>
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </>
+                )}
               </View>
-            ))}
+            </ScrollView>
+          </View>
+        );
+      }
 
-            {/* Update button in edit mode */}
-            {editMode && (
-              <TouchableOpacity
-                style={styles.updateButton}
-                onPress={updateLabels}
-                disabled={updating}
-              >
-                <Text style={styles.updateButtonText}>
-                  {updating ? '⟳ Updating...' : '✓ Update Labels'}
-                </Text>
-              </TouchableOpacity>
-            )}
-
-            {/* Stats section */}
-            {processed?.stats && (
-              <View style={styles.statsContainer}>
-                <Text style={styles.statsTitle}>Detection Statistics</Text>
-                <View style={styles.statsRow}>
-                  <Text style={styles.statsLabel}>Total Rooms:</Text>
-                  <Text style={styles.statsValue}>{processed.stats.total_rooms}</Text>
-                </View>
-                <View style={styles.statsRow}>
-                  <Text style={styles.statsLabel}>OCR Labeled:</Text>
-                  <Text style={[styles.statsValue, styles.ocrColor]}>
-                    {processed.stats.ocr_labeled}
-                  </Text>
-                </View>
-                <View style={styles.statsRow}>
-                  <Text style={styles.statsLabel}>Auto Labeled:</Text>
-                  <Text style={[styles.statsValue, styles.autoColor]}>
-                    {processed.stats.auto_labeled}
-                  </Text>
-                </View>
-              </View>
-            )}
-          </>
-        )}
-      </View>
-
-      {!isSaved && (
-        <View style={{ marginVertical: 12 }}>
-          <Button 
-            title={saving ? 'Saving...' : 'Save Processed Map'} 
-            onPress={saveToDevice} 
-            disabled={saving} 
-          />
-        </View>
-      )}
-
-      {isSaved && (
-        <View style={styles.savedInfo}>
-          <Text style={styles.savedInfoText}>
-            ✓ This processed map is saved and ready for indoor navigation
-          </Text>
-        </View>
-      )}
-
-      {isSaved && labels.length > 0 && (
-        <View style={{ marginVertical: 12 }}>
-          <Button 
-            title="Manage Room Images & Start Navigation" 
-            onPress={() => router.push({
-              pathname: '/screens/roomImageManager' as any,
-              params: {
-                map: JSON.stringify({
-                  map_id: processed.map_id || original?.map_id,
-                  map_name: processed.map_name || original?.map_name,
-                  metadata: {
-                    labels: labels,
-                  }
-                })
-              }
-            })}
-          />
-        </View>
-      )}
-
-      {isSaved && labels.length > 0 && (
-        <View style={{ marginVertical: 12 }}>
-          <Button 
-            title="🎥 Start Floor Recording Mode" 
-            onPress={() => router.push({
-              pathname: '/screens/mapRecordingMode' as any,
-              params: {
-                map: JSON.stringify({
-                  map_id: processed.map_id || original?.map_id,
-                  map_name: processed.map_name || original?.map_name,
-                  user_id: 'user_001', // This should come from authentication
-                  metadata: {
-                    labels: labels,
-                  }
-                })
-              }
-            })}
-          />
-        </View>
-      )}
-
-      <View style={{ marginTop: 20 }}>
-        <Button title="Back" onPress={() => router.back()} />
-      </View>
-    </ScrollView>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: { padding: 16, alignItems: 'center', backgroundColor: '#fff' },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 18, fontWeight: '700', marginBottom: 12 },
-  image: { width: '100%', height: 400, backgroundColor: '#eee', justifyContent: 'center', alignItems: 'center' },
-  section: { width: '100%', marginTop: 12 },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  sectionTitle: { fontSize: 16, fontWeight: '600' },
-  editButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    backgroundColor: colors.secondary,
-    borderRadius: 16,
-  },
-  editButtonActive: {
-    backgroundColor: colors.danger,
-  },
-  editButtonText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  editButtonTextActive: {
-    color: '#fff',
-  },
-  labelRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 8,
-    borderBottomWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.cardBackground,
-    marginBottom: 4,
-    borderRadius: 6,
-  },
-  labelInfo: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  labelBadge: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
-    minWidth: 40,
-    alignItems: 'center',
-  },
-  ocrBadge: {
-    backgroundColor: colors.secondary,
-  },
-  autoBadge: {
-    backgroundColor: colors.secondary,
-  },
-  badgeText: {
-    color: '#fff',
-    fontSize: 9,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  labelInput: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: '600',
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    backgroundColor: colors.cardBackground,
-    borderWidth: 1,
-    borderColor: colors.secondary,
-    borderRadius: 6,
-    color: colors.text,
-  },
-  labelText: { fontSize: 15, fontWeight: '600', flex: 1, color: colors.text },
-  metaContainer: {
-    alignItems: 'flex-end',
-  },
-  meta: { color: '#666', fontSize: 11 },
-  updateButton: {
-  backgroundColor: colors.secondary,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginTop: 16,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  updateButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  statsContainer: {
-    backgroundColor: colors.cardBackground,
-    padding: 12,
-    borderRadius: 8,
-    marginTop: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  statsTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 8,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 4,
-  },
-  statsLabel: {
-    fontSize: 13,
-    color: colors.muted,
-  },
-  statsValue: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  ocrColor: {
-    color: colors.secondary,
-  },
-  autoColor: {
-    color: colors.secondary,
-  },
-  savedInfo: {
-    backgroundColor: '#E8F5F3',
-    padding: 12,
-    borderRadius: 8,
-    marginVertical: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.secondary,
-  },
-  savedInfoText: {
-    color: colors.text,
-    fontSize: 14,
-    fontWeight: '500',
-  },
-});
+      const styles = StyleSheet.create({
+        container: {
+          flex: 1,
+          backgroundColor: '#f5f7fa',
+        },
+        header: {
+          paddingTop: Platform.OS === 'ios' ? 60 : 40,
+          paddingBottom: 20,
+          paddingHorizontal: 20,
+        },
+        headerTop: {
+          flexDirection: 'row',
+          alignItems: 'center',
+        },
+        backButton: {
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+        headerCenter: {
+          flex: 1,
+          marginLeft: 12,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 8,
+        },
+        headerTitle: {
+          fontSize: 24,
+          fontWeight: '700',
+          color: '#fff',
+        },
+        savedBadge: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 4,
+          backgroundColor: 'rgba(255, 255, 255, 0.25)',
+          paddingHorizontal: 10,
+          paddingVertical: 4,
+          borderRadius: 12,
+        },
+        savedBadgeText: {
+          color: '#fff',
+          fontSize: 12,
+          fontWeight: '600',
+        },
+        scrollContent: {
+          padding: 20,
+        },
+        imageCard: {
+          backgroundColor: '#fff',
+          borderRadius: 20,
+          overflow: 'hidden',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.1,
+          shadowRadius: 12,
+          elevation: 6,
+          marginBottom: 24,
+        },
+        image: {
+          width: '100%',
+          height: 400,
+          resizeMode: 'contain',
+        },
+        imagePlaceholder: {
+          width: '100%',
+          height: 400,
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+        loadingGradient: {
+          width: '100%',
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 12,
+        },
+        loadingText: {
+          fontSize: 16,
+          color: '#fff',
+          fontWeight: '600',
+        },
+        section: {
+          marginBottom: 24,
+        },
+        sectionHeader: {
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 16,
+        },
+        sectionTitleContainer: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 8,
+        },
+        sectionTitle: {
+          fontSize: 20,
+          fontWeight: '700',
+          color: '#2c3e50',
+        },
+        countBadge: {
+          backgroundColor: '#4facfe',
+          paddingHorizontal: 10,
+          paddingVertical: 4,
+          borderRadius: 12,
+          minWidth: 28,
+          alignItems: 'center',
+        },
+        countText: {
+          color: '#fff',
+          fontSize: 14,
+          fontWeight: '700',
+        },
+        editButtonWrapper: {
+          minHeight: 44,
+        },
+        editButton: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 6,
+          paddingHorizontal: 16,
+          paddingVertical: 10,
+          borderRadius: 22,
+          minHeight: 44,
+        },
+        editButtonText: {
+          color: '#fff',
+          fontSize: 14,
+          fontWeight: '700',
+        },
+        emptyState: {
+          alignItems: 'center',
+          paddingVertical: 40,
+          paddingHorizontal: 20,
+        },
+        emptyCircle: {
+          width: 120,
+          height: 120,
+          borderRadius: 60,
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: 20,
+        },
+        emptyTitle: {
+          fontSize: 20,
+          fontWeight: '700',
+          color: '#2c3e50',
+          marginBottom: 8,
+        },
+        emptyText: {
+          fontSize: 16,
+          color: '#7f8c8d',
+          textAlign: 'center',
+          lineHeight: 24,
+        },
+        labelCard: {
+          backgroundColor: '#fff',
+          borderRadius: 16,
+          padding: 16,
+          marginBottom: 12,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.08,
+          shadowRadius: 8,
+          elevation: 4,
+          minHeight: 72,
+        },
+        labelMain: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 12,
+          marginBottom: 8,
+        },
+        labelBadge: {
+          paddingHorizontal: 10,
+          paddingVertical: 6,
+          borderRadius: 12,
+          minWidth: 50,
+          alignItems: 'center',
+        },
+        badgeText: {
+          color: '#fff',
+          fontSize: 11,
+          fontWeight: '700',
+          letterSpacing: 0.5,
+        },
+        labelInput: {
+          flex: 1,
+          fontSize: 16,
+          fontWeight: '600',
+          paddingVertical: 12,
+          paddingHorizontal: 16,
+          backgroundColor: '#f8f9fa',
+          borderWidth: 2,
+          borderColor: '#4facfe',
+          borderRadius: 12,
+          color: '#2c3e50',
+          minHeight: 48,
+        },
+        labelText: {
+          flex: 1,
+          fontSize: 16,
+          fontWeight: '600',
+          color: '#2c3e50',
+        },
+        metaContainer: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 8,
+        },
+        metaRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 4,
+        },
+        meta: {
+          color: '#7f8c8d',
+          fontSize: 13,
+          fontWeight: '500',
+        },
+        updateButtonWrapper: {
+          marginTop: 16,
+          minHeight: 56,
+        },
+        updateButton: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 8,
+          paddingVertical: 16,
+          borderRadius: 16,
+          minHeight: 56,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.15,
+          shadowRadius: 8,
+          elevation: 6,
+        },
+        updateButtonText: {
+          color: '#fff',
+          fontSize: 18,
+          fontWeight: '700',
+        },
+        statsCard: {
+          backgroundColor: '#fff',
+          borderRadius: 20,
+          padding: 20,
+          marginBottom: 24,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.1,
+          shadowRadius: 12,
+          elevation: 6,
+        },
+        statsHeader: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 8,
+          marginBottom: 16,
+        },
+        statsTitle: {
+          fontSize: 18,
+          fontWeight: '700',
+          color: '#2c3e50',
+        },
+        statsGrid: {
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+        },
+        statItem: {
+          alignItems: 'center',
+        },
+        statValue: {
+          fontSize: 28,
+          fontWeight: '700',
+          color: '#2c3e50',
+          marginBottom: 4,
+        },
+        statLabel: {
+          fontSize: 13,
+          color: '#7f8c8d',
+          fontWeight: '500',
+        },
+        ocrColor: {
+          color: '#667eea',
+        },
+        autoColor: {
+          color: '#f093fb',
+        },
+        actionsSection: {
+          gap: 16,
+        },
+        actionButtonWrapper: {
+          minHeight: 60,
+        },
+        actionButton: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 10,
+          paddingVertical: 18,
+          borderRadius: 16,
+          minHeight: 60,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.15,
+          shadowRadius: 8,
+          elevation: 6,
+        },
+        actionButtonText: {
+          color: '#fff',
+          fontSize: 17,
+          fontWeight: '700',
+        },
+        savedInfoCard: {
+          backgroundColor: '#E8F5F3',
+          borderRadius: 16,
+          padding: 20,
+          alignItems: 'center',
+          marginBottom: 16,
+          borderLeftWidth: 4,
+          borderLeftColor: '#50c878',
+        },
+        savedInfoTitle: {
+          fontSize: 18,
+          fontWeight: '700',
+          color: '#2c3e50',
+          marginTop: 8,
+          marginBottom: 4,
+        },
+        savedInfoText: {
+          fontSize: 14,
+          color: '#7f8c8d',
+          textAlign: 'center',
+          fontWeight: '500',
+        },
+      });

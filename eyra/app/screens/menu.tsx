@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import * as Speech from 'expo-speech';
 import { useRouter } from 'expo-router';
 
@@ -7,7 +7,7 @@ const MainMenu = () => {
   const router = useRouter();
   
   useEffect(() => {
-    const options = ['indoor navigation', 'manage floor maps', 'manage faces', 'process floor map', 'check your surrounding'];
+    const options = ['indoor navigation', 'path guidance', 'manage floor maps', 'manage faces', 'process floor map', 'check your surrounding'];
     const speechText = `Available options are: ${options.join(', ')}. Please select an option.`;
     Speech.speak(speechText);
     
@@ -19,6 +19,10 @@ const MainMenu = () => {
 
   return (
     <View style={styles.container}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
@@ -31,6 +35,20 @@ const MainMenu = () => {
         accessibilityHint="Navigate using recorded floor maps"
       >
         <Text style={styles.buttonText}>Indoor{'\n'}Navigation</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          Speech.stop();
+          Speech.speak('Path guidance selected');
+          setTimeout(() => router.push('/screens/pathGuidance'), 500);
+        }}
+        accessibilityLabel="Path guidance"
+        accessibilityRole="button"
+        accessibilityHint="Real-time obstacle detection and path guidance with voice alerts"
+      >
+        <Text style={styles.buttonText}>Path{'\n'}Guidance</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -88,6 +106,7 @@ const MainMenu = () => {
       >
         <Text style={styles.buttonText}>Check Your{'\n'}Surrounding</Text>
       </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 };
@@ -103,8 +122,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: pastelColors.background,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 40,
     paddingHorizontal: 30,
   },
   button: {
