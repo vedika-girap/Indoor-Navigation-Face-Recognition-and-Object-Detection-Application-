@@ -1,0 +1,1758 @@
+{
+  "user_id": "demo_user_123",
+  "map_id": "map_1762994999540",
+  "total_waypoints": 15,
+  "waypoints": [
+    {
+      "waypoint_id": "path_map_1762994999540_1763021672040_seg0_wp0",
+      "type": "CORRIDOR_START",
+      "room_label": "room_1_to_room_16",
+      "position_description": "Segment 1: room_1 \u2192 room_16, waypoint 1/2",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763021680504,
+          "index": 0
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_018.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_018.jpg",
+          "orientation": 18,
+          "timestamp": 1763021680507,
+          "index": 1
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_036.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_036.jpg",
+          "orientation": 36,
+          "timestamp": 1763021680512,
+          "index": 2
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_054.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_054.jpg",
+          "orientation": 54,
+          "timestamp": 1763021680515,
+          "index": 3
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_072.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_072.jpg",
+          "orientation": 72,
+          "timestamp": 1763021680519,
+          "index": 4
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_090.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_090.jpg",
+          "orientation": 90,
+          "timestamp": 1763021680523,
+          "index": 5
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_108.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_108.jpg",
+          "orientation": 108,
+          "timestamp": 1763021680526,
+          "index": 6
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_126.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_126.jpg",
+          "orientation": 126,
+          "timestamp": 1763021680530,
+          "index": 7
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_144.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_144.jpg",
+          "orientation": 144,
+          "timestamp": 1763021680534,
+          "index": 8
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_162.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_162.jpg",
+          "orientation": 162,
+          "timestamp": 1763021680537,
+          "index": 9
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_180.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_180.jpg",
+          "orientation": 180,
+          "timestamp": 1763021680541,
+          "index": 10
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_198.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_198.jpg",
+          "orientation": 198,
+          "timestamp": 1763021680544,
+          "index": 11
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_216.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_216.jpg",
+          "orientation": 216,
+          "timestamp": 1763021680547,
+          "index": 12
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_234.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_234.jpg",
+          "orientation": 234,
+          "timestamp": 1763021680551,
+          "index": 13
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_252.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_252.jpg",
+          "orientation": 252,
+          "timestamp": 1763021680556,
+          "index": 14
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_270.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_270.jpg",
+          "orientation": 270,
+          "timestamp": 1763021680559,
+          "index": 15
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_288.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_288.jpg",
+          "orientation": 288,
+          "timestamp": 1763021680563,
+          "index": 16
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_306.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_306.jpg",
+          "orientation": 306,
+          "timestamp": 1763021680565,
+          "index": 17
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_324.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_324.jpg",
+          "orientation": 324,
+          "timestamp": 1763021680568,
+          "index": 18
+        },
+        {
+          "filename": "path_map_1762994999540_1763021672040_seg0_wp0_angle_342.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021672040_seg0_wp0\\path_map_1762994999540_1763021672040_seg0_wp0_angle_342.jpg",
+          "orientation": 342,
+          "timestamp": 1763021680572,
+          "index": 19
+        }
+      ],
+      "connections": [
+        {
+          "to_waypoint": "path_map_1762994999540_1763021672040_seg0_wp1",
+          "direction": "forward",
+          "distance_steps": 10,
+          "instruction": "Continue forward"
+        }
+      ],
+      "metadata": {
+        "segment_index": 0,
+        "waypoint_index": 0,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_1",
+        "to_room": "room_16"
+      },
+      "created_at": 1763021680.576442
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763021711006_seg0_wp0",
+      "type": "CORRIDOR_START",
+      "room_label": "room_1_to_room_16",
+      "position_description": "Segment 1: room_1 \u2192 room_16, waypoint 1/2",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763021732435,
+          "index": 0
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_018.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_018.jpg",
+          "orientation": 18,
+          "timestamp": 1763021732438,
+          "index": 1
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_036.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_036.jpg",
+          "orientation": 36,
+          "timestamp": 1763021732442,
+          "index": 2
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_054.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_054.jpg",
+          "orientation": 54,
+          "timestamp": 1763021732446,
+          "index": 3
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_072.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_072.jpg",
+          "orientation": 72,
+          "timestamp": 1763021732450,
+          "index": 4
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_090.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_090.jpg",
+          "orientation": 90,
+          "timestamp": 1763021732453,
+          "index": 5
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_108.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_108.jpg",
+          "orientation": 108,
+          "timestamp": 1763021732456,
+          "index": 6
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_126.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_126.jpg",
+          "orientation": 126,
+          "timestamp": 1763021732460,
+          "index": 7
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_144.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_144.jpg",
+          "orientation": 144,
+          "timestamp": 1763021732462,
+          "index": 8
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_162.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_162.jpg",
+          "orientation": 162,
+          "timestamp": 1763021732467,
+          "index": 9
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_180.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_180.jpg",
+          "orientation": 180,
+          "timestamp": 1763021732470,
+          "index": 10
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_198.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_198.jpg",
+          "orientation": 198,
+          "timestamp": 1763021732473,
+          "index": 11
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_216.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_216.jpg",
+          "orientation": 216,
+          "timestamp": 1763021732477,
+          "index": 12
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_234.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_234.jpg",
+          "orientation": 234,
+          "timestamp": 1763021732480,
+          "index": 13
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_252.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_252.jpg",
+          "orientation": 252,
+          "timestamp": 1763021732484,
+          "index": 14
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_270.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_270.jpg",
+          "orientation": 270,
+          "timestamp": 1763021732488,
+          "index": 15
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_288.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_288.jpg",
+          "orientation": 288,
+          "timestamp": 1763021732492,
+          "index": 16
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_306.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_306.jpg",
+          "orientation": 306,
+          "timestamp": 1763021732495,
+          "index": 17
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_324.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_324.jpg",
+          "orientation": 324,
+          "timestamp": 1763021732498,
+          "index": 18
+        },
+        {
+          "filename": "path_map_1762994999540_1763021711006_seg0_wp0_angle_342.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763021711006_seg0_wp0\\path_map_1762994999540_1763021711006_seg0_wp0_angle_342.jpg",
+          "orientation": 342,
+          "timestamp": 1763021732501,
+          "index": 19
+        }
+      ],
+      "connections": [
+        {
+          "to_waypoint": "path_map_1762994999540_1763021711006_seg0_wp1",
+          "direction": "forward",
+          "distance_steps": 10,
+          "instruction": "Continue forward"
+        }
+      ],
+      "metadata": {
+        "segment_index": 0,
+        "waypoint_index": 0,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_1",
+        "to_room": "room_16"
+      },
+      "created_at": 1763021732.525564
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763022031328_seg0_wp0",
+      "type": "CORRIDOR_START",
+      "room_label": "room_1_to_room_16",
+      "position_description": "Segment 1: room_1 \u2192 room_16, waypoint 1/2",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763022052850,
+          "index": 0
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_018.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_018.jpg",
+          "orientation": 18,
+          "timestamp": 1763022052855,
+          "index": 1
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_036.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_036.jpg",
+          "orientation": 36,
+          "timestamp": 1763022052862,
+          "index": 2
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_054.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_054.jpg",
+          "orientation": 54,
+          "timestamp": 1763022052868,
+          "index": 3
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_072.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_072.jpg",
+          "orientation": 72,
+          "timestamp": 1763022052873,
+          "index": 4
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_090.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_090.jpg",
+          "orientation": 90,
+          "timestamp": 1763022052877,
+          "index": 5
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_108.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_108.jpg",
+          "orientation": 108,
+          "timestamp": 1763022052887,
+          "index": 6
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_126.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_126.jpg",
+          "orientation": 126,
+          "timestamp": 1763022052891,
+          "index": 7
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_144.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_144.jpg",
+          "orientation": 144,
+          "timestamp": 1763022052897,
+          "index": 8
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_162.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_162.jpg",
+          "orientation": 162,
+          "timestamp": 1763022052906,
+          "index": 9
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_180.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_180.jpg",
+          "orientation": 180,
+          "timestamp": 1763022052911,
+          "index": 10
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_198.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_198.jpg",
+          "orientation": 198,
+          "timestamp": 1763022052918,
+          "index": 11
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_216.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_216.jpg",
+          "orientation": 216,
+          "timestamp": 1763022052928,
+          "index": 12
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_234.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_234.jpg",
+          "orientation": 234,
+          "timestamp": 1763022052938,
+          "index": 13
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_252.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_252.jpg",
+          "orientation": 252,
+          "timestamp": 1763022052942,
+          "index": 14
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_270.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_270.jpg",
+          "orientation": 270,
+          "timestamp": 1763022052949,
+          "index": 15
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_288.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_288.jpg",
+          "orientation": 288,
+          "timestamp": 1763022052957,
+          "index": 16
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_306.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_306.jpg",
+          "orientation": 306,
+          "timestamp": 1763022052961,
+          "index": 17
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_324.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_324.jpg",
+          "orientation": 324,
+          "timestamp": 1763022052966,
+          "index": 18
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp0_angle_342.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp0\\path_map_1762994999540_1763022031328_seg0_wp0_angle_342.jpg",
+          "orientation": 342,
+          "timestamp": 1763022052974,
+          "index": 19
+        }
+      ],
+      "connections": [
+        {
+          "to_waypoint": "path_map_1762994999540_1763022031328_seg0_wp1",
+          "direction": "forward",
+          "distance_steps": 10,
+          "instruction": "Continue forward"
+        }
+      ],
+      "metadata": {
+        "segment_index": 0,
+        "waypoint_index": 0,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_1",
+        "to_room": "room_16"
+      },
+      "created_at": 1763022053.0008469
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763022031328_seg0_wp1",
+      "type": "DOOR",
+      "room_label": "room_1_to_room_16",
+      "position_description": "Segment 1: room_1 \u2192 room_16, waypoint 2/2",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp1_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp1\\path_map_1762994999540_1763022031328_seg0_wp1_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763022069902,
+          "index": 0
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp1_angle_045.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp1\\path_map_1762994999540_1763022031328_seg0_wp1_angle_045.jpg",
+          "orientation": 45,
+          "timestamp": 1763022069907,
+          "index": 2
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp1_angle_090.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp1\\path_map_1762994999540_1763022031328_seg0_wp1_angle_090.jpg",
+          "orientation": 90,
+          "timestamp": 1763022069914,
+          "index": 4
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp1_angle_135.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp1\\path_map_1762994999540_1763022031328_seg0_wp1_angle_135.jpg",
+          "orientation": 135,
+          "timestamp": 1763022069920,
+          "index": 6
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp1_angle_180.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp1\\path_map_1762994999540_1763022031328_seg0_wp1_angle_180.jpg",
+          "orientation": 180,
+          "timestamp": 1763022069925,
+          "index": 8
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp1_angle_225.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp1\\path_map_1762994999540_1763022031328_seg0_wp1_angle_225.jpg",
+          "orientation": 225,
+          "timestamp": 1763022069932,
+          "index": 10
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp1_angle_270.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp1\\path_map_1762994999540_1763022031328_seg0_wp1_angle_270.jpg",
+          "orientation": 270,
+          "timestamp": 1763022069940,
+          "index": 12
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg0_wp1_angle_315.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg0_wp1\\path_map_1762994999540_1763022031328_seg0_wp1_angle_315.jpg",
+          "orientation": 315,
+          "timestamp": 1763022069948,
+          "index": 14
+        }
+      ],
+      "connections": [
+        {
+          "to_waypoint": "path_map_1762994999540_1763022031328_seg0_wp0",
+          "direction": "backward",
+          "distance_steps": 10,
+          "instruction": "Walk back"
+        },
+        {
+          "to_waypoint": "path_map_1762994999540_1763022031328_seg1_wp0",
+          "direction": "forward",
+          "distance_steps": 5,
+          "instruction": "Enter room_15"
+        }
+      ],
+      "metadata": {
+        "segment_index": 0,
+        "waypoint_index": 1,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_1",
+        "to_room": "room_16"
+      },
+      "created_at": 1763022069.9722803
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763022031328_seg1_wp0",
+      "type": "CORRIDOR_START",
+      "room_label": "room_16_to_room_15",
+      "position_description": "Segment 2: room_16 \u2192 room_15, waypoint 1/1",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763022093214,
+          "index": 0
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_018.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_018.jpg",
+          "orientation": 18,
+          "timestamp": 1763022093223,
+          "index": 1
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_036.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_036.jpg",
+          "orientation": 36,
+          "timestamp": 1763022093231,
+          "index": 2
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_054.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_054.jpg",
+          "orientation": 54,
+          "timestamp": 1763022093239,
+          "index": 3
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_072.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_072.jpg",
+          "orientation": 72,
+          "timestamp": 1763022093246,
+          "index": 4
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_090.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_090.jpg",
+          "orientation": 90,
+          "timestamp": 1763022093254,
+          "index": 5
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_108.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_108.jpg",
+          "orientation": 108,
+          "timestamp": 1763022093263,
+          "index": 6
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_126.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_126.jpg",
+          "orientation": 126,
+          "timestamp": 1763022093269,
+          "index": 7
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_144.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_144.jpg",
+          "orientation": 144,
+          "timestamp": 1763022093276,
+          "index": 8
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_162.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_162.jpg",
+          "orientation": 162,
+          "timestamp": 1763022093285,
+          "index": 9
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_180.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_180.jpg",
+          "orientation": 180,
+          "timestamp": 1763022093292,
+          "index": 10
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_198.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_198.jpg",
+          "orientation": 198,
+          "timestamp": 1763022093300,
+          "index": 11
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_216.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_216.jpg",
+          "orientation": 216,
+          "timestamp": 1763022093305,
+          "index": 12
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_234.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_234.jpg",
+          "orientation": 234,
+          "timestamp": 1763022093310,
+          "index": 13
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_252.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_252.jpg",
+          "orientation": 252,
+          "timestamp": 1763022093317,
+          "index": 14
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_270.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_270.jpg",
+          "orientation": 270,
+          "timestamp": 1763022093322,
+          "index": 15
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_288.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_288.jpg",
+          "orientation": 288,
+          "timestamp": 1763022093326,
+          "index": 16
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_306.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_306.jpg",
+          "orientation": 306,
+          "timestamp": 1763022093334,
+          "index": 17
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_324.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_324.jpg",
+          "orientation": 324,
+          "timestamp": 1763022093338,
+          "index": 18
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg1_wp0_angle_342.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg1_wp0\\path_map_1762994999540_1763022031328_seg1_wp0_angle_342.jpg",
+          "orientation": 342,
+          "timestamp": 1763022093342,
+          "index": 19
+        }
+      ],
+      "connections": [
+        {
+          "to_waypoint": "path_map_1762994999540_1763022031328_seg2_wp0",
+          "direction": "forward",
+          "distance_steps": 5,
+          "instruction": "Enter room_20"
+        }
+      ],
+      "metadata": {
+        "segment_index": 1,
+        "waypoint_index": 0,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_16",
+        "to_room": "room_15"
+      },
+      "created_at": 1763022093.3711338
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763022031328_seg2_wp0",
+      "type": "CORRIDOR_START",
+      "room_label": "room_15_to_room_20",
+      "position_description": "Segment 3: room_15 \u2192 room_20, waypoint 1/3",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763022118315,
+          "index": 0
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_018.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_018.jpg",
+          "orientation": 18,
+          "timestamp": 1763022118323,
+          "index": 1
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_036.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_036.jpg",
+          "orientation": 36,
+          "timestamp": 1763022118328,
+          "index": 2
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_054.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_054.jpg",
+          "orientation": 54,
+          "timestamp": 1763022118335,
+          "index": 3
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_072.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_072.jpg",
+          "orientation": 72,
+          "timestamp": 1763022118343,
+          "index": 4
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_090.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_090.jpg",
+          "orientation": 90,
+          "timestamp": 1763022118349,
+          "index": 5
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_108.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_108.jpg",
+          "orientation": 108,
+          "timestamp": 1763022118356,
+          "index": 6
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_126.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_126.jpg",
+          "orientation": 126,
+          "timestamp": 1763022118361,
+          "index": 7
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_144.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_144.jpg",
+          "orientation": 144,
+          "timestamp": 1763022118366,
+          "index": 8
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_162.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_162.jpg",
+          "orientation": 162,
+          "timestamp": 1763022118371,
+          "index": 9
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_180.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_180.jpg",
+          "orientation": 180,
+          "timestamp": 1763022118377,
+          "index": 10
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_198.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_198.jpg",
+          "orientation": 198,
+          "timestamp": 1763022118381,
+          "index": 11
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_216.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_216.jpg",
+          "orientation": 216,
+          "timestamp": 1763022118386,
+          "index": 12
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_234.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_234.jpg",
+          "orientation": 234,
+          "timestamp": 1763022118392,
+          "index": 13
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_252.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_252.jpg",
+          "orientation": 252,
+          "timestamp": 1763022118396,
+          "index": 14
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_270.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_270.jpg",
+          "orientation": 270,
+          "timestamp": 1763022118404,
+          "index": 15
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_288.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_288.jpg",
+          "orientation": 288,
+          "timestamp": 1763022118408,
+          "index": 16
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_306.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_306.jpg",
+          "orientation": 306,
+          "timestamp": 1763022118413,
+          "index": 17
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_324.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_324.jpg",
+          "orientation": 324,
+          "timestamp": 1763022118418,
+          "index": 18
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp0_angle_342.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp0\\path_map_1762994999540_1763022031328_seg2_wp0_angle_342.jpg",
+          "orientation": 342,
+          "timestamp": 1763022118425,
+          "index": 19
+        }
+      ],
+      "connections": [
+        {
+          "to_waypoint": "path_map_1762994999540_1763022031328_seg2_wp1",
+          "direction": "forward",
+          "distance_steps": 10,
+          "instruction": "Continue forward"
+        }
+      ],
+      "metadata": {
+        "segment_index": 2,
+        "waypoint_index": 0,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_15",
+        "to_room": "room_20"
+      },
+      "created_at": 1763022118.456237
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763022031328_seg2_wp1",
+      "type": "INTERMEDIATE",
+      "room_label": "room_15_to_room_20",
+      "position_description": "Segment 3: room_15 \u2192 room_20, waypoint 2/3",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763022144946,
+          "index": 0
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_018.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_018.jpg",
+          "orientation": 18,
+          "timestamp": 1763022144955,
+          "index": 1
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_036.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_036.jpg",
+          "orientation": 36,
+          "timestamp": 1763022144962,
+          "index": 2
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_054.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_054.jpg",
+          "orientation": 54,
+          "timestamp": 1763022144968,
+          "index": 3
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_072.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_072.jpg",
+          "orientation": 72,
+          "timestamp": 1763022144973,
+          "index": 4
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_090.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_090.jpg",
+          "orientation": 90,
+          "timestamp": 1763022144979,
+          "index": 5
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_108.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_108.jpg",
+          "orientation": 108,
+          "timestamp": 1763022144986,
+          "index": 6
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_126.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_126.jpg",
+          "orientation": 126,
+          "timestamp": 1763022144993,
+          "index": 7
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_144.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_144.jpg",
+          "orientation": 144,
+          "timestamp": 1763022144999,
+          "index": 8
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_162.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_162.jpg",
+          "orientation": 162,
+          "timestamp": 1763022145006,
+          "index": 9
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_180.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_180.jpg",
+          "orientation": 180,
+          "timestamp": 1763022145015,
+          "index": 10
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_198.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_198.jpg",
+          "orientation": 198,
+          "timestamp": 1763022145021,
+          "index": 11
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_216.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_216.jpg",
+          "orientation": 216,
+          "timestamp": 1763022145028,
+          "index": 12
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_234.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_234.jpg",
+          "orientation": 234,
+          "timestamp": 1763022145034,
+          "index": 13
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_252.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_252.jpg",
+          "orientation": 252,
+          "timestamp": 1763022145039,
+          "index": 14
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_270.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_270.jpg",
+          "orientation": 270,
+          "timestamp": 1763022145047,
+          "index": 15
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_288.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_288.jpg",
+          "orientation": 288,
+          "timestamp": 1763022145054,
+          "index": 16
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_306.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_306.jpg",
+          "orientation": 306,
+          "timestamp": 1763022145062,
+          "index": 17
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_324.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_324.jpg",
+          "orientation": 324,
+          "timestamp": 1763022145067,
+          "index": 18
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp1_angle_342.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp1\\path_map_1762994999540_1763022031328_seg2_wp1_angle_342.jpg",
+          "orientation": 342,
+          "timestamp": 1763022145072,
+          "index": 19
+        }
+      ],
+      "connections": [
+        {
+          "to_waypoint": "path_map_1762994999540_1763022031328_seg2_wp0",
+          "direction": "backward",
+          "distance_steps": 10,
+          "instruction": "Walk back"
+        },
+        {
+          "to_waypoint": "path_map_1762994999540_1763022031328_seg2_wp2",
+          "direction": "forward",
+          "distance_steps": 10,
+          "instruction": "Continue forward"
+        }
+      ],
+      "metadata": {
+        "segment_index": 2,
+        "waypoint_index": 1,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_15",
+        "to_room": "room_20"
+      },
+      "created_at": 1763022145.0972517
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763022031328_seg2_wp2",
+      "type": "DOOR",
+      "room_label": "room_15_to_room_20",
+      "position_description": "Segment 3: room_15 \u2192 room_20, waypoint 3/3",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp2_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp2\\path_map_1762994999540_1763022031328_seg2_wp2_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763022154951,
+          "index": 0
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp2_angle_036.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp2\\path_map_1762994999540_1763022031328_seg2_wp2_angle_036.jpg",
+          "orientation": 36,
+          "timestamp": 1763022154957,
+          "index": 1
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp2_angle_072.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp2\\path_map_1762994999540_1763022031328_seg2_wp2_angle_072.jpg",
+          "orientation": 72,
+          "timestamp": 1763022154964,
+          "index": 2
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp2_angle_108.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp2\\path_map_1762994999540_1763022031328_seg2_wp2_angle_108.jpg",
+          "orientation": 108,
+          "timestamp": 1763022154970,
+          "index": 3
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp2_angle_144.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp2\\path_map_1762994999540_1763022031328_seg2_wp2_angle_144.jpg",
+          "orientation": 144,
+          "timestamp": 1763022154973,
+          "index": 4
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp2_angle_180.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp2\\path_map_1762994999540_1763022031328_seg2_wp2_angle_180.jpg",
+          "orientation": 180,
+          "timestamp": 1763022154977,
+          "index": 5
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp2_angle_216.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp2\\path_map_1762994999540_1763022031328_seg2_wp2_angle_216.jpg",
+          "orientation": 216,
+          "timestamp": 1763022154981,
+          "index": 6
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp2_angle_252.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp2\\path_map_1762994999540_1763022031328_seg2_wp2_angle_252.jpg",
+          "orientation": 252,
+          "timestamp": 1763022154988,
+          "index": 7
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp2_angle_288.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp2\\path_map_1762994999540_1763022031328_seg2_wp2_angle_288.jpg",
+          "orientation": 288,
+          "timestamp": 1763022154992,
+          "index": 8
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg2_wp2_angle_324.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg2_wp2\\path_map_1762994999540_1763022031328_seg2_wp2_angle_324.jpg",
+          "orientation": 324,
+          "timestamp": 1763022154996,
+          "index": 9
+        }
+      ],
+      "connections": [
+        {
+          "to_waypoint": "path_map_1762994999540_1763022031328_seg2_wp1",
+          "direction": "backward",
+          "distance_steps": 10,
+          "instruction": "Walk back"
+        },
+        {
+          "to_waypoint": "path_map_1762994999540_1763022031328_seg3_wp0",
+          "direction": "forward",
+          "distance_steps": 5,
+          "instruction": "Enter room_17"
+        }
+      ],
+      "metadata": {
+        "segment_index": 2,
+        "waypoint_index": 2,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_15",
+        "to_room": "room_20"
+      },
+      "created_at": 1763022155.0201442
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763022031328_seg3_wp0",
+      "type": "CORRIDOR_START",
+      "room_label": "room_20_to_room_17",
+      "position_description": "Segment 4: room_20 \u2192 room_17, waypoint 1/2",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763022175610,
+          "index": 0
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_018.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_018.jpg",
+          "orientation": 18,
+          "timestamp": 1763022175614,
+          "index": 1
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_036.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_036.jpg",
+          "orientation": 36,
+          "timestamp": 1763022175619,
+          "index": 2
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_054.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_054.jpg",
+          "orientation": 54,
+          "timestamp": 1763022175629,
+          "index": 3
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_072.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_072.jpg",
+          "orientation": 72,
+          "timestamp": 1763022175633,
+          "index": 4
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_090.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_090.jpg",
+          "orientation": 90,
+          "timestamp": 1763022175641,
+          "index": 5
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_108.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_108.jpg",
+          "orientation": 108,
+          "timestamp": 1763022175647,
+          "index": 6
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_126.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_126.jpg",
+          "orientation": 126,
+          "timestamp": 1763022175651,
+          "index": 7
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_144.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_144.jpg",
+          "orientation": 144,
+          "timestamp": 1763022175660,
+          "index": 8
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_162.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_162.jpg",
+          "orientation": 162,
+          "timestamp": 1763022175664,
+          "index": 9
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_180.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_180.jpg",
+          "orientation": 180,
+          "timestamp": 1763022175671,
+          "index": 10
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_198.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_198.jpg",
+          "orientation": 198,
+          "timestamp": 1763022175676,
+          "index": 11
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_216.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_216.jpg",
+          "orientation": 216,
+          "timestamp": 1763022175681,
+          "index": 12
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_234.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_234.jpg",
+          "orientation": 234,
+          "timestamp": 1763022175690,
+          "index": 13
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_252.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_252.jpg",
+          "orientation": 252,
+          "timestamp": 1763022175695,
+          "index": 14
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_270.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_270.jpg",
+          "orientation": 270,
+          "timestamp": 1763022175702,
+          "index": 15
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_288.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_288.jpg",
+          "orientation": 288,
+          "timestamp": 1763022175708,
+          "index": 16
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_306.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_306.jpg",
+          "orientation": 306,
+          "timestamp": 1763022175712,
+          "index": 17
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_324.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_324.jpg",
+          "orientation": 324,
+          "timestamp": 1763022175716,
+          "index": 18
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp0_angle_342.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp0\\path_map_1762994999540_1763022031328_seg3_wp0_angle_342.jpg",
+          "orientation": 342,
+          "timestamp": 1763022175724,
+          "index": 19
+        }
+      ],
+      "connections": [
+        {
+          "to_waypoint": "path_map_1762994999540_1763022031328_seg3_wp1",
+          "direction": "forward",
+          "distance_steps": 10,
+          "instruction": "Continue forward"
+        }
+      ],
+      "metadata": {
+        "segment_index": 3,
+        "waypoint_index": 0,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_20",
+        "to_room": "room_17"
+      },
+      "created_at": 1763022175.7547543
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763022031328_seg3_wp1",
+      "type": "DOOR",
+      "room_label": "room_20_to_room_17",
+      "position_description": "Segment 4: room_20 \u2192 room_17, waypoint 2/2",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg3_wp1_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg3_wp1\\path_map_1762994999540_1763022031328_seg3_wp1_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763022188469,
+          "index": 0
+        }
+      ],
+      "connections": [
+        {
+          "to_waypoint": "path_map_1762994999540_1763022031328_seg3_wp0",
+          "direction": "backward",
+          "distance_steps": 10,
+          "instruction": "Walk back"
+        },
+        {
+          "to_waypoint": "path_map_1762994999540_1763022031328_seg4_wp0",
+          "direction": "forward",
+          "distance_steps": 5,
+          "instruction": "Enter room_12"
+        }
+      ],
+      "metadata": {
+        "segment_index": 3,
+        "waypoint_index": 1,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_20",
+        "to_room": "room_17"
+      },
+      "created_at": 1763022188.5096295
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763022031328_seg4_wp0",
+      "type": "CORRIDOR_START",
+      "room_label": "room_17_to_room_12",
+      "position_description": "Segment 5: room_17 \u2192 room_12, waypoint 1/1",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg4_wp0_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg4_wp0\\path_map_1762994999540_1763022031328_seg4_wp0_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763022199612,
+          "index": 0
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg4_wp0_angle_036.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg4_wp0\\path_map_1762994999540_1763022031328_seg4_wp0_angle_036.jpg",
+          "orientation": 36,
+          "timestamp": 1763022199618,
+          "index": 1
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg4_wp0_angle_072.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg4_wp0\\path_map_1762994999540_1763022031328_seg4_wp0_angle_072.jpg",
+          "orientation": 72,
+          "timestamp": 1763022199624,
+          "index": 2
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg4_wp0_angle_108.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg4_wp0\\path_map_1762994999540_1763022031328_seg4_wp0_angle_108.jpg",
+          "orientation": 108,
+          "timestamp": 1763022199629,
+          "index": 3
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg4_wp0_angle_144.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg4_wp0\\path_map_1762994999540_1763022031328_seg4_wp0_angle_144.jpg",
+          "orientation": 144,
+          "timestamp": 1763022199633,
+          "index": 4
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg4_wp0_angle_180.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg4_wp0\\path_map_1762994999540_1763022031328_seg4_wp0_angle_180.jpg",
+          "orientation": 180,
+          "timestamp": 1763022199639,
+          "index": 5
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg4_wp0_angle_216.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg4_wp0\\path_map_1762994999540_1763022031328_seg4_wp0_angle_216.jpg",
+          "orientation": 216,
+          "timestamp": 1763022199644,
+          "index": 6
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg4_wp0_angle_252.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg4_wp0\\path_map_1762994999540_1763022031328_seg4_wp0_angle_252.jpg",
+          "orientation": 252,
+          "timestamp": 1763022199649,
+          "index": 7
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg4_wp0_angle_288.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg4_wp0\\path_map_1762994999540_1763022031328_seg4_wp0_angle_288.jpg",
+          "orientation": 288,
+          "timestamp": 1763022199656,
+          "index": 8
+        },
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg4_wp0_angle_324.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg4_wp0\\path_map_1762994999540_1763022031328_seg4_wp0_angle_324.jpg",
+          "orientation": 324,
+          "timestamp": 1763022199661,
+          "index": 9
+        }
+      ],
+      "connections": [
+        {
+          "to_waypoint": "path_map_1762994999540_1763022031328_seg5_wp0",
+          "direction": "forward",
+          "distance_steps": 5,
+          "instruction": "Enter room_14"
+        }
+      ],
+      "metadata": {
+        "segment_index": 4,
+        "waypoint_index": 0,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_17",
+        "to_room": "room_12"
+      },
+      "created_at": 1763022199.682331
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763022031328_seg5_wp0",
+      "type": "CORRIDOR_START",
+      "room_label": "room_12_to_room_14",
+      "position_description": "Segment 6: room_12 \u2192 room_14, waypoint 1/1",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763022031328_seg5_wp0_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022031328_seg5_wp0\\path_map_1762994999540_1763022031328_seg5_wp0_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763022217789,
+          "index": 0
+        }
+      ],
+      "connections": [],
+      "metadata": {
+        "segment_index": 5,
+        "waypoint_index": 0,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_12",
+        "to_room": "room_14"
+      },
+      "created_at": 1763022217.8224196
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763022497292_seg0_wp0",
+      "type": "CORRIDOR_START",
+      "room_label": "room_14_to_room_12",
+      "position_description": "Segment 1: room_14 \u2192 room_12, waypoint 1/2",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763022506231,
+          "index": 0
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_018.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_018.jpg",
+          "orientation": 18,
+          "timestamp": 1763022506234,
+          "index": 1
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_036.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_036.jpg",
+          "orientation": 36,
+          "timestamp": 1763022506236,
+          "index": 2
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_054.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_054.jpg",
+          "orientation": 54,
+          "timestamp": 1763022506240,
+          "index": 3
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_072.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_072.jpg",
+          "orientation": 72,
+          "timestamp": 1763022506243,
+          "index": 4
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_090.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_090.jpg",
+          "orientation": 90,
+          "timestamp": 1763022506245,
+          "index": 5
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_108.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_108.jpg",
+          "orientation": 108,
+          "timestamp": 1763022506249,
+          "index": 6
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_126.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_126.jpg",
+          "orientation": 126,
+          "timestamp": 1763022506252,
+          "index": 7
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_144.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_144.jpg",
+          "orientation": 144,
+          "timestamp": 1763022506255,
+          "index": 8
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_162.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_162.jpg",
+          "orientation": 162,
+          "timestamp": 1763022506258,
+          "index": 9
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_180.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_180.jpg",
+          "orientation": 180,
+          "timestamp": 1763022506263,
+          "index": 10
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_198.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_198.jpg",
+          "orientation": 198,
+          "timestamp": 1763022506269,
+          "index": 11
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_216.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_216.jpg",
+          "orientation": 216,
+          "timestamp": 1763022506275,
+          "index": 12
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_234.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_234.jpg",
+          "orientation": 234,
+          "timestamp": 1763022506284,
+          "index": 13
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_252.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_252.jpg",
+          "orientation": 252,
+          "timestamp": 1763022506288,
+          "index": 14
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_270.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_270.jpg",
+          "orientation": 270,
+          "timestamp": 1763022506294,
+          "index": 15
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_288.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_288.jpg",
+          "orientation": 288,
+          "timestamp": 1763022506298,
+          "index": 16
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_306.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_306.jpg",
+          "orientation": 306,
+          "timestamp": 1763022506301,
+          "index": 17
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_324.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_324.jpg",
+          "orientation": 324,
+          "timestamp": 1763022506305,
+          "index": 18
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp0_angle_342.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp0\\path_map_1762994999540_1763022497292_seg0_wp0_angle_342.jpg",
+          "orientation": 342,
+          "timestamp": 1763022506312,
+          "index": 19
+        }
+      ],
+      "connections": [
+        {
+          "to_waypoint": "path_map_1762994999540_1763022497292_seg0_wp1",
+          "direction": "forward",
+          "distance_steps": 10,
+          "instruction": "Continue forward"
+        }
+      ],
+      "metadata": {
+        "segment_index": 0,
+        "waypoint_index": 0,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_14",
+        "to_room": "room_12"
+      },
+      "created_at": 1763022506.3335884
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763022497292_seg0_wp1",
+      "type": "DOOR",
+      "room_label": "room_14_to_room_12",
+      "position_description": "Segment 1: room_14 \u2192 room_12, waypoint 2/2",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp1_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp1\\path_map_1762994999540_1763022497292_seg0_wp1_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763022508993,
+          "index": 0
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp1_angle_120.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp1\\path_map_1762994999540_1763022497292_seg0_wp1_angle_120.jpg",
+          "orientation": 120,
+          "timestamp": 1763022508997,
+          "index": 1
+        },
+        {
+          "filename": "path_map_1762994999540_1763022497292_seg0_wp1_angle_240.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022497292_seg0_wp1\\path_map_1762994999540_1763022497292_seg0_wp1_angle_240.jpg",
+          "orientation": 240,
+          "timestamp": 1763022509003,
+          "index": 2
+        }
+      ],
+      "connections": [
+        {
+          "to_waypoint": "path_map_1762994999540_1763022497292_seg0_wp0",
+          "direction": "backward",
+          "distance_steps": 10,
+          "instruction": "Walk back"
+        }
+      ],
+      "metadata": {
+        "segment_index": 0,
+        "waypoint_index": 1,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_14",
+        "to_room": "room_12"
+      },
+      "created_at": 1763022509.0187452
+    },
+    {
+      "waypoint_id": "path_map_1762994999540_1763022607160_seg0_wp0",
+      "type": "CORRIDOR_START",
+      "room_label": "room_12_to_room_17",
+      "position_description": "Segment 1: room_12 \u2192 room_17, waypoint 1/1",
+      "images": [
+        {
+          "filename": "path_map_1762994999540_1763022607160_seg0_wp0_angle_000.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022607160_seg0_wp0\\path_map_1762994999540_1763022607160_seg0_wp0_angle_000.jpg",
+          "orientation": 0,
+          "timestamp": 1763022618033,
+          "index": 0
+        },
+        {
+          "filename": "path_map_1762994999540_1763022607160_seg0_wp0_angle_180.jpg",
+          "filepath": "navigation_waypoints\\demo_user_123\\map_1762994999540\\waypoints\\path_map_1762994999540_1763022607160_seg0_wp0\\path_map_1762994999540_1763022607160_seg0_wp0_angle_180.jpg",
+          "orientation": 180,
+          "timestamp": 1763022618040,
+          "index": 7
+        }
+      ],
+      "connections": [],
+      "metadata": {
+        "segment_index": 0,
+        "waypoint_index": 0,
+        "capture_method": "live_path_recording",
+        "capture_interval": 0.5,
+        "from_room": "room_12",
+        "to_room": "room_17"
+      },
+      "created_at": 1763022618.0639598
+    }
+  ],
+  "last_updated": 1763022618.0639598
+}

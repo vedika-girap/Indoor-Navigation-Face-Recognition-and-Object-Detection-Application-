@@ -1,0 +1,1389 @@
+{
+  "maps": [
+    {
+      "map_id": "map_1762416462880",
+      "map_name": "2nd floor map",
+      "building_name": "Main building",
+      "floor_number": "2",
+      "local_uri": "file:///data/user/0/host.exp.exponent/files/floor_maps/map_1762416462880.png",
+      "metadata": {
+        "original_name": "2ND Floor.png",
+        "file_size": 1948513,
+        "added_at": "2025-11-06T08:07:42.931Z"
+      },
+      "added_at": "2025-11-06T08:07:42.931Z",
+      "last_accessed": "2025-11-13T14:36:29.052853",
+      "is_active": true
+    },
+    {
+      "map_id": "map_1762994999540",
+      "map_name": "2nd floor map (Processed)",
+      "building_name": "Main building",
+      "floor_number": "2",
+      "local_uri": "file:///data/user/0/host.exp.exponent/files/floor_maps/map_1762994999540_processed.png",
+      "metadata": {
+        "original_map_id": "map_1762416462880",
+        "is_processed": true,
+        "labels": [
+          {
+            "label": "room_1",
+            "bbox": [
+              246,
+              1426,
+              656,
+              1200
+            ],
+            "area": 86087.5,
+            "aspect_ratio": 0.551219512195122,
+            "circularity": 0.6573317696513878,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_2",
+            "bbox": [
+              386,
+              410,
+              533,
+              142
+            ],
+            "area": 38900,
+            "aspect_ratio": 1.8231292517006803,
+            "circularity": 0.7031317943532166,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_3",
+            "bbox": [
+              71,
+              410,
+              214,
+              142
+            ],
+            "area": 37555.5,
+            "aspect_ratio": 1.8741258741258742,
+            "circularity": 0.6902539198565506,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_4",
+            "bbox": [
+              221,
+              298,
+              380,
+              62
+            ],
+            "area": 37087,
+            "aspect_ratio": 1.4842767295597483,
+            "circularity": 0.7525140166335355,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_5",
+            "bbox": [
+              834,
+              778,
+              984,
+              539
+            ],
+            "area": 30775,
+            "aspect_ratio": 1.5933333333333333,
+            "circularity": 0.41441145025619464,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_6",
+            "bbox": [
+              392,
+              633,
+              604,
+              492
+            ],
+            "area": 22362,
+            "aspect_ratio": 0.6650943396226415,
+            "circularity": 0.2021808390574353,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_7",
+            "bbox": [
+              71,
+              633,
+              229,
+              492
+            ],
+            "area": 21753,
+            "aspect_ratio": 0.8924050632911392,
+            "circularity": 0.7240845480685377,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_8",
+            "bbox": [
+              707,
+              1341,
+              888,
+              1222
+            ],
+            "area": 20767,
+            "aspect_ratio": 0.6574585635359116,
+            "circularity": 0.700353015378849,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_9",
+            "bbox": [
+              234,
+              633,
+              385,
+              492
+            ],
+            "area": 20752,
+            "aspect_ratio": 0.9337748344370861,
+            "circularity": 0.7744408007986049,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_10",
+            "bbox": [
+              235,
+              1163,
+              354,
+              968
+            ],
+            "area": 20641.5,
+            "aspect_ratio": 1.638655462184874,
+            "circularity": 0.24132432327385242,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_11",
+            "bbox": [
+              359,
+              1163,
+              463,
+              968
+            ],
+            "area": 19757,
+            "aspect_ratio": 1.875,
+            "circularity": 0.692815598869443,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_12",
+            "bbox": [
+              712,
+              258,
+              896,
+              145
+            ],
+            "area": 19669.5,
+            "aspect_ratio": 0.6141304347826086,
+            "circularity": 0.7497239182972656,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_13",
+            "bbox": [
+              469,
+              1163,
+              568,
+              968
+            ],
+            "area": 18882.5,
+            "aspect_ratio": 1.9696969696969697,
+            "circularity": 0.7142403059091079,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_14",
+            "bbox": [
+              712,
+              139,
+              913,
+              40
+            ],
+            "area": 18827,
+            "aspect_ratio": 0.4925373134328358,
+            "circularity": 0.6986069283022441,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_15",
+            "bbox": [
+              708,
+              1063,
+              890,
+              961
+            ],
+            "area": 18005.5,
+            "aspect_ratio": 0.5604395604395604,
+            "circularity": 0.7433810200357521,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_16",
+            "bbox": [
+              708,
+              1169,
+              890,
+              1069
+            ],
+            "area": 17664.5,
+            "aspect_ratio": 0.5494505494505495,
+            "circularity": 0.7283960023785394,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_17",
+            "bbox": [
+              712,
+              366,
+              879,
+              264
+            ],
+            "area": 15984,
+            "aspect_ratio": 0.6107784431137725,
+            "circularity": 0.7497391528202788,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_18",
+            "bbox": [
+              711,
+              587,
+              863,
+              493
+            ],
+            "area": 13745.5,
+            "aspect_ratio": 0.618421052631579,
+            "circularity": 0.73723335574727,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_19",
+            "bbox": [
+              708,
+              1426,
+              888,
+              1347
+            ],
+            "area": 11207.5,
+            "aspect_ratio": 0.4388888888888889,
+            "circularity": 0.5517841584690355,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_20",
+            "bbox": [
+              711,
+              778,
+              829,
+              681
+            ],
+            "area": 11048.5,
+            "aspect_ratio": 0.8220338983050848,
+            "circularity": 0.7247080723807301,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_21",
+            "bbox": [
+              539,
+              258,
+              665,
+              174
+            ],
+            "area": 10038,
+            "aspect_ratio": 0.6666666666666666,
+            "circularity": 0.76730835496338,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_22",
+            "bbox": [
+              203,
+              1426,
+              240,
+              1201
+            ],
+            "area": 7849.5,
+            "aspect_ratio": 6.081081081081081,
+            "circularity": 0.36893629502964687,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_23",
+            "bbox": [
+              539,
+              339,
+              665,
+              264
+            ],
+            "area": 7674,
+            "aspect_ratio": 0.5952380952380952,
+            "circularity": 0.38254292569972764,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_24",
+            "bbox": [
+              609,
+              633,
+              663,
+              492
+            ],
+            "area": 7114,
+            "aspect_ratio": 2.611111111111111,
+            "circularity": 0.5764671048220079,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_25",
+            "bbox": [
+              869,
+              534,
+              987,
+              480
+            ],
+            "area": 5755.5,
+            "aspect_ratio": 0.4576271186440678,
+            "circularity": 0.4502080577349023,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_26",
+            "bbox": [
+              587,
+              410,
+              664,
+              345
+            ],
+            "area": 4644.5,
+            "aspect_ratio": 0.8441558441558441,
+            "circularity": 0.7858326030272329,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_27",
+            "bbox": [
+              891,
+              850,
+              972,
+              785
+            ],
+            "area": 3853,
+            "aspect_ratio": 0.8024691358024691,
+            "circularity": 0.324246488463379,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_28",
+            "bbox": [
+              892,
+              956,
+              972,
+              888
+            ],
+            "area": 3839.5,
+            "aspect_ratio": 0.85,
+            "circularity": 0.40729002385591956,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_29",
+            "bbox": [
+              573,
+              1122,
+              650,
+              1073
+            ],
+            "area": 3457,
+            "aspect_ratio": 0.6363636363636364,
+            "circularity": 0.7576320947132378,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_30",
+            "bbox": [
+              920,
+              1169,
+              987,
+              1103
+            ],
+            "area": 3056.5,
+            "aspect_ratio": 0.9850746268656716,
+            "circularity": 0.24166248053281825,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_31",
+            "bbox": [
+              779,
+              1299,
+              837,
+              1243
+            ],
+            "area": 2861.5,
+            "aspect_ratio": 0.9655172413793104,
+            "circularity": 0.7426666240528398,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_32",
+            "bbox": [
+              711,
+              677,
+              757,
+              591
+            ],
+            "area": 2637.5,
+            "aspect_ratio": 1.8695652173913044,
+            "circularity": 0.30955704623191427,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_33",
+            "bbox": [
+              920,
+              1030,
+              977,
+              961
+            ],
+            "area": 2505.5,
+            "aspect_ratio": 1.2105263157894737,
+            "circularity": 0.4213559698780679,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_34",
+            "bbox": [
+              377,
+              875,
+              397,
+              736
+            ],
+            "area": 2442,
+            "aspect_ratio": 6.95,
+            "circularity": 0.29888142599185835,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          }
+        ],
+        "processed_at": "2025-11-13T00:49:59.552Z",
+        "room_images": {
+          "room_1": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_1.jpg",
+            "image_filename": "room_1.jpg",
+            "uploaded_at": "null"
+          },
+          "room_19": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_19.jpg",
+            "image_filename": "room_19.jpg",
+            "uploaded_at": "null"
+          },
+          "room_8": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_8.jpg",
+            "image_filename": "room_8.jpg",
+            "uploaded_at": "null"
+          },
+          "room_13": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_13.jpg",
+            "image_filename": "room_13.jpg",
+            "uploaded_at": "null"
+          },
+          "room_11": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_11.jpg",
+            "image_filename": "room_11.jpg",
+            "uploaded_at": "null"
+          },
+          "room_10": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_10.jpg",
+            "image_filename": "room_10.jpg",
+            "uploaded_at": "null"
+          },
+          "room_16": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_16.jpg",
+            "image_filename": "room_16.jpg",
+            "uploaded_at": "null"
+          },
+          "room_15": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_15.jpg",
+            "image_filename": "room_15.jpg",
+            "uploaded_at": "null"
+          },
+          "room_18": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_18.jpg",
+            "image_filename": "room_18.jpg",
+            "uploaded_at": "null"
+          },
+          "room_17": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_17.jpg",
+            "image_filename": "room_17.jpg",
+            "uploaded_at": "null"
+          },
+          "room_12": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_12.jpg",
+            "image_filename": "room_12.jpg",
+            "uploaded_at": "null"
+          },
+          "room_14": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_14.jpg",
+            "image_filename": "room_14.jpg",
+            "uploaded_at": "null"
+          },
+          "room_26": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_26.jpg",
+            "image_filename": "room_26.jpg",
+            "uploaded_at": "null"
+          },
+          "room_23": {
+            "image_path": "room_images\\demo_user_123\\map_1762994999540\\room_23.jpg",
+            "image_filename": "room_23.jpg",
+            "uploaded_at": "null"
+          }
+        }
+      },
+      "added_at": null,
+      "last_accessed": "2025-11-16T21:22:31.115379",
+      "is_active": true
+    },
+    {
+      "map_id": "map_1763303092616",
+      "map_name": "Hostel2",
+      "building_name": null,
+      "floor_number": null,
+      "local_uri": "file:///data/user/0/host.exp.exponent/files/floor_maps/map_1763303092616.png",
+      "metadata": {
+        "original_name": "IMG_20251116_195408.jpg",
+        "file_size": 404624,
+        "added_at": "2025-11-16T14:24:52.630Z"
+      },
+      "added_at": "2025-11-16T14:24:52.630Z",
+      "last_accessed": null,
+      "is_active": true
+    },
+    {
+      "map_id": "map_1763303312174",
+      "map_name": "Hostel2 (Processed)",
+      "building_name": null,
+      "floor_number": null,
+      "local_uri": "file:///data/user/0/host.exp.exponent/files/floor_maps/map_1763303312174_processed.png",
+      "metadata": {
+        "original_map_id": "map_1763303092616",
+        "is_processed": true,
+        "labels": [
+          {
+            "label": "room_1",
+            "bbox": [
+              21,
+              1354,
+              441,
+              47
+            ],
+            "area": 336698.5,
+            "aspect_ratio": 3.111904761904762,
+            "circularity": 0.34886792483392093,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_2",
+            "bbox": [
+              32,
+              1345,
+              429,
+              860
+            ],
+            "area": 172912.5,
+            "aspect_ratio": 1.221662468513854,
+            "circularity": 0.7413108680934833,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_3",
+            "bbox": [
+              565,
+              867,
+              771,
+              25
+            ],
+            "area": 140159.5,
+            "aspect_ratio": 4.087378640776699,
+            "circularity": 0.3757475853645729,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_4",
+            "bbox": [
+              595,
+              850,
+              757,
+              624
+            ],
+            "area": 32251,
+            "aspect_ratio": 1.3950617283950617,
+            "circularity": 0.7155381355319032,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_5",
+            "bbox": [
+              253,
+              658,
+              408,
+              452
+            ],
+            "area": 28480,
+            "aspect_ratio": 1.3290322580645162,
+            "circularity": 0.6423141409610245,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_6",
+            "bbox": [
+              256,
+              858,
+              422,
+              667
+            ],
+            "area": 27209,
+            "aspect_ratio": 1.1506024096385543,
+            "circularity": 0.6055574894621865,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_7",
+            "bbox": [
+              240,
+              245,
+              404,
+              63
+            ],
+            "area": 26379,
+            "aspect_ratio": 1.1097560975609757,
+            "circularity": 0.7380788078359768,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_8",
+            "bbox": [
+              581,
+              433,
+              739,
+              250
+            ],
+            "area": 25746.5,
+            "aspect_ratio": 1.1582278481012658,
+            "circularity": 0.744464750995859,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_9",
+            "bbox": [
+              252,
+              434,
+              410,
+              255
+            ],
+            "area": 25157,
+            "aspect_ratio": 1.1329113924050633,
+            "circularity": 0.6952664044302175,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_10",
+            "bbox": [
+              576,
+              231,
+              729,
+              45
+            ],
+            "area": 25074.5,
+            "aspect_ratio": 1.2156862745098038,
+            "circularity": 0.6390140597462197,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_11",
+            "bbox": [
+              599,
+              617,
+              750,
+              456
+            ],
+            "area": 20188,
+            "aspect_ratio": 1.0662251655629138,
+            "circularity": 0.6420430960458369,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          }
+        ],
+        "processed_at": "2025-11-16T14:28:32.191Z",
+        "room_images": {
+          "room_7": {
+            "image_path": "room_images\\demo_user_123\\map_1763303312174\\room_7.jpg",
+            "image_filename": "room_7.jpg",
+            "uploaded_at": "null"
+          },
+          "room_9": {
+            "image_path": "room_images\\demo_user_123\\map_1763303312174\\room_9.jpg",
+            "image_filename": "room_9.jpg",
+            "uploaded_at": "null"
+          },
+          "room_5": {
+            "image_path": "room_images\\demo_user_123\\map_1763303312174\\room_5.jpg",
+            "image_filename": "room_5.jpg",
+            "uploaded_at": "null"
+          },
+          "room_6": {
+            "image_path": "room_images\\demo_user_123\\map_1763303312174\\room_6.jpg",
+            "image_filename": "room_6.jpg",
+            "uploaded_at": "null"
+          },
+          "room_2": {
+            "image_path": "room_images\\demo_user_123\\map_1763303312174\\room_2.jpg",
+            "image_filename": "room_2.jpg",
+            "uploaded_at": "null"
+          },
+          "room_10": {
+            "image_path": "room_images\\demo_user_123\\map_1763303312174\\room_10.jpg",
+            "image_filename": "room_10.jpg",
+            "uploaded_at": "null"
+          },
+          "room_8": {
+            "image_path": "room_images\\demo_user_123\\map_1763303312174\\room_8.jpg",
+            "image_filename": "room_8.jpg",
+            "uploaded_at": "null"
+          },
+          "room_11": {
+            "image_path": "room_images\\demo_user_123\\map_1763303312174\\room_11.jpg",
+            "image_filename": "room_11.jpg",
+            "uploaded_at": "null"
+          },
+          "room_4": {
+            "image_path": "room_images\\demo_user_123\\map_1763303312174\\room_4.jpg",
+            "image_filename": "room_4.jpg",
+            "uploaded_at": "null"
+          }
+        }
+      },
+      "added_at": null,
+      "last_accessed": null,
+      "is_active": true
+    },
+    {
+      "map_id": "map_1763367493023",
+      "map_name": "2nd floor map (Processed)",
+      "building_name": "Main building",
+      "floor_number": "2",
+      "local_uri": "file:///data/user/0/host.exp.exponent/files/floor_maps/map_1763367493023_processed.png",
+      "metadata": {
+        "original_map_id": "map_1762416462880",
+        "is_processed": true,
+        "labels": [
+          {
+            "label": "room_1",
+            "bbox": [
+              246,
+              1426,
+              656,
+              1200
+            ],
+            "area": 86087.5,
+            "aspect_ratio": 0.551219512195122,
+            "circularity": 0.6573317696513878,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_2",
+            "bbox": [
+              386,
+              410,
+              533,
+              142
+            ],
+            "area": 38900,
+            "aspect_ratio": 1.8231292517006803,
+            "circularity": 0.7031317943532166,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_3",
+            "bbox": [
+              71,
+              410,
+              214,
+              142
+            ],
+            "area": 37555.5,
+            "aspect_ratio": 1.8741258741258742,
+            "circularity": 0.6902539198565506,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_4",
+            "bbox": [
+              221,
+              298,
+              380,
+              62
+            ],
+            "area": 37087,
+            "aspect_ratio": 1.4842767295597483,
+            "circularity": 0.7525140166335355,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_5",
+            "bbox": [
+              834,
+              778,
+              984,
+              539
+            ],
+            "area": 30775,
+            "aspect_ratio": 1.5933333333333333,
+            "circularity": 0.41441145025619464,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_6",
+            "bbox": [
+              392,
+              633,
+              604,
+              492
+            ],
+            "area": 22362,
+            "aspect_ratio": 0.6650943396226415,
+            "circularity": 0.2021808390574353,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_7",
+            "bbox": [
+              71,
+              633,
+              229,
+              492
+            ],
+            "area": 21753,
+            "aspect_ratio": 0.8924050632911392,
+            "circularity": 0.7240845480685377,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_8",
+            "bbox": [
+              707,
+              1341,
+              888,
+              1222
+            ],
+            "area": 20767,
+            "aspect_ratio": 0.6574585635359116,
+            "circularity": 0.700353015378849,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_9",
+            "bbox": [
+              234,
+              633,
+              385,
+              492
+            ],
+            "area": 20752,
+            "aspect_ratio": 0.9337748344370861,
+            "circularity": 0.7744408007986049,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_10",
+            "bbox": [
+              235,
+              1163,
+              354,
+              968
+            ],
+            "area": 20641.5,
+            "aspect_ratio": 1.638655462184874,
+            "circularity": 0.24132432327385242,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_11",
+            "bbox": [
+              359,
+              1163,
+              463,
+              968
+            ],
+            "area": 19757,
+            "aspect_ratio": 1.875,
+            "circularity": 0.692815598869443,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_12",
+            "bbox": [
+              712,
+              258,
+              896,
+              145
+            ],
+            "area": 19669.5,
+            "aspect_ratio": 0.6141304347826086,
+            "circularity": 0.7497239182972656,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_13",
+            "bbox": [
+              469,
+              1163,
+              568,
+              968
+            ],
+            "area": 18882.5,
+            "aspect_ratio": 1.9696969696969697,
+            "circularity": 0.7142403059091079,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_14",
+            "bbox": [
+              712,
+              139,
+              913,
+              40
+            ],
+            "area": 18827,
+            "aspect_ratio": 0.4925373134328358,
+            "circularity": 0.6986069283022441,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_15",
+            "bbox": [
+              708,
+              1063,
+              890,
+              961
+            ],
+            "area": 18005.5,
+            "aspect_ratio": 0.5604395604395604,
+            "circularity": 0.7433810200357521,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_16",
+            "bbox": [
+              708,
+              1169,
+              890,
+              1069
+            ],
+            "area": 17664.5,
+            "aspect_ratio": 0.5494505494505495,
+            "circularity": 0.7283960023785394,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_17",
+            "bbox": [
+              712,
+              366,
+              879,
+              264
+            ],
+            "area": 15984,
+            "aspect_ratio": 0.6107784431137725,
+            "circularity": 0.7497391528202788,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_18",
+            "bbox": [
+              711,
+              587,
+              863,
+              493
+            ],
+            "area": 13745.5,
+            "aspect_ratio": 0.618421052631579,
+            "circularity": 0.73723335574727,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_19",
+            "bbox": [
+              708,
+              1426,
+              888,
+              1347
+            ],
+            "area": 11207.5,
+            "aspect_ratio": 0.4388888888888889,
+            "circularity": 0.5517841584690355,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_20",
+            "bbox": [
+              711,
+              778,
+              829,
+              681
+            ],
+            "area": 11048.5,
+            "aspect_ratio": 0.8220338983050848,
+            "circularity": 0.7247080723807301,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_21",
+            "bbox": [
+              539,
+              258,
+              665,
+              174
+            ],
+            "area": 10038,
+            "aspect_ratio": 0.6666666666666666,
+            "circularity": 0.76730835496338,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_22",
+            "bbox": [
+              203,
+              1426,
+              240,
+              1201
+            ],
+            "area": 7849.5,
+            "aspect_ratio": 6.081081081081081,
+            "circularity": 0.36893629502964687,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_23",
+            "bbox": [
+              539,
+              339,
+              665,
+              264
+            ],
+            "area": 7674,
+            "aspect_ratio": 0.5952380952380952,
+            "circularity": 0.38254292569972764,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_24",
+            "bbox": [
+              609,
+              633,
+              663,
+              492
+            ],
+            "area": 7114,
+            "aspect_ratio": 2.611111111111111,
+            "circularity": 0.5764671048220079,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_25",
+            "bbox": [
+              869,
+              534,
+              987,
+              480
+            ],
+            "area": 5755.5,
+            "aspect_ratio": 0.4576271186440678,
+            "circularity": 0.4502080577349023,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_26",
+            "bbox": [
+              587,
+              410,
+              664,
+              345
+            ],
+            "area": 4644.5,
+            "aspect_ratio": 0.8441558441558441,
+            "circularity": 0.7858326030272329,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_27",
+            "bbox": [
+              891,
+              850,
+              972,
+              785
+            ],
+            "area": 3853,
+            "aspect_ratio": 0.8024691358024691,
+            "circularity": 0.324246488463379,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_28",
+            "bbox": [
+              892,
+              956,
+              972,
+              888
+            ],
+            "area": 3839.5,
+            "aspect_ratio": 0.85,
+            "circularity": 0.40729002385591956,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_29",
+            "bbox": [
+              573,
+              1122,
+              650,
+              1073
+            ],
+            "area": 3457,
+            "aspect_ratio": 0.6363636363636364,
+            "circularity": 0.7576320947132378,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_30",
+            "bbox": [
+              920,
+              1169,
+              987,
+              1103
+            ],
+            "area": 3056.5,
+            "aspect_ratio": 0.9850746268656716,
+            "circularity": 0.24166248053281825,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_31",
+            "bbox": [
+              779,
+              1299,
+              837,
+              1243
+            ],
+            "area": 2861.5,
+            "aspect_ratio": 0.9655172413793104,
+            "circularity": 0.7426666240528398,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_32",
+            "bbox": [
+              711,
+              677,
+              757,
+              591
+            ],
+            "area": 2637.5,
+            "aspect_ratio": 1.8695652173913044,
+            "circularity": 0.30955704623191427,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_33",
+            "bbox": [
+              920,
+              1030,
+              977,
+              961
+            ],
+            "area": 2505.5,
+            "aspect_ratio": 1.2105263157894737,
+            "circularity": 0.4213559698780679,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          },
+          {
+            "label": "room_34",
+            "bbox": [
+              377,
+              875,
+              397,
+              736
+            ],
+            "area": 2442,
+            "aspect_ratio": 6.95,
+            "circularity": 0.29888142599185835,
+            "text_extracted": false,
+            "ocr_confidence": 0,
+            "detection_method": "contour"
+          }
+        ],
+        "processed_at": "2025-11-17T08:18:13.035Z"
+      },
+      "added_at": null,
+      "last_accessed": null,
+      "is_active": true
+    }
+  ]
+}
