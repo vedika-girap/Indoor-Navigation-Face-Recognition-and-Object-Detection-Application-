@@ -1,0 +1,13 @@
+{
+  "nodes": {
+    "entrance": [50, 100],
+    "classroom": [200, 150],
+    "washroom": [300, 300],
+    "lab": [400, 120]
+  },
+  "edges": [
+    ["entrance", "classroom"],
+    ["classroom", "washroom"],
+    ["classroom", "lab"]
+  ]
+}
