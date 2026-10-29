@@ -454,8 +454,8 @@ The project was tested in controlled indoor settings, including college hallways
 | Team Member | USN |
 |---|---|
 | Rohan A S | 4MT22CS132 |
-| Sinchana | 4MT22CS140 |
-| Sameeksha | 4MT22CS159 |
+| Sameeksha | 4MT22CS140 |
+| Sinchana | 4MT22CS159 |
 | Vedika L Girap | 4MT22CS181 |
 
 **Project Guide:** Mr. Annappa Swamy D R, Associate Professor, Department of CS&E, MITE Moodabidri
